@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 qc/*
 !qc/validation_raw.json
+!qc/validation_final_raw.json
+!qc/stick_control_raw.json
+!qc/sean_reference.json
+!qc/order_fixture_*.npz
+ref_sean/

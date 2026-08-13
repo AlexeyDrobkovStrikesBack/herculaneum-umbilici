@@ -50,6 +50,7 @@ Definitions, stated so they can be checked:
   largest gap     largest interior z gap between consecutive annotated points,
                   with the two z values it runs between.
 """
+import hashlib
 import json
 import os
 import re
@@ -141,12 +142,24 @@ def chebyshev_radius(xy):
     return float(np.hypot(*(xy - c).T).max())
 
 
-def smooth_row(name, whose, pts):
+def smooth_terms(pts):
+    """The six numbers of one smoothness row."""
     th = subsample(pts, STEP)
     km, nm = kink_matched(th)
-    print(f"{name:10} {whose:5} {len(pts):3d} {med_step(pts):8.0f} {kink(pts):6.0f} "
-          f"{len(th):5d} {med_step(th):8.0f} {kink(th):7.0f} "
-          f"{(f'{km:.0f}' if nm else '-'):>5} {nm:3d}")
+    return dict(n_points=len(pts), step=med_step(pts), kink=kink(pts),
+                n480=len(th), step480=med_step(th), kink480=kink(th),
+                kinkM=(km if nm else None), nM=nm)
+
+
+def print_row(name, whose, t, note=""):
+    km = f"{t['kinkM']:.0f}" if t['nM'] else "-"
+    print(f"{name:10} {whose:5} {t['n_points']:3d} {t['step']:8.0f} "
+          f"{t['kink']:6.0f} {t['n480']:5d} {t['step480']:8.0f} "
+          f"{t['kink480']:7.0f} {km:>5} {t['nM']:3d}{note}")
+
+
+def smooth_row(name, whose, pts, note=""):
+    print_row(name, whose, smooth_terms(pts), note)
 
 
 def main():
@@ -204,17 +217,52 @@ def main():
         pts = json.load(open(os.path.join(ROOT, f"{s}_umbilicus.json")))["control_points"]
         smooth_row(s, "ours", pts)
 
+    sean_rows()
+
+
+def sean_rows():
+    """The three reference rows.
+
+    Sean's annotation files are not ours to redistribute, so `ref_sean/` is not
+    in this repository. What IS in the repository is `qc/sean_reference.json`:
+    the derived numbers of these three rows together with the sha256 of the file
+    each was computed from. So the rows print on a bare clone, marked as read
+    from that digest rather than recomputed. When the files are supplied
+    (`scripts/fetch_sean.py`), every row is recomputed from them, the sha256 is
+    checked, and any disagreement with the digest is printed as a mismatch
+    instead of being silently preferred either way.
+    """
     ref = os.path.join(TREE, "ref_sean")
-    seen = False
+    dig_path = os.path.join(ROOT, "qc", "sean_reference.json")
+    dig = json.load(open(dig_path))["scrolls"] if os.path.exists(dig_path) else {}
+    have = 0
     for s in ("PHerc0125", "PHerc0211", "PHerc0826"):
         p = os.path.join(ref, f"{s}_umbilicus.json")
-        if os.path.isdir(ref) and os.path.exists(p):
-            smooth_row(s, "sean", json.load(open(p))["control_points"])
-            seen = True
-    if not seen:
-        print("(ref_sean/ not present — fetch sean's three axes from the open "
-              "bucket to reproduce the smoothness comparison; the ten rows above "
-              "are complete without it)")
+        if os.path.exists(p):
+            raw = open(p, "rb").read()
+            t = smooth_terms(json.loads(raw)["control_points"])
+            note = ""
+            d = dig.get(s)
+            if d:
+                sha = hashlib.sha256(raw).hexdigest()
+                bad = [k for k in ("kink", "step", "kink480", "step480", "nM")
+                       if abs((t[k] or 0) - (d[k] or 0)) > 1e-6]
+                if sha != d["sha256"]:
+                    note = "   !! sha256 differs from qc/sean_reference.json"
+                elif bad:
+                    note = f"   !! recomputed {bad} differ from the digest"
+                else:
+                    note = "   (recomputed; matches qc/sean_reference.json)"
+            print_row(s, "sean", t, note)
+            have += 1
+        elif s in dig:
+            print_row(s, "sean", dig[s], "   (from qc/sean_reference.json)")
+    if have < 3:
+        print("(sean's rows above marked '(from qc/sean_reference.json)' are read "
+              "from the shipped digest, not recomputed here. His three files are "
+              "not redistributed in this repository — see scripts/fetch_sean.py "
+              "for what they are, where they came from and how to check that you "
+              "have the same bytes we measured.)")
 
 
 if __name__ == "__main__":

@@ -59,25 +59,34 @@ click, so we would rather list them.
 
 ## Validation
 
-Four independent checks, and they are not equally reproducible. To be exact:
+Five checks, and they are not equally reproducible. To be exact:
 
 - **Check 2 (the shifted-axis control) reproduces from a fresh clone.** Its raw
   per-slice measurements ship as `qc/validation_raw.json`, and
   `scripts/count_wins.py` recomputes every count, rate, median and p-value
-  quoted in §2 from that file with nothing but python, numpy and scipy.
+  quoted in §2 from that file with nothing but python, numpy and scipy. So does
+  `scripts/snapshot_recheck.py`, which sizes the one snapshot caveat this
+  package carries by re-measuring the same control on the final files.
+- **Check 5 (the straight-stick control) reproduces from a fresh clone**, from
+  `qc/stick_control_raw.json` via `scripts/stick_control.py`.
 - **Every geometry number about our own ten axes** (deviations, sweep, kink with
-  the z-spacing each value was measured at, largest gap and its endpoints)
-  reproduces from a fresh clone via `scripts/axis_stats.py`. Two exceptions,
-  both marked in the table below: the tissue-band coverage needs each scroll's
-  `meta.json` from the annotation tree, and **sean's three rows of the
-  smoothness table need his three published files**, which we do not
-  redistribute here — put them in `ref_sean/` from the open bucket. Without them
-  the script prints our ten rows and says the comparison rows are missing.
+  the z-spacing each value was measured at, largest gap and its endpoints, and
+  now also the tissue-band coverage and the bare edges, since the ten
+  `PHercNNNN/meta.json` ship) reproduces from a fresh clone via
+  `scripts/axis_stats.py`. One exception, marked in the table below: **sean's
+  three rows of the smoothness table** come from his three published files,
+  which are not ours to redistribute. Their values, and the sha256 of the file
+  each was computed from, ship in `qc/sean_reference.json`, so the rows print
+  and are tied to specific bytes; supply the files and the script recomputes
+  them and reports whether the two agree.
+- **Check 1 (the winding-order test): the statistic now reproduces from a fresh
+  clone**, from the shipped `qc/order_fixture_PHercNNNN.npz` via
+  `scripts/order_stat.py`. The tracing that produced those fixtures does not —
+  that code is not in this repository, and the table below says exactly what
+  shipping it would take and what it would weigh. Every number in this check,
+  and where it came from, is tabulated in `STEP2_CONSISTENCY.md` §13.
 - **Check 3 (calibration against sean)** needs the annotation tree — the
-  per-slice PNGs and sean's three files from the open bucket. Script ships.
-- **Check 1 (the winding-order test)** needs the annotation tree *and* code that
-  is not in this repository. Every number in it, and where it came from, is
-  tabulated in `STEP2_CONSISTENCY.md` §13.
+  per-slice PNGs — and sean's three files. Script ships.
 - **Check 4** has no script at all and never did. It is marked below.
 
 The table under "What is scripted" repeats this per number. There is no blanket
@@ -194,6 +203,29 @@ cited a Russian working document that did not ship. That is fixed: the evidence
 is now in the repo, in English, and it contains the results that argue against
 us as well as the ones that do not.)
 
+**The statistic itself is now recomputable — the tracer still is not.** This
+used to be the one headline number a reader could not check at all. What ships
+now is `qc/order_fixture_PHercNNNN.npz` (about 600 KB each): the tracer's
+output for the three neutral-tracing stacks — the traced arcs, already matched
+across heights into tracks, in L3 pixel coordinates, together with the two axes'
+centres on each of the 25 heights of each stack. `scripts/order_stat.py` reads
+those and recomputes, with numpy alone and no other input, every number in the
+table above: 0.919 / 0.900 / 0.850 against 0.826 / 0.738 / 0.782, the shared
+pair counts 385 / 229 / 266, and the paired cross-tabulation whose off-diagonal
+is 43:7, 42:5 and 21:3.
+
+Be clear about what that does and does not close. It closes the step from
+"traced arcs on slices" to "85–92% against 74–83%" — the sign convention, the
+pair selection, the requirement that both axes be scored on an identical sample,
+the counting. It does **not** close the step from CT to traced arcs: the tracer
+is still not in this repository, so a reader has to take the fixture as given.
+What that would cost is stated in "What is scripted" below.
+
+The fixtures were made by re-running the neutral stacks from scratch on
+2026-08-13, and that re-run reproduced all nine published figures exactly, which
+is itself the first independent re-execution of this pipeline since the numbers
+were first written down.
+
 ### 2. Shifted-axis control across 297 annotated slices
 
 A banded-energy measure is computed at each annotated centre and at the same
@@ -228,6 +260,22 @@ annotated centre wins **184/297** slices, 0.620.
   anyone who runs it sees this. The honest reading: **this measure resolves
   gross displacement, not annotation-scale accuracy.** It is evidence that our
   axes are not ~3 mm wrong; it is not evidence about their precision.
+- **The snapshot behind this control is now measured, not just disclosed.** The
+  caveat at the bottom of this README says the control ran on a slightly older
+  snapshot of the files. `scripts/snapshot_recheck.py` re-runs the whole of this
+  section on the **final shipped files** and prints both results side by side;
+  its raw output ships as `qc/validation_final_raw.json`, so the comparison
+  reproduces from a bare clone. The drift is exactly three slices: 294 of the
+  297 give a bit-identical measured value at the annotated centre, and the three
+  that move are PHerc1545 z = 2544, 3088 and 3640 — precisely the three points
+  the caveat names. The effect on the numbers: **+300 goes from 184/297 = 0.620
+  to 182/297 = 0.613** (PHerc1545 alone, 17/29 → 15/29; every other scroll
+  identical), pooled p from 2.3e-05 to 6.0e-05; **+150 goes from 159/297 to
+  158/297**. **Both sign tests are unchanged — 9/10 with p = 0.011 at +300 and
+  7/10 with p = 0.17 at +150** — so the statistic this README actually quotes
+  does not depend on which snapshot is used. The published 184/297 is left as it
+  is, because it is what the shipped `validate_axes.py` produced on the input it
+  had; the newer number is shipped next to it rather than in place of it.
 
 ### 3. Calibration against sean's three published umbilici (0125/0211/0826)
 
@@ -309,6 +357,27 @@ sides are annotated at different z-densities and we have not shown that the
 difference costs anything downstream, but we are not going to claim parity we do
 not have.
 
+> **Correction, and it is about reproducibility rather than about a number.**
+> An earlier version of this README told you to fetch sean's three files "from
+> the open bucket". They are not there. We checked all three prefixes in
+> `vesuvius-challenge-open-data` on 2026-08-13 and each holds exactly three
+> non-volume keys — a mask photo, a photo and a lasagna prediction — with no
+> umbilicus among them; `dl.ash2txt.org/community-uploads/bruniss/` does not
+> have them either. As far as we can establish they exist only as the three
+> attachments sean posted in the Vesuvius Challenge Discord `#general` on
+> 2026-08-08. So there is no URL we can honestly give.
+>
+> What ships instead is `qc/sean_reference.json`: for each of his three files,
+> its sha256 and byte length, its point count and z range, and the six
+> smoothness numbers of its row. `scripts/axis_stats.py` prints all thirteen
+> rows on a bare clone, marking sean's three as read from that digest. If you
+> supply the files — `scripts/fetch_sean.py --from <dir>` verifies them against
+> those hashes and refuses to install a file that does not match — the script
+> recomputes his three rows from the files and says whether the recomputation
+> agrees with the digest. Before this, three of the thirteen rows were simply
+> absent from a clean clone and there was no way to tell whether your copy of
+> his files was the one we measured.
+
 ### 4. Independent track on PHerc0358 — **not scripted**
 
 Its core is filled with dense sediment (bright in CT); auto-tracking that plug
@@ -316,20 +385,75 @@ confirmed 19/22 trackable points within 11–93 vox. This is a journal-documente
 spot check. There is no script for it in this repository and there was none
 when it was run.
 
+### 5. The straight-stick control — new, and it is half a negative result
+
+The Motivation section argues that a straight vertical line is not a substitute
+for a per-slice axis, and until now it argued that **geometrically**: our points
+move by up to 20.7 mm. That says our annotation moves. It does not say that
+moving with it buys anything. Section 2 is a different question again — it
+displaces the centre by a fixed 150 or 300 voxels in four directions. Nothing in
+this package had ever put the annotated axis against the straight stick and
+measured which one the data prefers. `scripts/stick_control.py` does, on the
+same 297 slices, with the banded-energy measure of section 2 imported unchanged,
+against two sticks: the vertical through the mean of each scroll's annotated
+points (the reference the 20.7 mm is measured from) and the optimally placed
+vertical (the Chebyshev centre, the reference behind the 19.0 mm). Its raw
+output ships as `qc/stick_control_raw.json`, so it recomputes from a bare clone.
+
+**The positive half.** Against the mean stick the annotated axis wins 188/296
+slices; against the optimally placed stick, 184/295. Per scroll it is ahead in
+**all ten** in both cases — sign test p = 0.00098, which is the strongest
+clustered statistic in this package, stronger than section 2's 9/10 at p = 0.011
+— with per-scroll median ratios of 1.07–1.54 against the mean stick and
+1.01–1.69 against the optimally placed one. Two slices are dropped because the
+measure returns nothing at the stick centre at all (PHerc0268 z = 12584,
+PHerc1545 z = 17960: the stick lands far enough off the tissue that fewer than
+20 radii carry data). Dropping them runs against this control, since on those
+slices the stick fails outright.
+
+**The negative half, and it is the important one.** The effect does not scale
+with displacement, and it was supposed to. Section 2 established that this
+measure is null at a 150-voxel displacement and positive at 300, so if what the
+control sees is the axis tracking real curvature, the win rate should rise with
+the stick's distance from the annotated centre. Binned by that distance
+(mean stick): 10/14 = 0.71 below 150 voxels, 17/27 = 0.63 at 150–300,
+64/92 = 0.70 at 300–600, 97/163 = 0.60 above 600. That is flat, and if anything
+faintly decreasing. Against the optimally placed stick it is 0.60, 0.72, 0.64,
+0.61 — flat again. The two small-displacement bins are far too small to test on
+their own (14 and 27 slices, p = 0.09 and 0.12), so this is not a
+contradiction of section 2; it is a failure to demonstrate the dose–response
+that would have made the result mean what we wanted it to mean.
+
+**What we therefore claim, and what we do not.** We claim: on every one of the
+ten scrolls, the banded-energy measure prefers the annotated per-slice axis to
+the best straight line through that scroll's own annotation, and it prefers it
+on about 62–64% of slices. We do **not** claim that this is because the axis
+follows the scroll's curvature, because the flat dose–response gives us no
+evidence for that mechanism. The most likely alternative — that both sticks are
+derived from our own points, so the comparison is between our annotation and a
+smoothed version of itself — we cannot rule out with this design.
+
+Unlike section 2 this control was measured on the final shipped files, so it
+carries no snapshot caveat.
+
 ## What is scripted
 
 | number | script | runs on a fresh clone? |
 |---|---|---|
 | 20.7 mm / 19.9 mm deviation, 37.9 mm sweep, 19.0 mm optimal stick, largest gap 2400 vox **and its endpoints z 15480→17880** | `scripts/axis_stats.py` | **yes** |
 | **our ten rows** of the §3 kink table — all three columns, the z-spacing of each, and the matched-triple counts | `scripts/axis_stats.py` | **yes** |
-| **sean's three rows** of the §3 kink table, his 61–98 band and his 51–87 matched range | `scripts/axis_stats.py` | **no** — needs `ref_sean/`, which is not in this repo; fetch his three files from the open bucket. Our ten rows print without it |
+| **sean's three rows** of the §3 kink table, his 61–98 band and his 51–87 matched range | `scripts/axis_stats.py`, `scripts/fetch_sean.py` | **the values yes, the recomputation no.** His files are not ours to redistribute and are not on any public URL we could find (see the correction in §3), so the six numbers of each row ship in `qc/sean_reference.json` with the sha256 of the file they came from, and print marked as such. Supply his files and the script recomputes them and reports whether they agree |
 | 184/297, p = 2.3e-05, the clustered p = 0.011, per-scroll table **including the median ratios** (PHerc0800's 0.970), Bonferroni, the 159/297 null at 150 vox | `scripts/count_wins.py` | **yes** — `qc/validation_raw.json` ships |
+| **the same control re-measured on the final files** (182/297, 158/297, both sign tests unchanged) and the three-slice drift itself | `scripts/snapshot_recheck.py` | **yes** — `qc/validation_final_raw.json` ships. `--measure` needs the slice PNGs |
+| **the straight-stick control of §5** — 188/296 and 184/295, all ten scrolls above 50%, sign test p = 0.00098, the per-scroll medians and the displacement bins | `scripts/stick_control.py` | **yes** — `qc/stick_control_raw.json` ships. `--measure` needs the slice PNGs |
 | the banded-energy measure itself | `scripts/validate_axes.py`, `scripts/validate_bands.py` | no — needs the per-scroll slice PNGs |
-| bare edges, tissue-band coverage per scroll **and the 90.6% aggregate** (z-weighted; the script also prints the 89.9% unweighted mean and the 94.0% median so the definition is visible) | `scripts/axis_stats.py` | needs `PHercNNNN/meta.json` (`UMBILICI_TREE`) |
+| bare edges, tissue-band coverage per scroll **and the 90.6% aggregate** (z-weighted; the script also prints the 89.9% unweighted mean and the 94.0% median so the definition is visible) | `scripts/axis_stats.py` | **yes** — the ten `PHercNNNN/meta.json` now ship (25 KB in total; they carry the tissue band, the slice list and the volume id) |
 | 268.3 vs 273.6 median displacement, the kink figure | `scripts/calib_sean.py`, `scripts/calib_figure.py` | needs the slice PNGs and `ref_sean/` |
 | the shipped axes themselves, from annotator output | `scripts/finalize.py` | needs `results/` |
 | **winding pitch 247–371 µm and the 380–468 µm cross-check** | **not shipped here.** Produced by `qc/витковая_карта_код/` in the annotation tree; the five per-spot values are in `qc/витковая_карта_метрики.json` there. The PHerc0800 voxel correction quoted in the caveats is one multiplication by 8.640/9.362 | no |
-| **85–92% vs 74–83%, 43:7 / 42:5 / 21:3, the tolerance sweep, the resampling test** | **not shipped here.** Produced by `qc/шаг2_код/stack.py` and `qc/эвиденс_кандидаты/код/развилка/развилка3.py` in the annotation tree; every number and its provenance is tabulated in `STEP2_CONSISTENCY.md` §13 | no |
+| **85–92% vs 74–83%, 43:7 / 42:5 / 21:3** | `scripts/order_stat.py` | **yes** — recomputed from `qc/order_fixture_PHercNNNN.npz`, which ships. The *tracer* that produced those fixtures still does not: see the row below |
+| **the tracing that produces the fixtures** | **not shipped here.** `qc/шаг2_код/stack.py` (31 KB) plus `winding_map.py` (12 KB) and `numbering.py` (6 KB) from the same tree | no. Stated exactly, because "too big to ship" would not be true: the missing *data* is **14.6 MB** — 25 L3 slices for each of PHerc0191/0358/1203, each one plane `round(z/8)` of level 3 of that scroll's `…-masked.zarr` in `vesuvius-challenge-open-data`, normalised to the 1st/99th percentile of its non-zero pixels, exactly as `build.py` writes the catalogue slices. What blocks it is the ~49 KB of tracer code: it is Russian-commented, hard-wired to the annotation tree, and shipping it means proving it still regenerates the published numbers rather than merely running. We re-ran it on 2026-08-13 and it does (all nine figures exact), but translating and de-hardcoding it is a separate pass |
+| **the tolerance sweep and the resampling test** | **not shipped here.** Produced by `qc/эвиденс_кандидаты/код/развилка/развилка3.py` in the annotation tree; every number and its provenance is tabulated in `STEP2_CONSISTENCY.md` §13 | no |
 | **19/22 on PHerc0358** | **no script, journal-documented** | no |
 
 `scripts/README.md` lists the known rough edges in the scripts themselves.
@@ -379,7 +503,12 @@ when it was run.
   and three PHerc1545 points were moved (≤260 vox) after the control run.
   Winding-map numbers were computed on the final files. The calibration in §3
   now runs on the final files too — it did not in the earlier version of this
-  README, which is why that number changed.
+  README, which is why that number changed. **The cost of that staleness is now
+  measured rather than left open**: re-running the control on the final files
+  changes the measured value on 3 of 297 slices, moves 184/297 to 182/297 and
+  159/297 to 158/297, and leaves both scroll-level sign tests identical. See §2
+  and `scripts/snapshot_recheck.py`. The straight-stick control of §5 was
+  measured on the final files from the start.
 
 ## Format compatibility
 Field-for-field against sean's three files: top-level keys identical and in the
@@ -400,9 +529,28 @@ adding only `source_volume` and `annotator_note`.
   including the results that go against us.
 - `qc/validation_raw.json` — the raw per-slice measurements of the shifted-axis
   control, so §2 can be recomputed without rebuilding anything.
+- `qc/validation_final_raw.json` — the same control re-measured on the final
+  shipped files, so the disclosed snapshot drift can be sized (§2).
+- `qc/stick_control_raw.json` — the raw per-slice measurements of the
+  straight-stick control (§5).
+- `qc/order_fixture_PHercNNNN.npz` × 3 — the traced arcs and the two axes'
+  centres for the three winding-order stacks, so §1's headline statistic can be
+  recomputed without the tracer.
+- `qc/sean_reference.json` — sha256 and derived smoothness numbers for sean's
+  three reference umbilici, which are not redistributed here (§3).
+- `PHercNNNN/meta.json` × 10 — the annotation catalogue's own metadata for each
+  scroll: source volume, level-3 frame, tissue band, and the list of annotated
+  slices. 25 KB in total, shipped verbatim from the annotation tree so that the
+  coverage and bare-edge numbers recompute from a bare clone. (These are the
+  only shipped files that still carry a Russian sentence, in their `note`
+  field; they are shipped byte-for-byte as the scripts read them rather than
+  retyped.)
+- `requirements.txt` — the versions every number here was produced or
+  re-verified with.
 - `scripts/` — QC gates, finalization, and the validation scripts behind the
   numbers above (`qc_gates.py`, `finalize.py`, `validate_axes.py`,
   `validate_bands.py`, `count_wins.py`, `calib_sean.py`, `calib_figure.py`,
-  `axis_stats.py`, `qc_sheet.py`).
+  `axis_stats.py`, `qc_sheet.py`, `order_stat.py`, `stick_control.py`,
+  `snapshot_recheck.py`, `fetch_sean.py`).
 
 The annotator itself is a small web page; happy to share it on request.

@@ -1,0 +1,21 @@
+# Everything the shipped scripts need, at the versions every number in this
+# repository was produced or re-verified with in this environment. Nothing here
+# uses a recent feature, so older releases are very likely fine; these are the
+# ones we actually ran, not a guess.
+#
+# numpy + scipy alone are enough for the five scripts that run on a bare clone:
+#   axis_stats.py  count_wins.py  order_stat.py  stick_control.py
+#   snapshot_recheck.py   (fetch_sean.py needs neither)
+numpy==2.5.1
+scipy==1.18.0
+
+# Only for the scripts that read the per-scroll L3 slice PNGs, which are not in
+# this repository: validate_axes.py, validate_bands.py, qc_gates.py,
+# qc_sheet.py, finalize.py, calib_sean.py, and the --measure modes of
+# stick_control.py and snapshot_recheck.py.
+Pillow==12.3.0
+
+# Only for panels/calibration_summary.png (scripts/calib_figure.py). With this
+# version the shipped panel regenerates byte-identically
+# (md5 a1c597503489e7fa2f5f89a1799b5005).
+matplotlib==3.11.1

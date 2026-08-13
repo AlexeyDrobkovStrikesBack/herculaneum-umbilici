@@ -1,0 +1,49 @@
+{
+ "what": "Derived quantities for the three published reference umbilici by sean (bruniss), so the smoothness comparison in README section 3 has a value and a provenance on a bare clone. The annotation files themselves are not ours to redistribute and are not in this repository; see scripts/fetch_sean.py. Every number below is what scripts/axis_stats.py prints when the files ARE present, and the script verifies that by recomputing and comparing whenever it finds them.",
+ "source": "posted by bruniss in the Vesuvius Challenge Discord, #general, 2026-08-08, as three file attachments",
+ "recorded": "2026-08-13",
+ "scrolls": {
+  "PHerc0125": {
+   "sha256": "458e6ecfcdefef4a1cbd7baa859fd68907f5ea3b18de6f11589893019b5e663f",
+   "bytes": 7232,
+   "n_points": 83,
+   "z_first": 2140,
+   "z_last": 20354,
+   "kink": 39.22361,
+   "step": 212.0,
+   "n480": 38,
+   "step480": 465.0,
+   "kink480": 61.463861,
+   "kinkM": 50.791724,
+   "nM": 16
+  },
+  "PHerc0211": {
+   "sha256": "aa07c0cba4458def8092fb54e85299558a038ced408851366463f3a38655595c",
+   "bytes": 7551,
+   "n_points": 87,
+   "z_first": 1702,
+   "z_last": 18466,
+   "kink": 31.612923,
+   "step": 187.5,
+   "n480": 35,
+   "step480": 473.5,
+   "kink480": 98.007262,
+   "kinkM": 87.021833,
+   "nM": 16
+  },
+  "PHerc0826": {
+   "sha256": "ddf2ffa2ab91270b4ccc443d22f10587090f1c5b5561d34dfc4c838ed7a451f3",
+   "bytes": 4379,
+   "n_points": 49,
+   "z_first": 1941,
+   "z_last": 16262,
+   "kink": 63.390179,
+   "step": 283.0,
+   "n480": 30,
+   "step480": 467.0,
+   "kink480": 92.306842,
+   "kinkM": 69.820706,
+   "nM": 9
+  }
+ }
+}
