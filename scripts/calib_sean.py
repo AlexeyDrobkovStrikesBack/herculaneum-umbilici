@@ -6,6 +6,21 @@ Runs THE SAME gates (imported from qc_gates, the logic is not duplicated) on
 sean's annotation and on ours, collects the results into one table and writes
 a summary json with every per-row verdict — the montages and the report are
 built from it afterwards.
+
+CHANGED FOR THIS RELEASE, and this is the one script that is not shipped exactly
+as it was first run. Two things were wrong with the original and both inflated
+its authority:
+  * it covered only three of our ten scrolls (PHerc0191/0257/0268), and
+  * it read them from `results/`, the pre-finalization annotator output, which
+    still contained the untouched auto-suggestions that finalization drops.
+So the published "ours" figure described a polyline that the package does not
+ship. It now runs all ten scrolls against the SHIPPED json files. The old
+three-scroll, pre-finalization number and the new one are both stated in the
+README so the change is visible rather than silent.
+
+Paths: the axis json files are read from UMBILICI_ROOT (this repository); the
+per-slice PNGs and `ref_sean/` are read from UMBILICI_TREE, which defaults to
+the same place. Point UMBILICI_TREE at the annotation tree to run it.
 """
 import json
 import os
@@ -19,25 +34,27 @@ from qc_gates import best_center      # noqa: E402
 
 ROOT = os.environ.get('UMBILICI_ROOT',
                       os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+TREE = os.environ.get('UMBILICI_TREE', ROOT)
 
-SETS = [
-    ("sean", "PHerc0125", "ref_sean/PHerc0125_umbilicus.json", "ref_sean/PHerc0125"),
-    ("sean", "PHerc0211", "ref_sean/PHerc0211_umbilicus.json", "ref_sean/PHerc0211"),
-    ("sean", "PHerc0826", "ref_sean/PHerc0826_umbilicus.json", "ref_sean/PHerc0826"),
-    ("ours", "PHerc0191", "results/PHerc0191_umbilicus.json", "PHerc0191"),
-    ("ours", "PHerc0257", "results/PHerc0257_umbilicus.json", "PHerc0257"),
-    ("ours", "PHerc0268", "results/PHerc0268_umbilicus.json", "PHerc0268"),
-]
+SETS = (
+    [("sean", n, f"ref_sean/{n}_umbilicus.json", f"ref_sean/{n}")
+     for n in ("PHerc0125", "PHerc0211", "PHerc0826")]
+    + [("ours", n, f"{n}_umbilicus.json", n)
+       for n in ("PHerc0191", "PHerc0257", "PHerc0268", "PHerc0358", "PHerc0800",
+                 "PHerc0813", "PHerc1203", "PHerc1218", "PHerc1447", "PHerc1545")]
+)
 
 OK, WARN, S = 130.0, 250.0, 8.0
 
 
 def run(jpath, sdir):
-    pts = json.load(open(os.path.join(ROOT, jpath)))["control_points"]
+    # ours ship in this repository; sean's reference lives in the annotation tree
+    jbase = TREE if jpath.startswith("ref_sean/") else ROOT
+    pts = json.load(open(os.path.join(jbase, jpath)))["control_points"]
     rows = []
     for p in pts:
         z = int(round(p["z"]))
-        fp = os.path.join(ROOT, sdir, f"z{z}.png")
+        fp = os.path.join(TREE, sdir, f"z{z}.png")
         if not os.path.exists(fp):
             continue                                  # slice was not downloaded — point is outside the sample
         img = np.asarray(Image.open(fp).convert("L")).astype(np.float32)
@@ -128,8 +145,11 @@ def main():
               f"candidate better {c['candidate']/n*100:.0f}% | "
               f"not applicable {c['n/a']/n*100:.0f}% | median shift {sh:.0f} vox")
 
-    with open(os.path.join(ROOT, "qc", "калибровка_sean.json"), "w") as f:
+    outdir = os.path.join(ROOT, "qc")
+    os.makedirs(outdir, exist_ok=True)
+    with open(os.path.join(outdir, "calibration_sean.json"), "w") as f:
         json.dump(out, f, indent=1, ensure_ascii=False)
+    print(f"\nwrote {os.path.join(outdir, 'calibration_sean.json')}")
 
 
 if __name__ == "__main__":
