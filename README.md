@@ -405,11 +405,12 @@ slices; against the optimally placed stick, 184/295. Per scroll it is ahead in
 **all ten** in both cases — sign test p = 0.00098, which is the strongest
 clustered statistic in this package, stronger than section 2's 9/10 at p = 0.011
 — with per-scroll median ratios of 1.07–1.54 against the mean stick and
-1.01–1.69 against the optimally placed one. Two slices are dropped because the
-measure returns nothing at the stick centre at all (PHerc0268 z = 12584,
-PHerc1545 z = 17960: the stick lands far enough off the tissue that fewer than
-20 radii carry data). Dropping them runs against this control, since on those
-slices the stick fails outright.
+1.01–1.69 against the optimally placed one. The denominators are 296 and 295
+rather than 297 because the measure returns nothing at all at the stick centre
+on a slice or two — PHerc1545 z = 17960 for both sticks, and PHerc0268
+z = 12584 for the optimally placed one: the stick lands far enough off the
+tissue that fewer than 20 radii carry data. Dropping those runs against this
+control, since they are slices where the stick fails outright.
 
 **The negative half, and it is the important one.** The effect does not scale
 with displacement, and it was supposed to. Section 2 established that this
@@ -450,7 +451,7 @@ carries no snapshot caveat.
 | bare edges, tissue-band coverage per scroll **and the 90.6% aggregate** (z-weighted; the script also prints the 89.9% unweighted mean and the 94.0% median so the definition is visible) | `scripts/axis_stats.py` | **yes** — the ten `PHercNNNN/meta.json` now ship (25 KB in total; they carry the tissue band, the slice list and the volume id) |
 | 268.3 vs 273.6 median displacement, the kink figure | `scripts/calib_sean.py`, `scripts/calib_figure.py` | needs the slice PNGs and `ref_sean/` |
 | the shipped axes themselves, from annotator output | `scripts/finalize.py` | needs `results/` |
-| **winding pitch 247–371 µm and the 380–468 µm cross-check** | **not shipped here.** Produced by `qc/витковая_карта_код/` in the annotation tree; the five per-spot values are in `qc/витковая_карта_метрики.json` there. The PHerc0800 voxel correction quoted in the caveats is one multiplication by 8.640/9.362 | no |
+| **winding pitch 247–371 µm, the 380–468 µm cross-check, the per-spot 6%–90% ratios and the PHerc0800 voxel correction** | `scripts/pitch_table.py` | **yes** — the producer's own five-spot output ships verbatim as `qc/winding_map_metrics.json` and the script applies the voxel correction, taking each spot's voxel size from that scroll's shipped `metadata.source_volume`. The measurement that produced those five pairs (`qc/витковая_карта_код/` in the annotation tree) does not ship |
 | **85–92% vs 74–83%, 43:7 / 42:5 / 21:3** | `scripts/order_stat.py` | **yes** — recomputed from `qc/order_fixture_PHercNNNN.npz`, which ships. The *tracer* that produced those fixtures still does not: see the row below |
 | **the tracing that produces the fixtures** | **not shipped here.** `qc/шаг2_код/stack.py` (31 KB) plus `winding_map.py` (12 KB) and `numbering.py` (6 KB) from the same tree | no. Stated exactly, because "too big to ship" would not be true: the missing *data* is **14.6 MB** — 25 L3 slices for each of PHerc0191/0358/1203, each one plane `round(z/8)` of level 3 of that scroll's `…-masked.zarr` in `vesuvius-challenge-open-data`, normalised to the 1st/99th percentile of its non-zero pixels, exactly as `build.py` writes the catalogue slices. What blocks it is the ~49 KB of tracer code: it is Russian-commented, hard-wired to the annotation tree, and shipping it means proving it still regenerates the published numbers rather than merely running. We re-ran it on 2026-08-13 and it does (all nine figures exact), but translating and de-hardcoding it is a separate pass |
 | **the tolerance sweep and the resampling test** | **not shipped here.** Produced by `qc/эвиденс_кандидаты/код/развилка/развилка3.py` in the annotation tree; every number and its provenance is tabulated in `STEP2_CONSISTENCY.md` §13 | no |
@@ -538,6 +539,9 @@ adding only `source_volume` and `annotator_note`.
   recomputed without the tracer.
 - `qc/sean_reference.json` — sha256 and derived smoothness numbers for sean's
   three reference umbilici, which are not redistributed here (§3).
+- `qc/winding_map_metrics.json` — the winding-map measurement's own output for
+  the five readable spots, copied verbatim from the annotation tree, so the
+  pitch numbers in the caveats have a source (`scripts/pitch_table.py`).
 - `PHercNNNN/meta.json` × 10 — the annotation catalogue's own metadata for each
   scroll: source volume, level-3 frame, tissue band, and the list of annotated
   slices. 25 KB in total, shipped verbatim from the annotation tree so that the
@@ -551,6 +555,6 @@ adding only `source_volume` and `annotator_note`.
   numbers above (`qc_gates.py`, `finalize.py`, `validate_axes.py`,
   `validate_bands.py`, `count_wins.py`, `calib_sean.py`, `calib_figure.py`,
   `axis_stats.py`, `qc_sheet.py`, `order_stat.py`, `stick_control.py`,
-  `snapshot_recheck.py`, `fetch_sean.py`).
+  `snapshot_recheck.py`, `fetch_sean.py`, `pitch_table.py`).
 
 The annotator itself is a small web page; happy to share it on request.

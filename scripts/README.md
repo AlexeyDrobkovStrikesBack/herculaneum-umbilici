@@ -40,6 +40,7 @@ python3 scripts/count_wins.py        # the shifted-axis control, qc/validation_r
 python3 scripts/order_stat.py        # the winding-order statistic, from the fixtures
 python3 scripts/stick_control.py     # the straight-stick control
 python3 scripts/snapshot_recheck.py  # the same control on the snapshot and on the final files
+python3 scripts/pitch_table.py        # the five-spot winding pitch, voxel-corrected
 
 # with the annotation tree — the three scripts that read UMBILICI_TREE:
 export UMBILICI_TREE=/path/to/annotation/tree
@@ -155,6 +156,9 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
   `count_wins.block`, imported rather than reimplemented. Ships its raw output
   as `qc/validation_final_raw.json`; `--measure` regenerates it from the slice
   PNGs.
+- `pitch_table.py` — **new.** Prints the five-spot winding-pitch table of the
+  README caveats from `qc/winding_map_metrics.json`, applying the per-scroll
+  voxel correction the demo pipeline missed. Standard library only.
 - `fetch_sean.py` — **new.** Installs and verifies sean's three reference
   umbilici against the sha256 in `qc/sean_reference.json`, and states where they
   actually came from. It refuses to install a file whose hash does not match.

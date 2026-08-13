@@ -6,4 +6,5 @@ qc/*
 !qc/stick_control_raw.json
 !qc/sean_reference.json
 !qc/order_fixture_*.npz
+!qc/winding_map_metrics.json
 ref_sean/
