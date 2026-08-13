@@ -115,6 +115,64 @@ order **6.1–8.4×** more often. (The earlier text said "3–8×". That was wro
 the circle-replacement control, counts 19:5 on PHerc1203 — which that sentence
 did not mention.)
 
+**What this does not show, and it belongs here rather than in a caveats
+section: none of that advantage comes from the axis being per-slice.** Freeze
+the manual axis at a single constant point — the mean of its own 25 centres
+over the stack, no per-slice variation whatsoever — and score it against the
+live per-slice axis and the auto-centroid on one common pair sample (a pair
+enters only if all three candidates return a defined sign on at least three
+common heights, which trims 385/229/266 to 358/223/260):
+
+| scroll | per-slice manual axis | manual axis **frozen at its stack mean** | auto-centroid | pairs |
+|---|---|---|---|---|
+| PHerc0191 | 0.919 (329) | **0.919 (329)** | 0.821 (294) | 358 |
+| PHerc0358 | 0.897 (200) | **0.897 (200)** | 0.744 (166) | 223 |
+| PHerc1203 | 0.850 (221) | **0.850 (221)** | 0.788 (205) | 260 |
+
+**Net gain from tracking the core slice by slice: +0.000 on all three — the same
+integer counts, not merely the same rounded rate.** Reproduce it from the
+shipped fixture in about twenty lines: load `qc/order_fixture_PHercNNNN.npz`,
+replace `man_c` with `man_c.mean(axis=0)` broadcast over the 25 heights, and
+score all three candidates with `order_stat.radial_sign` unchanged, keeping
+only pairs on which all three return a sign on ≥3 common heights. Take the
+common sample seriously: if instead you just substitute the frozen axis into
+`order_stat.py` and let it pick its own denominator as usual, you get
+0.921 (361/392) / 0.900 (208/231) / 0.866 (251/290) — the frozen axis scoring
+*above* the live one, on a sample it partly selected. Same conclusion, weaker
+evidence; the identical-counts version above is the one to quote.
+
+This is what §9 of `STEP2_CONSISTENCY.md` predicts, and we should have said so
+here. §9 measures the metric's detection threshold at 3–6 mm depending on the
+window; the manual axis's excursion from its own stack mean is median
+1.8 / 1.5 / 3.1 mm with a maximum of 4.1 / 3.3 / 5.1 mm, over stacks spanning
+18.0 / 13.9 / 19.3 mm. The whole motion we are asking the metric to see sits at
+or under its resolution. The metric is not literally blind to the freeze —
+20.1% / 15.3% / 24.3% of individual (pair, height) sign decisions change status
+when the axis is frozen, mostly by moving in or out of evaluability, and among
+decisions both versions do resolve they disagree on 0.3% / 0.2% / 0.7% — but
+the changes cancel to nothing in aggregate.
+
+So read this section as measuring **where the centre sits, not how it moves**.
+The two distances make the point on their own, both computed from the same
+fixture: the median separation between the manual axis and the auto-centroid is
+13.30 / 13.44 / 6.75 mm, comfortably above the 3–6 mm the metric can resolve,
+while the manual axis's own per-slice excursion is 1.8 / 1.5 / 3.1 mm, at or
+below it. The metric sees the gap between the two axes and cannot see the
+motion of either. (Jitter is not the explanation either. The auto-centroid does
+move more between adjacent heights on two of the three — median step 18.1 and
+11.3 L3 px against the manual axis's 5.8 and 4.7 on PHerc0191 and PHerc0358 —
+but on PHerc1203 it moves *less*, 5.3 against 7.1, and still loses by 0.062.
+§9 of `STEP2_CONSISTENCY.md` reaches the same conclusion by a different route,
+comparing the centroid against a rigid shift of equal size.) This section
+therefore lands on the same limit section 5 reaches from the other direction,
+and section 5 already states it plainly: *"We do **not** claim that this is
+because the axis follows the scroll's curvature."* Nothing here demonstrates a
+benefit from
+per-slice tracking on these three stacks, and the panels' title — *"does the
+axis keep the order of the turns BETWEEN slices"* — should not be read as
+saying otherwise. What per-slice annotation is for is the scrolls and zones
+where the core wanders further than 3 mm; that case is not made by this test.
+
 **Swap control.** The same test re-run with the tracing itself done around the
 manual axis, and again around the auto-centroid, gives nine cells. Counted
 exactly: the manual axis is ahead in **six**, exactly level in **two** — both
