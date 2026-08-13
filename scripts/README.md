@@ -5,19 +5,41 @@ are shipped as they were run rather than rewritten for publication; the three
 exceptions are named below. Read this first — there are known rough edges and we
 would rather state them than have you find them.
 
-Requires `numpy`, `Pillow`, `scipy`, and `matplotlib` for `calib_figure.py`.
+Requires `numpy`, `Pillow`, `scipy`, and `matplotlib` for `calib_figure.py`. The
+two that run on a fresh clone need **only `numpy` and `scipy`** — checked by
+running them against a clone with nothing but those two importable.
 
 ## Where they look for data
 
-Every script resolves the axis files from `UMBILICI_ROOT`, defaulting to the
-repository root, and the annotation tree from `UMBILICI_TREE`, defaulting to the
-same place:
+Every script resolves its data from `UMBILICI_ROOT`, defaulting to the
+repository root. **`UMBILICI_TREE` is read by three of the nine** —
+`axis_stats.py` (for `PHercNNNN/meta.json` and `ref_sean/`), `calib_sean.py`
+(for the slice PNGs and `ref_sean/`) and `calib_figure.py`, which imports both
+variables from `calib_sean.py` and uses `UMBILICI_TREE` for `ref_sean/` only.
+The other six — `validate_axes.py`, `validate_bands.py`, `qc_gates.py`,
+`qc_sheet.py`, `finalize.py` and `count_wins.py` — take **everything** from
+`UMBILICI_ROOT`, tree data included: `validate_axes.py` reads
+`{UMBILICI_ROOT}/PHercNNNN/meta.json` and `{UMBILICI_ROOT}/submission/`
+(`validate_axes.py:164-165`), `finalize.py` reads `auto_centers.json` and
+`meta.json` from the same root (`finalize.py:39,75`), `qc_sheet.py` likewise
+(`qc_sheet.py:24,28`). Setting `UMBILICI_TREE` has no effect on any of those
+six. A previous version of this paragraph said every script honoured it, and
+the worked example it gave — `export UMBILICI_TREE=…` followed by
+`validate_axes.py` — did nothing for exactly that reason. The variable was
+introduced in this release; this is what it actually reaches.
 
 ```bash
-python3 scripts/axis_stats.py                       # works on a fresh clone
-python3 scripts/count_wins.py                       # needs qc/validation_raw.json
+# a fresh clone, nothing else:
+python3 scripts/axis_stats.py                       # geometry + our ten kink rows
+python3 scripts/count_wins.py                       # reads the shipped qc/validation_raw.json
 
-export UMBILICI_TREE=/path/to/annotation/tree       # for the rest
+# with the annotation tree — the three scripts that read UMBILICI_TREE:
+export UMBILICI_TREE=/path/to/annotation/tree
+python3 scripts/axis_stats.py                       # adds coverage, bare edges, sean's rows
+python3 scripts/calib_sean.py && python3 scripts/calib_figure.py
+
+# everything else wants one root that holds both the axes and the tree:
+export UMBILICI_ROOT=/path/to/annotation/tree
 python3 scripts/validate_axes.py PHerc0191
 ```
 
@@ -32,9 +54,11 @@ The annotation tree is **not** fully contained in this repository:
 | `qc/` | gate reports and json written by these scripts | no (it is gitignored); the published panels are in `panels/` |
 
 **Two scripts run on a fresh clone with nothing else**: `axis_stats.py`
-(everything about the polylines themselves) and `count_wins.py` (everything about
-the shifted-axis control, given the raw json that `validate_axes.py` writes).
-The rest need the slice PNGs. The axes and the panels are self-contained; the
+(everything about **our ten** polylines themselves — the three comparison rows
+for sean's axes need `ref_sean/`, and the coverage columns need `meta.json`;
+both are reported as missing rather than skipped silently) and `count_wins.py`
+(everything about the shifted-axis control, given the raw json that
+`validate_axes.py` writes, which ships). The rest need the slice PNGs. The axes and the panels are self-contained; the
 scripts are here so the method is inspectable and so the numbers can be
 recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce it.
 
@@ -42,16 +66,26 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
 
 - `axis_stats.py` — **new for this release.** Geometry of the ten shipped axes:
   max deviation from vertical, the deviation an optimally placed straight stick
-  would still have, lateral sweep, kink (as published and at a common 480-voxel
-  z-step), largest interior gap, and — with the annotation tree — bare edges and
-  tissue-band coverage. Every definition is in the docstring.
+  would still have, lateral sweep, largest interior gap with its two z values,
+  and — with the annotation tree — bare edges, per-scroll tissue-band coverage
+  and the aggregate coverage in all three definitions (z-weighted, unweighted
+  mean, median). Then a smoothness table: kink as published, kink after thinning
+  towards a 480-voxel step, and kink over only those triples whose two chords
+  are both within ±20% of 480 — with the realized median z-spacing printed next
+  to each, because kink grows with chord length and is meaningless without it.
+  The thinning only drops points, so it normalises a dense polyline and leaves a
+  sparse one where it was; the third column is the genuinely spacing-matched one
+  and it is blank where a polyline has no 480-voxel spacing anywhere in it.
+  Every definition is in the docstring.
 - `count_wins.py` — **new for this release.** Counts and tests the shifted-axis
   control from `qc/validation_raw.json`. Prints both displacement magnitudes
   (300 and 150 voxels), the pooled slice-level binomial (labelled as
-  pseudoreplicated), the scroll-level sign test, the per-scroll table and the
-  Bonferroni threshold. The previous release quoted a p-value produced by a
-  script that did not ship; this is that script, and it also reports the control
-  that came out null.
+  pseudoreplicated), the scroll-level sign test, the per-scroll table with its
+  median ratios and the Bonferroni threshold. The previous release quoted a
+  p-value produced by a script that did not ship; this is that script, and it
+  also reports the control that came out null. It drops NaN ratios explicitly
+  and says how many (zero on the shipped file), because a NaN would otherwise
+  fail the `> 1.0` test and be counted as a loss.
 - `qc_gates.py` — the automatic smoothness and ring-symmetry gates; emits the
   candidates json. (Its docstring claims it also writes a montage png; it does
   not.)
@@ -83,7 +117,10 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
   is `qc/calibration_sean.json` (renamed from a Cyrillic filename). The
   before/after values are both stated in the top-level README.
 - `calib_figure.py` — **new to this release** (it existed but had not been
-  shipped); draws `panels/calibration_summary.png` from that json.
+  shipped); draws `panels/calibration_summary.png` from that json. Its right
+  panel now prints the realized median z-step under every bar and no longer
+  calls the thinned values "a common z-step", because the thinning reaches 480
+  on sean's three axes and not on ours; the bars themselves are unchanged.
 - `qc_sheet.py` — the per-scroll QC sheet. Note it defaults its output directory
   to the data root, so running it as documented drops ten `qc_PHercNNNN.png`
   next to the axes; pass an explicit output directory.
@@ -105,6 +142,12 @@ substantive wording change is deliberate and is the reason for the re-render: th
 now say *traced arcs*, never *physical sheets*, matching the caveat in the top-level
 README.
 
+`calibration_summary.png` was re-rendered once more after that, to relabel its
+right-hand panel (see `calib_figure.py` above). Same check: the shipped script
+first reproduced the previously published panel byte-identically, so the only
+difference in the current file is the label text and the per-bar step
+annotation. The bar values did not move.
+
 Some scripts still write files with Cyrillic names into `qc/`
 (`qc_gates.py` → `кандидаты_*.json`, `validate_axes.py` → `валидация_*.png`,
 `ВАЛИДАЦИЯ_ОСЕЙ.md`). Those are working-tree artifacts, not published outputs.
@@ -114,7 +157,11 @@ Some scripts still write files with Cyrillic names into `qc/`
 Comments and printed strings were translated from Russian for this release.
 Beyond the `UMBILICI_ROOT` / `UMBILICI_TREE` path handling above, the only
 structural changes are the ones named explicitly in the list: the `calib_sean.py`
-scope and output path, and the two new scripts. Everything else is literal text,
+scope and output path, the two new scripts, and — added after the second review —
+the extra columns in `axis_stats.py`, the median-ratio column and NaN guard in
+`count_wins.py`, and the relabelled right-hand panel in `calib_figure.py`. Those
+three were each run before and after the change against the same data: no
+previously printed value moved. Everything else is literal text,
 verified by a token-level diff against the originals that produced the published
 numbers. One earlier version of this section claimed the path handling was the
 *only* structural change; that was not accurate even then, since `calib_sean.py`

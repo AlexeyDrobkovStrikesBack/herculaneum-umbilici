@@ -24,7 +24,9 @@ axis is not a small approximation. On the ten shipped files the annotated centre
 departs from a vertical line through the scroll's own mean centre by up to
 **20.7 mm** (PHerc0268; second largest PHerc0800 at 19.9 mm), and the axis
 sweeps **37.9 mm** laterally over the height of that scroll. At the 247–371 µm
-winding pitch we measure (see caveats), 20.7 mm of lateral error crosses
+pitch we measure at five readable spots (see caveats — those spots are locally
+separated, and tightly-wound material is finer, which would make this count
+larger not smaller), 20.7 mm of lateral error crosses
 roughly 56 to 84 windings — far more than enough to assign a sheet to the wrong
 turn at the top or bottom of a scroll. Placing the vertical optimally
 instead of through the mean centre does not rescue it: the best a straight stick
@@ -61,10 +63,16 @@ Four independent checks, and they are not equally reproducible. To be exact:
 
 - **Check 2 (the shifted-axis control) reproduces from a fresh clone.** Its raw
   per-slice measurements ship as `qc/validation_raw.json`, and
-  `scripts/count_wins.py` recomputes every statistic quoted below from that file
-  with nothing but python, numpy and scipy.
-- **Every geometry number** in this README (deviations, sweep, kink, gaps)
-  reproduces from a fresh clone via `scripts/axis_stats.py`.
+  `scripts/count_wins.py` recomputes every count, rate, median and p-value
+  quoted in §2 from that file with nothing but python, numpy and scipy.
+- **Every geometry number about our own ten axes** (deviations, sweep, kink with
+  the z-spacing each value was measured at, largest gap and its endpoints)
+  reproduces from a fresh clone via `scripts/axis_stats.py`. Two exceptions,
+  both marked in the table below: the tissue-band coverage needs each scroll's
+  `meta.json` from the annotation tree, and **sean's three rows of the
+  smoothness table need his three published files**, which we do not
+  redistribute here — put them in `ref_sean/` from the open bucket. Without them
+  the script prints our ten rows and says the comparison rows are missing.
 - **Check 3 (calibration against sean)** needs the annotation tree — the
   per-slice PNGs and sean's three files from the open bucket. Script ships.
 - **Check 1 (the winding-order test)** needs the annotation tree *and* code that
@@ -240,37 +248,66 @@ is, not how well it was annotated.
 > unchanged and reproduces exactly.
 
 **Smoothness, and this one is not in our favour.** Kink = median distance of a
-point from the chord between its z-neighbours, both sides thinned to a common
-480-voxel z-step so a denser annotation is not credited for being denser
-(`scripts/axis_stats.py`, `kink480`; the panel is `scripts/calib_figure.py`):
+point from the chord between its z-neighbours. **Kink grows with the length of
+the chord**, so no kink value means anything without the z-spacing it was
+measured at, and every value below carries one (`scripts/axis_stats.py`; the
+panel is `scripts/calib_figure.py`):
 
-| scroll | whose | kink at 480-vox step | as published |
-|---|---|---|---|
-| PHerc0125 | sean | **61** | 39 |
-| PHerc1218 | ours | **84** | 89 |
-| PHerc0826 | sean | **92** | 63 |
-| PHerc0211 | sean | **98** | 32 |
-| PHerc1203 | ours | 123 | 123 |
-| PHerc1447 | ours | 127 | 119 |
-| PHerc1545 | ours | 140 | 140 |
-| PHerc0358 | ours | 153 | 86 |
-| PHerc0257 | ours | 177 | 182 |
-| PHerc0800 | ours | 178 | 178 |
-| PHerc0813 | ours | 208 | 182 |
-| PHerc0191 | ours | 264 | 264 |
-| PHerc0268 | ours | 469 | 261 |
+| scroll | whose | as published | at its median step | after thinning towards 480 | at its realized step | matched, 480 ± 20% only | triples |
+|---|---|---|---|---|---|---|---|
+| PHerc0211 | sean | 32 | 188 | 98 | 474 | **87** | 16 |
+| PHerc0125 | sean | 39 | 212 | 61 | 465 | **51** | 16 |
+| PHerc0826 | sean | 63 | 283 | 92 | 467 | **70** | 9 |
+| PHerc0358 | ours | 86 | 368 | 153 | 376 | – | 0 |
+| PHerc1218 | ours | 89 | 608 | 84 | 608 | – | 0 |
+| PHerc1447 | ours | 119 | 640 | 127 | 640 | – | 0 |
+| PHerc1203 | ours | 123 | 520 | 123 | 520 | **123** | 29 |
+| PHerc1545 | ours | 140 | 552 | 140 | 552 | **137** | 22 |
+| PHerc0800 | ours | 178 | 592 | 178 | 592 | – | 0 |
+| PHerc0257 | ours | 182 | 480 | 177 | 480 | **172** | 23 |
+| PHerc0813 | ours | 182 | 448 | 208 | 448 | **166** | 17 |
+| PHerc0268 | ours | 261 | 328 | 469 | 336 | – | 0 |
+| PHerc0191 | ours | 264 | 480 | 264 | 480 | **187** | 14 |
 
-Sean's band at the common step is 61–98. **Exactly one of our ten (PHerc1218,
-84) falls inside it.** (On the as-published polylines, without thinning, two do
-— PHerc0358 at 86 and PHerc1218 at 89 — but that comparison is not fair: sean's
-median z-spacing is 188–283 voxels against our 328–640, and thinning both sides
-to 480 is what removes that advantage. We quote the thinned column.)
-Our two roughest, PHerc0191 and PHerc0268, are 2.7× and 4.8× his worst. An
-earlier version of this README said "our later scrolls match his range" — that
-is false on the shipped files and it is removed. Sean's axes are smoother than
-ours, full stop; the two are annotated at different z-densities and we have not
-shown that the difference costs anything downstream, but we are not going to
-claim parity we do not have.
+**The middle column is not a common-step comparison, and an earlier version of
+this README wrongly said it was.** The thinning keeps, for each point of a
+480-voxel target grid, the nearest point that already exists. That resamples a
+*dense* polyline onto ~480 — it does exactly that for sean, whose three land at
+465/474/467 — but it cannot manufacture a spacing a sparse polyline does not
+have. Ours end up at 336 to 640, a 1.9× spread, and only two of the ten land on
+480. So "thinned to a common 480-voxel z-step" was wrong about our own side, and
+the sentence that called that column the fair one named the wrong column. The
+error ran against us rather than for us — it made our roughest scroll look 1.8×
+rougher than it is — but a fairness argument that points at the unfair column is
+worth correcting either way.
+
+The last column is the comparison that convention was meant to be: only those
+triples whose **both** chords are within ±20% of 480 voxels, and no resampling
+at all. **On that column sean is 51–87 and the five of ours that can be measured
+on it are 123–187** — our smoothest matched scroll is 1.4× his roughest matched
+value and our roughest is 2.1×. The other five of our ten contain no pair of
+adjacent chords near 480 anywhere and simply cannot be placed on that axis; for
+those we quote the as-published figure with its spacing, and nothing else.
+
+**PHerc0268's 469 was an artifact of that resampling and we withdraw it.** The
+thinning takes it from 23 points to 16, with a median gap of 336 but a mean of
+484 and a maximum of 664: the result alternates short and doubled gaps, and the
+median kink is then dominated by the long ones. Its honest as-published figure
+is **261, over 328-voxel chords**. It and PHerc0191 (264, over 480-voxel chords)
+are the two roughest of our ten in both columns where both of them appear, but
+they are measured over different chord lengths and neither has a matched-spacing
+value, so we do not rank them against each other.
+
+What does not change: **sean's axes are smoother than ours.** That holds in
+every one of the three columns — as published (his 32–63 against our 86–264),
+after thinning (his 61–98, with exactly one of our ten, PHerc1218 at 84, inside
+that band) and at matched spacing (his 51–87 against our 123–187). Only the
+*size* of the gap depends on which column is used, and the largest version of it
+was the artifact. An earlier version of this README said "our later scrolls
+match his range" — that is false on the shipped files and it is removed. The two
+sides are annotated at different z-densities and we have not shown that the
+difference costs anything downstream, but we are not going to claim parity we do
+not have.
 
 ### 4. Independent track on PHerc0358 — **not scripted**
 
@@ -283,12 +320,15 @@ when it was run.
 
 | number | script | runs on a fresh clone? |
 |---|---|---|
-| 20.7 mm / 19.9 mm deviation, 37.9 mm sweep, 19.0 mm optimal stick, kink table, largest gap 2400 vox | `scripts/axis_stats.py` | **yes** |
-| 184/297, p = 2.3e-05, the clustered p = 0.011, per-scroll table, Bonferroni, the 159/297 null at 150 vox | `scripts/count_wins.py` | **yes** — `qc/validation_raw.json` ships |
+| 20.7 mm / 19.9 mm deviation, 37.9 mm sweep, 19.0 mm optimal stick, largest gap 2400 vox **and its endpoints z 15480→17880** | `scripts/axis_stats.py` | **yes** |
+| **our ten rows** of the §3 kink table — all three columns, the z-spacing of each, and the matched-triple counts | `scripts/axis_stats.py` | **yes** |
+| **sean's three rows** of the §3 kink table, his 61–98 band and his 51–87 matched range | `scripts/axis_stats.py` | **no** — needs `ref_sean/`, which is not in this repo; fetch his three files from the open bucket. Our ten rows print without it |
+| 184/297, p = 2.3e-05, the clustered p = 0.011, per-scroll table **including the median ratios** (PHerc0800's 0.970), Bonferroni, the 159/297 null at 150 vox | `scripts/count_wins.py` | **yes** — `qc/validation_raw.json` ships |
 | the banded-energy measure itself | `scripts/validate_axes.py`, `scripts/validate_bands.py` | no — needs the per-scroll slice PNGs |
-| bare edges, tissue-band coverage | `scripts/axis_stats.py` | needs `PHercNNNN/meta.json` (`UMBILICI_TREE`) |
+| bare edges, tissue-band coverage per scroll **and the 90.6% aggregate** (z-weighted; the script also prints the 89.9% unweighted mean and the 94.0% median so the definition is visible) | `scripts/axis_stats.py` | needs `PHercNNNN/meta.json` (`UMBILICI_TREE`) |
 | 268.3 vs 273.6 median displacement, the kink figure | `scripts/calib_sean.py`, `scripts/calib_figure.py` | needs the slice PNGs and `ref_sean/` |
 | the shipped axes themselves, from annotator output | `scripts/finalize.py` | needs `results/` |
+| **winding pitch 247–371 µm and the 380–468 µm cross-check** | **not shipped here.** Produced by `qc/витковая_карта_код/` in the annotation tree; the five per-spot values are in `qc/витковая_карта_метрики.json` there. The PHerc0800 voxel correction quoted in the caveats is one multiplication by 8.640/9.362 | no |
 | **85–92% vs 74–83%, 43:7 / 42:5 / 21:3, the tolerance sweep, the resampling test** | **not shipped here.** Produced by `qc/шаг2_код/stack.py` and `qc/эвиденс_кандидаты/код/развилка/развилка3.py` in the annotation tree; every number and its provenance is tabulated in `STEP2_CONSISTENCY.md` §13 | no |
 | **19/22 on PHerc0358** | **no script, journal-documented** | no |
 
@@ -297,8 +337,11 @@ when it was run.
 ## Honest caveats
 - Collapse zones (chevron-folded interiors) are best-effort judgement;
   PHerc0268 is crushed almost throughout. Note that PHerc0268 is also the scroll
-  carrying the headline 20.7 mm number, is the roughest of the ten (kink 469),
-  and has the lowest coverage of its tissue band (69%). The most dramatic
+  carrying the headline 20.7 mm number, is one of the two roughest of the ten
+  (kink 261 at its 328-voxel spacing, against PHerc0191's 264 at 480 — an
+  earlier version of this README quoted 469 here, which was an artifact of
+  resampling and is withdrawn in §3), and has the lowest coverage of its tissue
+  band (69%). The most dramatic
   geometry claim in this package rests on its weakest annotation; the
   second-largest deviation, PHerc0800 at 19.9 mm, makes the same point without
   leaning on it.
@@ -311,10 +354,26 @@ when it was run.
 - Winding pitch at five readable spots is **247–371 µm** by FFT (locally
   separated sheets); tightly wound regions sit at the L3 Nyquist limit. An
   independent ridge-interval cross-check at the same five spots gives
-  **393–468 µm** — 6% to 90% higher place for place — and it is quantised
-  (411.9 µm is exactly 5.5 px at L3, and it is the value returned at three of
-  the five spots). We quote the FFT range and we are not treating the
-  cross-check as independent confirmation to micrometre precision.
+  **380–468 µm** — 6% to 90% higher place for place — and it is quantised: the
+  cross-check returns exactly 5.5 px at L3 at three of the five spots, which is
+  411.9 µm on the two 9.362 µm scrolls and 380.1 µm on PHerc0800, whose voxel is
+  8.640 µm. We quote the FFT range and we are not treating the cross-check as
+  independent confirmation to micrometre precision. **Correction:** an earlier
+  version of this README gave that range as 393–468 µm and called 411.9 µm "the
+  value returned at three of the five spots". Both statements carried PHerc0800
+  at the wrong voxel size — the demo pipeline assumed 9.362 µm for every scroll.
+  Converting it (× 8.640 / 9.362) moves its cross-check from 411.9 to 380.1 µm
+  and its FFT value from 358 to 331 µm; the FFT range 247–371 is set by
+  PHerc0191 and PHerc0358, both 9.362 µm scrolls, and is unaffected.
+- These five are **local** pitches, measured exactly where the laminae have
+  separated far enough to be readable at L3, which is why they are larger than
+  the 180–225 µm bracket our own pitch work gives for tightly-wound material;
+  a contribution from the second harmonic (stuck-together sheet pairs) is also
+  possible. Read 247–371 µm as "the pitch at these five spots", not as the
+  winding pitch of these scrolls. The consequence for the Motivation section is
+  conservative in the direction that matters: at a finer true pitch, 20.7 mm of
+  lateral error would cross *more* windings than the 56–84 quoted there, not
+  fewer.
 - The shifted-axis control ran on a snapshot slightly older than the final
   files: 18/297 slices carry points that were later dropped at finalization,
   and three PHerc1545 points were moved (≤260 vox) after the control run.

@@ -20,11 +20,35 @@ Definitions, stated so they can be checked:
   lateral sweep   diameter of the point set in the xy plane, i.e. the largest
                   distance between any two annotated centres.
   kink            median distance of a point from the straight chord between
-                  its two z-neighbours. Reported twice: on the polyline as
-                  published, and after thinning to a common 480-voxel z-step
-                  (the fairness convention of calib_figure.py, so that a denser
-                  annotation is not credited for being denser).
-  largest gap     largest interior z gap between consecutive annotated points.
+                  its two z-neighbours. Kink grows with chord length, so the
+                  z-spacing it was measured at is printed next to every value
+                  and three variants are reported:
+
+                    kink     / step      on the polyline as published
+                    kink480  / step480   after thinning to a 480-voxel target
+                                         grid (the convention of
+                                         calib_figure.py). NOTE: the thinning
+                                         keeps the nearest existing point to
+                                         each target, so it can only make a
+                                         DENSE polyline sparser. On a polyline
+                                         that is already sparser than 480 it
+                                         changes little or nothing, and on an
+                                         irregular one it can leave alternating
+                                         short and doubled gaps. `step480` is
+                                         the realized median step afterwards and
+                                         shows how far from 480 each side ended
+                                         up; read `kink480` only together with
+                                         it.
+                    kinkM    / nM        the genuinely spacing-matched figure:
+                                         median over only those triples of the
+                                         thinned polyline whose BOTH chords are
+                                         within +-20% of 480 voxels, with nM the
+                                         number of such triples. Blank when
+                                         there are none, which is the honest
+                                         answer for a polyline that has no
+                                         480-voxel spacing anywhere in it.
+  largest gap     largest interior z gap between consecutive annotated points,
+                  with the two z values it runs between.
 """
 import json
 import os
@@ -41,7 +65,8 @@ TREE = os.environ.get('UMBILICI_TREE', ROOT)
 SCROLLS = ["PHerc0191", "PHerc0257", "PHerc0268", "PHerc0358", "PHerc0800",
            "PHerc0813", "PHerc1203", "PHerc1218", "PHerc1447", "PHerc1545"]
 
-STEP = 480.0          # common z-step for the fair kink comparison
+STEP = 480.0          # target z-step for the thinning
+MATCH = 0.20          # a chord counts as matched if it is within +-20% of STEP
 
 
 def voxel_um(meta):
@@ -60,18 +85,44 @@ def subsample(pts, step):
     return [pts[i] for i in idx]
 
 
-def kink(pts):
+def kink_terms(pts):
+    """Per-triple chord distance, with the two chord lengths it was measured
+    over, so a spacing-matched subset can be selected from it."""
     r = sorted(pts, key=lambda q: q["z"])
     xs = np.array([q["x"] for q in r], float)
     ys = np.array([q["y"] for q in r], float)
     zs = np.array([q["z"] for q in r], float)
-    d = []
+    d, lo, hi = [], [], []
     for i in range(1, len(r) - 1):
         w = (zs[i] - zs[i - 1]) / (zs[i + 1] - zs[i - 1])
         px = xs[i - 1] + w * (xs[i + 1] - xs[i - 1])
         py = ys[i - 1] + w * (ys[i + 1] - ys[i - 1])
         d.append(np.hypot(xs[i] - px, ys[i] - py))
-    return float(np.median(d)) if d else float("nan")
+        lo.append(zs[i] - zs[i - 1])
+        hi.append(zs[i + 1] - zs[i])
+    return np.array(d), np.array(lo), np.array(hi)
+
+
+def kink(pts):
+    d, _, _ = kink_terms(pts)
+    return float(np.median(d)) if len(d) else float("nan")
+
+
+def med_step(pts):
+    zs = np.array(sorted(p["z"] for p in pts), float)
+    return float(np.median(np.diff(zs))) if len(zs) > 1 else float("nan")
+
+
+def kink_matched(pts):
+    """Kink over only the triples whose both chords are within +-MATCH of STEP,
+    i.e. the comparison the '480-voxel step' was meant to be."""
+    d, lo, hi = kink_terms(pts)
+    if not len(d):
+        return float("nan"), 0
+    m = (np.abs(lo - STEP) <= MATCH * STEP) & (np.abs(hi - STEP) <= MATCH * STEP)
+    if not m.any():
+        return float("nan"), 0
+    return float(np.median(d[m])), int(m.sum())
 
 
 def chebyshev_radius(xy):
@@ -90,10 +141,21 @@ def chebyshev_radius(xy):
     return float(np.hypot(*(xy - c).T).max())
 
 
+def smooth_row(name, whose, pts):
+    th = subsample(pts, STEP)
+    km, nm = kink_matched(th)
+    print(f"{name:10} {whose:5} {len(pts):3d} {med_step(pts):8.0f} {kink(pts):6.0f} "
+          f"{len(th):5d} {med_step(th):8.0f} {kink(th):7.0f} "
+          f"{(f'{km:.0f}' if nm else '-'):>5} {nm:3d}")
+
+
 def main():
+    print("== geometry ==")
     print(f"{'scroll':10} {'vox_um':>6} {'n':>3} {'maxdev_mm':>9} {'cheby_mm':>8} "
-          f"{'sweep_mm':>8} {'kink':>6} {'kink480':>7} {'maxgap':>6} "
+          f"{'sweep_mm':>8} {'maxgap':>6} {'gap_z':>15} "
           f"{'band':>13} {'bare_lo':>7} {'bare_hi':>7} {'cover':>6}")
+    cov_num = cov_den = 0.0
+    covers = []
     for s in SCROLLS:
         d = json.load(open(os.path.join(ROOT, f"{s}_umbilicus.json")))
         pts = sorted(d["control_points"], key=lambda p: p["z"])
@@ -104,7 +166,10 @@ def main():
         dev = float(np.hypot(*(xy - xy.mean(0)).T).max()) * um / 1000.0
         cheby = chebyshev_radius(xy) * um / 1000.0
         sweep = float(np.hypot(*(xy[None] - xy[:, None]).transpose(2, 0, 1)).max()) * um / 1000.0
-        gap = int(np.diff(zs).max())
+        dz = np.diff(zs)
+        gi = int(np.argmax(dz))
+        gap = int(dz[gi])
+        gapz = f"{int(zs[gi])}->{int(zs[gi + 1])}"
 
         mp = os.path.join(TREE, s, "meta.json")
         if os.path.exists(mp):
@@ -112,26 +177,44 @@ def main():
             band = f"{int(zr[0])}-{int(zr[1])}"
             lo, hi = int(zs[0] - zr[0]), int(zr[1] - zs[-1])
             cover = f"{(zs[-1] - zs[0]) / (zr[1] - zr[0]) * 100:.0f}%"
+            cov_num += zs[-1] - zs[0]
+            cov_den += zr[1] - zr[0]
+            covers.append((zs[-1] - zs[0]) / (zr[1] - zr[0]) * 100)
         else:
             band, lo, hi, cover = "-", "-", "-", "-"
 
         print(f"{s:10} {um:6.3f} {len(pts):3d} {dev:9.2f} {cheby:8.2f} {sweep:8.2f} "
-              f"{kink(pts):6.0f} {kink(subsample(pts, STEP)):7.0f} {gap:6d} "
+              f"{gap:6d} {gapz:>15} "
               f"{band:>13} {str(lo):>7} {str(hi):>7} {cover:>6}")
 
-    ref = os.path.join(TREE, "ref_sean")
-    if os.path.isdir(ref):
-        print("\nsean's published axes, same kink definition:")
-        for s in ("PHerc0125", "PHerc0211", "PHerc0826"):
-            p = os.path.join(ref, f"{s}_umbilicus.json")
-            if not os.path.exists(p):
-                continue
-            pts = json.load(open(p))["control_points"]
-            print(f"{s:10} {'':6} {len(pts):3d} {'':9} {'':8} {'':8} "
-                  f"{kink(pts):6.0f} {kink(subsample(pts, STEP)):7.0f}")
+    if cov_den:
+        print(f"\ncoverage of the tissue band, aggregated over the ten: "
+              f"{cov_num / cov_den * 100:.1f}% z-weighted (this is the figure the "
+              f"README quotes), {np.mean(covers):.1f}% unweighted mean, "
+              f"{np.median(covers):.1f}% median, range "
+              f"{min(covers):.0f}-{max(covers):.0f}%")
     else:
-        print("\n(ref_sean/ not present — fetch sean's three axes from the open "
-              "bucket to reproduce the smoothness comparison)")
+        print("\n(no PHercNNNN/meta.json — set UMBILICI_TREE to the annotation "
+              "tree for the tissue band, bare edges and coverage)")
+
+    print(f"\n== smoothness ==  (kink at the spacing it was measured at; see the "
+          f"docstring)\n{'scroll':10} {'whose':5} {'n':>3} {'step':>8} {'kink':>6} "
+          f"{'n480':>5} {'step480':>8} {'kink480':>7} {'kinkM':>5} {'nM':>3}")
+    for s in SCROLLS:
+        pts = json.load(open(os.path.join(ROOT, f"{s}_umbilicus.json")))["control_points"]
+        smooth_row(s, "ours", pts)
+
+    ref = os.path.join(TREE, "ref_sean")
+    seen = False
+    for s in ("PHerc0125", "PHerc0211", "PHerc0826"):
+        p = os.path.join(ref, f"{s}_umbilicus.json")
+        if os.path.isdir(ref) and os.path.exists(p):
+            smooth_row(s, "sean", json.load(open(p))["control_points"])
+            seen = True
+    if not seen:
+        print("(ref_sean/ not present — fetch sean's three axes from the open "
+              "bucket to reproduce the smoothness comparison; the ten rows above "
+              "are complete without it)")
 
 
 if __name__ == "__main__":

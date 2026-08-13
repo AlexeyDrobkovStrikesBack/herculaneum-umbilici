@@ -23,11 +23,20 @@ does BOTH displacements, not only the one that came out positive:
     the scroll as the unit of replication. This is the defensible one.
   * the per-scroll table, uncorrected, with the Bonferroni threshold printed
     next to it so it is visible that no scroll survives correction.
+  * the per-scroll MEDIAN ratio next to the win rate, because a win rate near
+    0.5 says nothing about which side the middle of the distribution is on.
+    PHerc0800's median, the one the README quotes, is printed here.
+
+Every count, rate, p-value and median the README quotes for this control is
+printed by this script. It does not print the voxels-to-millimetres conversion
+of the displacement (300 vox = 2.6-2.8 mm), which comes from the per-scroll
+voxel size and is done in `axis_stats.py`.
 """
 import json
 import os
 import sys
 
+import numpy as np
 from scipy.stats import binomtest
 
 ROOT = os.environ.get('UMBILICI_ROOT',
@@ -38,28 +47,39 @@ RAW = os.path.join(ROOT, "qc", "validation_raw.json")
 
 def block(data, key):
     per = {}
+    dropped = 0
     for scroll, rows in sorted(data.items()):
-        vals = [r[key] for r in rows if r.get(key) is not None]
+        raw = [r[key] for r in rows if r.get(key) is not None]
+        # A NaN would fail `v > 1.0` and be silently counted as a loss, so drop
+        # it explicitly and say how many were dropped. On the shipped file this
+        # is 0; the guard is here so that it stays visible if it ever is not.
+        vals = [v for v in raw if not np.isnan(v)]
+        dropped += len(raw) - len(vals)
         if not vals:
             continue
-        per[scroll] = (sum(1 for v in vals if v > 1.0), len(vals))
+        per[scroll] = (sum(1 for v in vals if v > 1.0), len(vals),
+                       float(np.median(vals)))
 
-    wins = sum(w for w, _ in per.values())
-    n = sum(k for _, k in per.values())
+    wins = sum(p[0] for p in per.values())
+    n = sum(p[1] for p in per.values())
     pooled = binomtest(wins, n, 0.5, alternative='greater').pvalue
 
-    above = sum(1 for w, k in per.values() if w / k > 0.5)
+    above = sum(1 for w, k, _ in per.values() if w / k > 0.5)
     signp = binomtest(above, len(per), 0.5, alternative='greater').pvalue
 
     alpha = 0.05 / len(per)
     print(f"\n=== {key}: annotated centre vs the same centre displaced "
           f"{key[1:]} voxels ===")
-    print(f"{'scroll':10} {'wins':>7} {'rate':>6} {'p (uncorrected)':>16} {'survives Bonferroni':>21}")
-    for scroll, (w, k) in sorted(per.items(), key=lambda kv: -kv[1][0] / kv[1][1]):
+    print(f"{'scroll':10} {'wins':>7} {'rate':>6} {'median ratio':>13} "
+          f"{'p (uncorrected)':>16} {'survives Bonferroni':>21}")
+    for scroll, (w, k, med) in sorted(per.items(), key=lambda kv: -kv[1][0] / kv[1][1]):
         p = binomtest(w, k, 0.5, alternative='greater').pvalue
         flag = "yes" if p < alpha else "no"
         mark = "  <- below 50%" if w / k < 0.5 else ""
-        print(f"{scroll:10} {w:3d}/{k:<3d} {w/k:6.3f} {p:16.3f} {flag:>21}{mark}")
+        print(f"{scroll:10} {w:3d}/{k:<3d} {w/k:6.3f} {med:13.3f} "
+              f"{p:16.3f} {flag:>21}{mark}")
+    if dropped:
+        print(f"({dropped} value(s) were NaN and were dropped)")
     print(f"\npooled over slices (PSEUDOREPLICATED, do not quote alone): "
           f"{wins}/{n} = {wins/n:.3f}, one-sided binomial p = {pooled:.3g}")
     print(f"scroll-level sign test (the defensible statement): "

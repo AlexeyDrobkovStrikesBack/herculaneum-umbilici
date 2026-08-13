@@ -8,9 +8,15 @@ indistinguishable here: the gate measures how crushed the cross-section is, not
 how well it was annotated.
 
 Right: the kink of the axis polyline (median deviation of a point from the
-chord between its z-neighbours) at the SAME z-step for both sides, otherwise
-the comparison is unfair — the sparser the points, the larger the kink by
-itself. Here the difference is immediate, and it is not in our favour.
+chord between its z-neighbours) after thinning both sides towards a 480-voxel
+z-step, because the sparser the points, the larger the kink by itself. The
+thinning keeps the nearest existing point to each target, so it only makes a
+dense polyline sparser: it brings sean's three to a realized median step of
+465-474, but it cannot lift ours off the spacing they were annotated at, and
+those run 336-640. The realized step is therefore printed beside every bar, and
+the bars must be read as "kink at that step", not as a matched comparison. The
+difference is not in our favour under any of the three columns
+`axis_stats.py` prints; only its size depends on which one is used.
 
 Reads `qc/calibration_sean.json` written by calib_sean.py, and the axis json
 files themselves. Covers all ten shipped scrolls, not the three the earlier
@@ -28,8 +34,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from calib_sean import ROOT, TREE, SETS      # noqa: E402
-from axis_stats import kink, subsample       # noqa: E402
+from calib_sean import ROOT, TREE, SETS            # noqa: E402
+from axis_stats import kink, med_step, subsample   # noqa: E402
 
 STEP = 480.0          # the z-step both sides are brought to
 
@@ -47,11 +53,13 @@ def main():
     lab = [f"{n}\n{who[n]}" for n in names]
     y = np.arange(len(names))[::-1]
 
-    ks = {}
+    ks, st = {}, {}
     for n in names:
         base = TREE if src[n][1].startswith("ref_sean/") else ROOT
         pts = json.load(open(os.path.join(base, src[n][1])))["control_points"]
-        ks[n] = kink(subsample(pts, STEP))
+        thin = subsample(pts, STEP)
+        ks[n] = kink(thin)
+        st[n] = med_step(thin)      # what the thinning actually achieved
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 8.6), facecolor=SURF)
     fig.subplots_adjust(left=0.10, right=0.985, top=0.885, bottom=0.20, wspace=0.40)
@@ -85,15 +93,22 @@ def main():
     ax2.barh(y, vals, height=0.62, color=cols)
     band = [ks[n] for n in names if who[n] == "sean"]
     ax2.axvspan(min(band), max(band), color=C_SEAN, alpha=0.10, zorder=0)
-    for yy, v in zip(y, vals):
-        ax2.text(v + 8, yy, f"{v:.0f}", va="center", fontsize=10, color=INK)
-    ax2.set_xlim(0, max(vals) * 1.18)
+    for yy, n in zip(y, names):
+        ax2.text(ks[n] + 8, yy, f"{ks[n]:.0f}", va="center", fontsize=10, color=INK)
+        ax2.text(ks[n] + 8, yy - 0.30, f"at a {st[n]:.0f}-vox step", va="center",
+                 fontsize=8, color=INK2)
+    ax2.set_xlim(0, max(vals) * 1.42)
     inside = sum(1 for n in names
                  if who[n] == "ours" and min(band) <= ks[n] <= max(band))
-    ax2.set_title(f"Kink of the axis at a common z-step ({STEP:.0f} voxels)\n"
-                  f"lower is smoother; sean's band ({min(band):.0f}-{max(band):.0f}) is\n"
-                  f"shaded — {inside} of our ten falls inside it",
-                  fontsize=11, color=INK, loc="left")
+    ours_st = [st[n] for n in names if who[n] == "ours"]
+    sean_st = [st[n] for n in names if who[n] == "sean"]
+    ax2.set_title(f"Kink of the axis after thinning towards a {STEP:.0f}-voxel z-step\n"
+                  f"lower is smoother; sean's band ({min(band):.0f}-{max(band):.0f}) is shaded — "
+                  f"{inside} of our ten\nfalls inside it. The thinning only drops points, so it "
+                  f"reaches\n{min(sean_st):.0f}-{max(sean_st):.0f} vox on sean's side but "
+                  f"{min(ours_st):.0f}-{max(ours_st):.0f} on ours: read each bar\n"
+                  f"at the step printed under it, not as a matched comparison.",
+                  fontsize=10, color=INK, loc="left")
     ax2.set_xlabel("median deviation from the chord between neighbours, voxels",
                    fontsize=10, color=INK2)
     hs = [plt.Rectangle((0, 0), 1, 1, color=C_SEAN),

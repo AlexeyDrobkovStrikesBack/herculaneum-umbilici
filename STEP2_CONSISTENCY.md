@@ -52,10 +52,15 @@ The following are the negative results, stated before the positive ones.
 
 What survives all of the above is narrower than the README says. The defensible
 statement is: *on the shipped (zero-order) tracing pipeline, the manual axis preserves
-pairwise winding order better than the auto-centroid on all three stacks, in all three
-swap directions, and on every subset of that pipeline we split out — but under an
-alternative first-order chainer the effect survives only on PHerc1203, and on PHerc0358
-it reverses.*
+pairwise winding order better than the auto-centroid on all three stacks under neutral
+tracing; under the swap control it is ahead in six of the nine cells, exactly level in
+two and behind in one (PHerc0358 traced around the auto-centre, by a single pair — see
+bullet 4 above and §6); and its advantage is non-negative in every subset of that
+pipeline we split out, positive in all of them but one, which is exactly zero — but
+under an alternative first-order chainer the effect survives only on PHerc1203, and on
+PHerc0358 it reverses.* Earlier drafts of this sentence said "in all three swap
+directions" and "on every subset", which bullet 4 four lines above already contradicts;
+the counts are the statement.
 
 ---
 
@@ -666,8 +671,14 @@ What *is* defined mechanically, and can be used instead:
 
 If the README needs the sentence, the honest form is: *"across the shipped pipeline's
 pairs, split by lamella-following retention at k = 1, 2, 3 and by radius belt, the
-manual axis's advantage is positive in every cell"* — which is what §7 and §8.2 show,
-and which says nothing about the first-order chainer, where it is not true.
+manual axis's advantage is **non-negative** in every cell that carries enough pairs to
+report — positive in all of them but one, PHerc1203's degenerate belt (r > 140 px L3,
+14 pairs), where it is exactly +0.000; PHerc0191's innermost lamella-held subset has no
+pairs at all and PHerc0358's degenerate belt has four, and neither is counted in our
+favour"* — which is what §7 and §8.2 show, and which says nothing about the first-order
+chainer, where it is not true. An earlier draft of this paragraph said "positive in
+every cell", which the +0.000 in the §7 table above contradicts; this is the wording the
+README carries.
 
 ---
 
@@ -675,7 +686,7 @@ and which says nothing about the first-order chainer, where it is not true.
 
 | number set | source | ships in the package? |
 |---|---|---|
-| Headline rates, cross-tables, all 9 swap rows (§4, §6) | `qc/шаг2_метрики.json`, produced by `qc/шаг2_код/stack.py` | **no** — the package currently ships only the umbilicus JSONs, the README and PNG panels |
+| Headline rates, cross-tables, all 9 swap rows (§4, §6) | `qc/шаг2_метрики.json`, produced by `qc/шаг2_код/stack.py` | **no** — of the step-2 material the package ships this document and the six panels, not the metrics json or its producer. (An earlier version of this cell said the package ships "only the umbilicus JSONs, the README and PNG panels"; it also ships this file, `qc/validation_raw.json` and nine scripts.) |
 | Null control, shift curves, rigid-shift comparison (§9) | `qc/шаг2_код/нульконтроль/pack_sens.py`, `пакет_чувствительность.json`, log | no |
 | Tolerance sweep, module-default first-order numbers (§8.1) | `qc/эвиденс_кандидаты/код/развилка/развилка3.py`, `развилка3.json`, `развилка3.log` | no |
 | Retention split, radius belts, resampling test (§8.2, §8.3) | `развилка.py` + `развилка.log` (the run's `развилка.json` is **not present** in the tree) | no |
@@ -716,9 +727,16 @@ Listed so that a reviewer who finds them knows we found them too.
 On the shipped tracing pipeline, with tracing independent of both axes under test, the
 manually annotated umbilicus preserves the pairwise winding order of traced arcs between
 heights better than the auto-centroid on all three scrolls (0.919/0.900/0.850 against
-0.826/0.738/0.782), with paired counts of 43:7, 42:5 and 21:3; the effect survives the
-full three-way swap control, sits a factor of 2.1–2.5 above the metric's measured
-detection threshold, and is present in every subset of that pipeline we split out.
+0.826/0.738/0.782), with paired counts of 43:7, 42:5 and 21:3; it sits a factor of
+2.1–2.5 above the metric's measured detection threshold. Under the three-way swap
+control it does not reverse on eight of the nine cells — ahead in six, exactly level in
+two — and on the ninth, PHerc0358 traced around the auto-centre, it is one pair of 143
+behind (0.909 against 0.916). Split by lamella-following retention and by radius belt it
+is non-negative in every cell that carries enough pairs to report, positive in all but
+one (+0.000 on PHerc1203's degenerate r > 140 belt, 14 pairs), with two cells too sparse
+to report at all. Earlier drafts of this paragraph said "survives the full three-way
+swap control" and "present in every subset"; §1 bullet 4 and the §7 table contradict
+both, and the counts above replace them.
 
 Under an alternative, provably sheet-following first-order chainer the effect is
 reproduced only on PHerc1203 (+0.125 at the module's default tolerance, 28/32 against
