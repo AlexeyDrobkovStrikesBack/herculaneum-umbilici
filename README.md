@@ -13,11 +13,11 @@ Note on PHerc1203: the only existing 9.362 derivation in the bucket is
 
 ## Motivation
 
-We were working on PHerc1203 for the First Letters prize and needed a winding
-axis for it: every winding-number assignment, every polar unwrap and every
-spiral fit we tried takes a centre per z-slice, and we had none for that scroll.
-Three scrolls have a published umbilicus (sean's PHerc0125, 0211, 0826); the ten
-scrolls in the prize set did not.
+We are working on the First Letters prize scrolls, and kept running into the
+same missing input: every winding-number assignment, every polar unwrap and
+every spiral fit we tried takes a centre per z-slice, and none of these ten had
+one. Three scrolls have a published umbilicus (sean's PHerc0125, 0211, 0826);
+the ten in the prize set did not.
 
 What we kept running into is that substituting a straight vertical line for the
 axis is not a small approximation. On the ten shipped files the annotated centre
