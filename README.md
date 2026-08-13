@@ -417,24 +417,93 @@ not have.
 
 > **Correction, and it is about reproducibility rather than about a number.**
 > An earlier version of this README told you to fetch sean's three files "from
-> the open bucket". They are not there. We checked all three prefixes in
-> `vesuvius-challenge-open-data` on 2026-08-13 and each holds exactly three
-> non-volume keys — a mask photo, a photo and a lasagna prediction — with no
-> umbilicus among them; `dl.ash2txt.org/community-uploads/bruniss/` does not
-> have them either. As far as we can establish they exist only as the three
-> attachments sean posted in the Vesuvius Challenge Discord `#general` on
-> 2026-08-08. So there is no URL we can honestly give.
+> the open bucket". They are not there. As far as we can establish they exist
+> only as the three attachments sean posted in the Vesuvius Challenge Discord
+> `#general` on 2026-08-08, so there is no URL we can honestly give.
 >
+> **A second correction, to how we described the check that established that.**
+> An earlier version of this paragraph — and of `scripts/fetch_sean.py` — said
+> each of the three prefixes in `vesuvius-challenge-open-data` "holds exactly
+> three non-volume keys: a mask photo, a photo and a lasagna prediction". That
+> was an incomplete enumeration written as an exhaustive one, and in the
+> paragraph whose whole purpose is to show that we looked properly. Those three
+> are simply the first three keys S3 hands back in key order. Each prefix
+> actually holds tens of thousands of non-volume keys. Re-walked recursively on
+> 2026-08-13, `volumes/` and zarr chunk interiors excluded:
+>
+> | prefix | non-volume keys | of which under `representations/predictions/surfaces/` |
+> |---|---|---|
+> | `PHerc0125/` | 37,813 | 37,802 |
+> | `PHerc0211/` | 35,508 | 35,497 |
+> | `PHerc0826/` | 33,481 | 33,470 |
+>
+> The bulk of each prefix is a `…-surface-m7-L0-th0.2.normal-grids/` tree we
+> never mentioned: per-axis normal grids as `xy/`, `xz/` and `yz/` `.grid` files
+> (20,840 / 8,387 / 8,387 for PHerc0125, and similarly for the other two;
+> 37,614 / 35,312 / 33,258 `.grid` files per scroll in total), a few hundred
+> preview jpgs under `xy_img/`, `xz_img/`, `yz_img/`, a `metadata.json`, and
+> beside it a `…-surface-m7-L0-th0.2.zarr` root. **This is not staleness on our
+> part.** Those keys carry `LastModified` between 2026-05-13 and 2026-07-07, so
+> the tree was already there, a month old, on the day we said we had checked.
+> We had listed one page and described it as the whole prefix.
+>
+> **What the check does establish is unchanged, and we re-ran it rather than
+> restate it.** A full recursive walk of all three prefixes — 106,802 keys,
+> descending everything except `volumes/` and zarr chunk interiors — returns
+> **zero** matches for `umbilic|axis|centre|center|spiral|winding`,
+> case-insensitively, and no loose key sits directly under any of the three
+> prefixes. A crawl of `dl.ash2txt.org/community-uploads/bruniss/` to depth 3 —
+> 345 directory pages, 137,026 files — likewise returns zero matches for
+> `umbilic`. There is no umbilicus file under any of the three prefixes and none
+> in his community-uploads area. That conclusion never depended on the miscount;
+> the description of the evidence did.
+>
+> The listing command, corrected. What the earlier text described is what you
+> get **only with `&delimiter=/`**, which collapses each prefix to its immediate
+> children:
+>
+> ```
+> $ curl -s "https://vesuvius-challenge-open-data.s3.us-east-1.amazonaws.com/\
+>     ?list-type=2&prefix=PHerc0125/&delimiter=/&max-keys=1000"
+> ```
+>
+> returns 504 bytes: `<KeyCount>3</KeyCount>`, `<IsTruncated>false</IsTruncated>`,
+> the three sub-prefixes `PHerc0125/photos/`, `PHerc0125/representations/`,
+> `PHerc0125/volumes/`, and no `<Key>` elements at all — identical in shape for
+> `PHerc0211/` and `PHerc0826/`. Without the delimiter the same command returns
+> 412 KB, `<KeyCount>1000</KeyCount>`, `<IsTruncated>true</IsTruncated>`, and
+> after those first three keys nothing but `…_cos.ome.zarr/…` chunk paths. That
+> truncated page is what the earlier claim was read off, and running the command
+> as it was previously documented shows a reader 1000 zarr chunks rather than the
+> tidy three the sentence promised.
+>
+
 > What ships instead is `qc/sean_reference.json`: for each of his three files,
-> its sha256 and byte length, its point count and z range, and the six
-> smoothness numbers of its row. `scripts/axis_stats.py` prints all thirteen
-> rows on a bare clone, marking sean's three as read from that digest. If you
-> supply the files — `scripts/fetch_sean.py --from <dir>` verifies them against
-> those hashes and refuses to install a file that does not match — the script
-> recomputes his three rows from the files and says whether the recomputation
-> agrees with the digest. Before this, three of the thirteen rows were simply
-> absent from a clean clone and there was no way to tell whether your copy of
-> his files was the one we measured.
+> its sha256 and byte length, its z range, and the eight derived scalars of its
+> row. `scripts/axis_stats.py` prints all thirteen rows on a bare clone, marking
+> sean's three as read from that digest. If you supply the files —
+> `scripts/fetch_sean.py --from <dir>` verifies them against those hashes and
+> refuses to install a file that does not match — the script runs **two
+> independent checks per row and prints both**: whether your copy's sha256
+> matches the digest, and whether all eight recomputed values match it. Be
+> precise about what that buys. The bytes leg says your copy is the copy we
+> measured. The numbers leg says *this version of the script, run on your copy,
+> still produces the values recorded in the digest* — it catches a digest edited
+> away from the code as well as a file edited away from the digest, and nothing
+> about either check speaks to whether sean's annotation is right.
+>
+> That is a correction, not just a description. Until 2026-08-13 the numeric
+> comparison sat in an `elif` behind the sha256 test, so it ran only on bytes
+> already proven identical — where deterministic code cannot make it fire — and
+> the set of columns it compared omitted `kinkM`, the one column the argument
+> above rests on. Doctoring the shipped digest's `kinkM` from 50.79 to 999,
+> leaving every sha256 untouched, still printed *"matches
+> qc/sean_reference.json"*. It now prints
+> `(bytes match; !! recomputed ['kinkM'] DIFFER from the digest)`.
+>
+> Before any of this, three of the thirteen rows were simply absent from a clean
+> clone and there was no way to tell whether your copy of his files was the one
+> we measured.
 
 ### 4. Independent track on PHerc0358 — **not scripted**
 

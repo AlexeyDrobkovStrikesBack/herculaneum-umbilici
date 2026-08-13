@@ -16,17 +16,45 @@ Why they are not in this repository
 They are not our work and we do not redistribute them. More to the point, we
 could not point you at a stable public URL to fetch them from, and the earlier
 version of the README was wrong to say you could get them "from the open
-bucket". We checked, on 2026-08-13:
+bucket". We checked, on 2026-08-13, and re-checked the same day after finding
+that this docstring described the check badly. Both corrections are below.
+
+  1. The command, with the flag it was missing. Note `&delimiter=/`:
 
     $ curl -s "https://vesuvius-challenge-open-data.s3.us-east-1.amazonaws.com/\\
-        ?list-type=2&prefix=PHerc0125/&max-keys=1000"
+        ?list-type=2&prefix=PHerc0125/&delimiter=/&max-keys=1000"
 
-  lists three non-volume keys for PHerc0125 — the mask photo, the photo, and a
-  lasagna prediction json — and the same for PHerc0211 and PHerc0826. There is
-  no umbilicus file under any of the three prefixes. There is none under
-  `dl.ash2txt.org/community-uploads/bruniss/` either. As far as we can establish
-  the files exist only as those Discord attachments, so the honest instruction is
-  "ask sean, or take them from that message", not "download them from X".
+  returns 504 bytes -- `<KeyCount>3</KeyCount>`, `<IsTruncated>false</IsTruncated>`,
+  the three sub-prefixes `PHerc0125/photos/`, `PHerc0125/representations/` and
+  `PHerc0125/volumes/`, and no `<Key>` elements at all. Same shape for PHerc0211
+  and PHerc0826. WITHOUT the delimiter -- which is how this docstring used to
+  document it -- the same URL returns 412 KB, `<KeyCount>1000</KeyCount>`,
+  `<IsTruncated>true</IsTruncated>`, and after the first three keys nothing but
+  `..._cos.ome.zarr/...` chunk paths. Running the old command showed you a
+  thousand zarr chunks, not the three keys the text claimed.
+
+  2. What is actually under those prefixes. This docstring used to say each
+  prefix "lists three non-volume keys -- the mask photo, the photo, and a
+  lasagna prediction json". Those are only the first three keys in key order.
+  A full recursive walk, excluding `volumes/` and zarr chunk interiors, finds
+  37,813 / 35,508 / 33,481 non-volume keys for PHerc0125 / PHerc0211 /
+  PHerc0826. Nearly all of them -- 37,802 / 35,497 / 33,470 -- are an unmentioned
+  `representations/predictions/surfaces/` tree: `...-surface-m7-L0-th0.2.normal-grids/`
+  holding tens of thousands of `xy/`, `xz/`, `yz/` `.grid` files plus preview
+  jpgs, and a `...-surface-m7-L0-th0.2.zarr` root. Its keys are dated
+  2026-05-13 to 2026-07-07, so it predates the check; the enumeration was
+  incomplete, not stale.
+
+  What that walk does establish, and this is the part the conclusion rests on:
+  across all 106,802 non-volume keys of the three prefixes there are ZERO
+  matches for `umbilic|axis|centre|center|spiral|winding`, case-insensitive,
+  and no loose key sits directly under any of the three prefixes. A depth-3
+  crawl of `dl.ash2txt.org/community-uploads/bruniss/` -- 345 directory pages,
+  137,026 files -- likewise returns zero matches for `umbilic`. There is no
+  umbilicus file for these scans in the open bucket or in his uploads area. As
+  far as we can establish the files exist only as those Discord attachments, so
+  the honest instruction is "ask sean, or take them from that message", not
+  "download them from X".
 
 What this script does instead
 -----------------------------
@@ -44,9 +72,16 @@ the files are absent. A file whose hash does not match is written to
 `<name>.mismatch` and NOT installed, because a silently different reference file
 is worse than a missing one.
 
-`qc/sean_reference.json` also records, for each of the three, the point count,
-the z range and the six smoothness numbers we measured. If your copy hashes the
-same, `axis_stats.py` will recompute those six and tell you they agree.
+`qc/sean_reference.json` also records, for each of the three, the z range and
+the eight derived scalars we measured. Once the files are in `ref_sean/`,
+`axis_stats.py` runs two INDEPENDENT checks per row and prints both: whether
+your copy's sha256 matches the digest, and whether all eight recomputed values
+match it -- `kinkM` included, which is the column README section 3 argues is
+the fair comparison. Neither check gates the other, so a file whose bytes
+differ still gets its numbers compared and named, and a digest edited away from
+the script that produced it is caught even with every sha256 intact. (An
+earlier version nested the numeric comparison inside the sha256 test, where it
+could only ever run on bytes already proven identical -- i.e. never usefully.)
 """
 import argparse
 import hashlib

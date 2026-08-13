@@ -1,5 +1,32 @@
 __pycache__/
 *.pyc
+
+# ---------------------------------------------------------------------------
+# `qc/` is DENY-BY-DEFAULT, and that is deliberate. Do not relax it.
+#
+# The working tree carries `qc/calibration_sean.json`, which holds sean's
+# (bruniss's) verbatim per-point umbilicus coordinates for PHerc0125/0211/0826
+# — 25 real control points per scroll, read out of the three files he posted in
+# the Vesuvius Challenge Discord on 2026-08-08. Those are his annotation, not
+# ours. This package deliberately does not redistribute them: README section 3
+# compares against them and ships only `qc/sean_reference.json`, a digest of
+# twelve scalars per file from which no coordinate can be recovered.
+#
+# The blanket `qc/*` below is the only thing keeping that file unpublished.
+# It has held: the path has never appeared in any commit in this repository's
+# history, and the blob it would produce does not exist in the object database.
+#
+# So: add files here ONE BY ONE with an explicit `!qc/<exact-name>` negation
+# after reading what is in them. Never add a wildcard negation such as
+# `!qc/calibration_*.json` or `!qc/*.json` — either would publish his
+# coordinates silently. Never `git add -f` anything under `qc/` without
+# checking it first. If `qc/calibration_sean.json` ever needs to be shipped,
+# that is sean's call to make, not ours.
+#
+# `ref_sean/` below is where `scripts/fetch_sean.py` installs his three
+# original files once a reader supplies them; it is excluded for the same
+# reason and is likewise never to be negated.
+# ---------------------------------------------------------------------------
 qc/*
 !qc/validation_raw.json
 !qc/validation_final_raw.json

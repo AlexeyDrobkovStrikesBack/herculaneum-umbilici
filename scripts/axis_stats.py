@@ -220,6 +220,14 @@ def main():
     sean_rows()
 
 
+# Every derived scalar `smooth_terms()` produces. The digest check below compares
+# all of them, not a subset: an earlier version omitted `kinkM`, which is the one
+# column README section 3 argues is the fair comparison, so a digest whose headline
+# fair-comparison value was arbitrarily wrong still certified as matching.
+DIGEST_KEYS = ("n_points", "step", "kink", "n480", "step480", "kink480",
+               "kinkM", "nM")
+
+
 def sean_rows():
     """The three reference rows.
 
@@ -227,10 +235,27 @@ def sean_rows():
     in this repository. What IS in the repository is `qc/sean_reference.json`:
     the derived numbers of these three rows together with the sha256 of the file
     each was computed from. So the rows print on a bare clone, marked as read
-    from that digest rather than recomputed. When the files are supplied
-    (`scripts/fetch_sean.py`), every row is recomputed from them, the sha256 is
-    checked, and any disagreement with the digest is printed as a mismatch
-    instead of being silently preferred either way.
+    from that digest rather than recomputed.
+
+    When the files are supplied (`scripts/fetch_sean.py`), two INDEPENDENT checks
+    run on every row and both are reported:
+
+      bytes    sha256 of your copy against the sha256 recorded in the digest;
+      numbers  all eight derived scalars recomputed from your copy against the
+               eight recorded in the digest, every one of them, `kinkM` included.
+
+    They are independent on purpose. An earlier version put the numeric
+    comparison in an `elif` after the sha256 test, so it only ever ran on files
+    already proven byte-identical — where deterministic code cannot make it fire.
+    It was therefore structurally incapable of reporting what the numbers do on a
+    copy that differs. Now a file whose bytes differ still gets its eight numbers
+    compared and named, and a digest that has been edited away from the script
+    that produced it is caught even though every sha256 in it is untouched.
+
+    What the pair of checks establishes is bounded: the bytes leg says your copy
+    is the copy we measured; the numbers leg says this version of the script,
+    run on your copy, still produces the values recorded in the digest. Neither
+    says anything about sean's annotation being right.
     """
     ref = os.path.join(TREE, "ref_sean")
     dig_path = os.path.join(ROOT, "qc", "sean_reference.json")
@@ -244,15 +269,16 @@ def sean_rows():
             note = ""
             d = dig.get(s)
             if d:
-                sha = hashlib.sha256(raw).hexdigest()
-                bad = [k for k in ("kink", "step", "kink480", "step480", "nM")
-                       if abs((t[k] or 0) - (d[k] or 0)) > 1e-6]
-                if sha != d["sha256"]:
-                    note = "   !! sha256 differs from qc/sean_reference.json"
-                elif bad:
-                    note = f"   !! recomputed {bad} differ from the digest"
-                else:
-                    note = "   (recomputed; matches qc/sean_reference.json)"
+                # Both legs always run; neither guards the other.
+                sha_ok = hashlib.sha256(raw).hexdigest() == d.get("sha256")
+                bad = [k for k in DIGEST_KEYS
+                       if abs((t.get(k) or 0) - (d.get(k) or 0)) > 1e-6]
+                parts = []
+                parts.append("bytes match" if sha_ok
+                             else "!! sha256 DIFFERS from qc/sean_reference.json")
+                parts.append(f"all {len(DIGEST_KEYS)} derived values match" if not bad
+                             else f"!! recomputed {bad} DIFFER from the digest")
+                note = "   (" + "; ".join(parts) + ")"
             print_row(s, "sean", t, note)
             have += 1
         elif s in dig:
