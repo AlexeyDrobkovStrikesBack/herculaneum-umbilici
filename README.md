@@ -204,7 +204,8 @@ evaluable, and of those 0–12.5% keep the same absolute number under the manual
 axis against 0–22.2% under the auto-centroid. Neither axis is consistently
 ahead, the counts are too small to say anything, and the metric is simply not
 usable at this resolution. Stated honestly; we make no claim there. See
-`panels/step2_*`.
+`panels/step2_*`, and `panels/order_map_*` / `panels/order_bump_*` for the same
+three stacks drawn two other ways.
 
 **Two caveats we found ourselves and would rather state than have you discover:**
 
@@ -886,6 +887,71 @@ is enough). Every volume id is in `PREREGISTRATION.md` §3 and in each scroll's
 own `metadata.source_volume`, so the inputs are named exactly and are public.
 The run took 39 minutes of wall time in two processes of two torch threads each.
 
+## Panels
+
+Twenty-eight figures ship in `panels/`. None of them is the source of a number:
+every quantity printed on a panel is one this README states and one of the
+scripts recomputes. Where a panel and this README disagreed, the panel was
+re-rendered — the ten-scroll atlas below is that case, and it is named rather
+than quietly fixed.
+
+**The axes themselves.**
+
+- `axis_PHercNNNN.png` × 10 — each axis drawn on its scroll.
+- `axis_polylines_all_ten.png` — **new.** All ten axes on the XZ side
+  projection: the hand-placed nodes and the linear interpolation between them,
+  which is exactly what a consumer of these files reads. The per-scroll node
+  counts are the `control_points` counts of the shipped json, 22 to 31. Its two
+  quantities are the 20.7 mm of the Motivation section (`scripts/axis_stats.py`,
+  PHerc0268) and the ring-gate calibration of §3 — ours 268.3 voxels over 279
+  points against sean's 273.6 over 75. **The earlier draft of this panel printed
+  "265 against 274".** That is the withdrawn three-scroll, pre-finalization
+  figure §3 corrects; the shipped panel carries the current one and cites §3.
+- `annotation_site_PHercNNNN.png` × 3 (PHerc 0191, 0358, 1203) and
+  `annotation_site_closeup_PHerc1203.png` — **new.** What the annotator was
+  looking at: a crop around an annotated node — ~26 mm, ~38 mm for the close-up
+  — with the ring detector's suggestion beside it and the turns traced around
+  the point. These carry no statistic. Read the broken lines literally: a
+  segment is drawn only where its tangent agrees with the structure-tensor
+  lamella direction, and nothing is interpolated across a gap, so the empty
+  regions are where the tracer does not hold a sheet, not where there is no
+  papyrus. Every column is a height that was actually annotated: all ten of the
+  crosses on these four panels are hand-placed control points of the shipped
+  json, not interpolated values. That was checked rather than assumed, and one
+  column had to move — see `scripts/README.md`.
+- `calibration_summary.png` — our gates against sean's three, all ten scrolls (§3).
+
+**The winding-order test (§1).**
+
+- `step2_points_PHercNNNN.png`, `step2_stack_PHercNNNN.png` × 3 each — as before.
+- `order_map_PHercNNNN.png` × 3 — **new.** The same three neutral-tracing stacks
+  with the slice image removed altogether: only the matched arcs, ranked by
+  distance from each axis, the auto-centroid row above the manual-axis row.
+- `order_bump_PHercNNNN.png` × 3 — **new.** The same arcs as a bump chart, one
+  line per arc, a crossing being an order reversal.
+
+Both kinds print the whole-stack figures of §1 — 0.919 / 0.900 / 0.850 against
+0.826 / 0.738 / 0.782 and the paired 43:7, 42:5, 21:3 — which
+`scripts/order_stat.py` recomputes from the shipped fixtures with numpy alone.
+The reversal counts in their subtitles ("3 of 3 pairs", "5 of 10 pairs") are for
+the five slices displayed, not for the stack, and the panels say which is which.
+**Both kinds also carry the limit §1 states**, in the figure and not in a
+caption elsewhere: none of the advantage comes from the axis being per-slice,
+and the manual axis frozen at its own stack mean scores identically. A figure
+whose title asks whether the axis keeps the order *between* slices must not be
+left to imply that per-slice tracking is what does the work, because on these
+three stacks it demonstrably is not.
+
+**Sections 5 and 6 have no figure at all.** §6.7 says why the one attempted for
+§6 was not shipped.
+
+`panels/calibration_summary.png` regenerates here, from `scripts/calib_figure.py`.
+The other twenty-seven do not: they come from three producers that need the
+annotation tree — the per-scroll L3 slice PNGs, the side projections and the
+tracer — and would be dead code in a bare clone. `scripts/README.md` names all
+three, says what each draws, and reports the byte-identity check each was
+verified with.
+
 ## What is scripted
 
 | number | script | runs on a fresh clone? |
@@ -974,10 +1040,18 @@ adding only `source_volume` and `annotator_note`.
 ## Files
 - `PHercNNNN_umbilicus.json` × 10 — the axes.
 - `panels/axis_PHercNNNN.png` — each axis drawn on its scroll.
+- `panels/axis_polylines_all_ten.png` — all ten axes as node polylines on the
+  XZ side projection, with the §3 calibration numbers.
+- `panels/annotation_site_PHerc{0191,0358,1203}.png` and
+  `panels/annotation_site_closeup_PHerc1203.png` — the annotation site itself:
+  crop, detector suggestion, and the turns traced around an annotated node.
 - `panels/step2_stack_*.png`, `panels/step2_points_*.png` — the winding-order
   test on PHerc 0191, 0358 and 1203.
+- `panels/order_map_*.png`, `panels/order_bump_*.png` — the same three stacks
+  drawn without the slice image, and as a bump chart of arc rank.
 - `panels/calibration_summary.png` — our gates calibrated against sean's three
   published umbilici, all ten scrolls.
+- See the "Panels" section above for what each one shows and what regenerates it.
 - `STEP2_CONSISTENCY.md` — the full evidence behind the winding-order test,
   including the results that go against us.
 - `qc/validation_raw.json` — the raw per-slice measurements of the shifted-axis

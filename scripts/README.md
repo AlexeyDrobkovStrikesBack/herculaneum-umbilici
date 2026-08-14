@@ -178,20 +178,46 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
 
 ## The panel producers
 
-`calib_figure.py` (here) draws `panels/calibration_summary.png`. The other sixteen panels
-are drawn by two scripts that are **not** shipped, because both need the annotation tree
-to run at all and would be dead code here: `qc/ось_панель_en.py` draws the ten axis
-panels from each scroll's side projections, and `qc/шаг2_код/viz_en.py` draws the six
-step2 panels from the traced stacks. Ask and we will send them.
+`calib_figure.py` (here) draws `panels/calibration_summary.png`. The other twenty-seven
+panels are drawn by three scripts that are **not** shipped, because all three need the
+annotation tree to run at all and would be dead code here: `qc/ось_панель_en.py` draws the
+ten axis panels from each scroll's side projections, `qc/шаг2_код/viz_en.py` draws the six
+step2 panels from the traced stacks, and `qc/эвиденс_кандидаты/код/evidence_panels_en.py`
+draws the eleven added on 2026-08-14 — the ten-scroll axis atlas, the four annotation-site
+panels and the six order-map / bump panels. Ask and we will send them.
 
-The step2 panels were re-rendered from Russian into English for this release. That
-re-render was checked rather than assumed: `viz_en.py` has a `--ru` mode that renders the
-original Russian strings through the same code path, and in that mode it reproduces all
-six previously published panels **byte-identically**. The English panels therefore differ
-from them in text only — no number, colour, threshold or layout changed. The one
-substantive wording change is deliberate and is the reason for the re-render: the figures
-now say *traced arcs*, never *physical sheets*, matching the caveat in the top-level
-README.
+All eleven of the last group need the tree twice over: the four annotation-site panels
+read the per-scroll L3 slice PNGs and the ring detector's `кандидаты_*.json`, the atlas
+reads the pre-rendered side projections, and the six order panels re-run the tracer that
+`order_stat.py`'s row in the top-level README explains is not in this repository. The
+`.npz` fixtures that ship are the tracer's *output*, which is enough to recompute §1's
+statistic but not enough to redraw the arcs on a slice.
+
+Every one of these panels was re-rendered from Russian into English rather than edited as
+pixels, and that re-render was checked rather than assumed. `viz_en.py` and
+`evidence_panels_en.py` both have a `--ru` mode that renders the original Russian strings
+through the same code path. In that mode `viz_en.py` reproduces all six previously
+published step2 panels **byte-identically**, and `evidence_panels_en.py` reproduces all
+eleven staged Russian candidates **byte-identically** (verified 2026-08-14, matplotlib
+3.11.1). The English panels therefore differ from them in text only — no number, colour,
+threshold or layout changed by accident.
+
+Three differences are deliberate, and they are the reason for the re-render:
+
+1. The figures say *traced arcs*, never *physical sheets*, matching caveat 1(a) in the
+   top-level README.
+2. The atlas footer carries the ring-gate calibration §3 now states (268.3 over 279
+   points) instead of the withdrawn 265, and the order panels carry the sentence §1
+   states about what the winding-order test does *not* show. Both are in the `EN` string
+   table only, so `--ru` still reproduces the original bytes and the check stays runnable.
+3. `annotation_site_PHerc0191.png` shows z = 10208 where the Russian candidate showed
+   z = 8768. z = 8768 is in the annotation catalogue but is **not** a control point of the
+   shipped `PHerc0191_umbilicus.json` — it is one of the nine points finalization dropped
+   as an unconfirmed auto-suggestion — so the cross drawn there was the interpolated
+   polyline while the panel title said "where the axis was annotated". z = 10208 is the
+   nearest kept control point to mid-height. This is the one change that is not text, and
+   it is a correction; `--ru` keeps the original z so the byte check still covers the
+   Russian file.
 
 `calibration_summary.png` was re-rendered once more after that, to relabel its
 right-hand panel (see `calib_figure.py` above). Same check: the shipped script
