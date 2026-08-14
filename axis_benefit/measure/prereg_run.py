@@ -48,7 +48,7 @@ DR_GRID = np.arange(4.0, 30.01, 0.5)
 CONTROL_D = [25, 50, 100, 200, 400, 800]
 CONTROL_DIRS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 CONTROL_K = [0, 5, 10, 15, 20, 25]          # which of the 30 slices carry the control
-STATUS = "/home/alexr/vesuvius/load_status.txt"
+STATUS = "<work>/load_status.txt"
 
 
 # ------------------------------------------------------------ compute gate --
@@ -84,7 +84,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("scrolls", nargs="+")
     ap.add_argument("--umb-suffix", default="_umbilicus.json")
-    ap.add_argument("--umb-dir", default="/home/alexr/vesuvius/umbilici_repo")
+    ap.add_argument("--umb-dir", default="<work>/umbilici_repo")
     ap.add_argument("--out-suffix", default="")
     ap.add_argument("--no-control", action="store_true")
     args = ap.parse_args()

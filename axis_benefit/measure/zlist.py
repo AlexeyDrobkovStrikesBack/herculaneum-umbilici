@@ -1,7 +1,7 @@
 """The pre-registered slice list: 30 z per scroll, evenly spaced over the
 annotated z-range, endpoints included, snapped down to an even level-0 index."""
 import json
-SC=json.load(open('/home/alexr/vesuvius/_axisdemo/scroll_meta.json'))
+SC=json.load(open('<work>/_axisdemo/scroll_meta.json'))
 N=30
 def zs(s):
     m=SC[s]; a,b=m['zmin'],m['zmax']

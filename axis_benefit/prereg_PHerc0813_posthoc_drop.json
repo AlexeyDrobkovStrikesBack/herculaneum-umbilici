@@ -1,7 +1,7 @@
 {
  "scroll": "PHerc0813",
  "volume": "vesuvius-challenge-open-data/PHerc0813/volumes/20250821151723-9.362um-1.2m-113keV-masked.zarr",
- "umbilicus": "/home/alexr/vesuvius/_axisdemo/PHerc0813_posthoc_drop.json",
+ "umbilicus": "<work>/_axisdemo/PHerc0813_posthoc_drop.json",
  "level": 1,
  "um_per_px": 18.724,
  "spec": "PREREGISTRATION.md 2026-08-13 17:35",

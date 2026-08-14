@@ -31,7 +31,7 @@ earlier two-scroll, ten-slice result does not enter the analysis in any way.
 ## 2. Tooling — frozen, not to be changed mid-experiment
 
 - **Axis placement**: `umbilicus.json_umbilicus_z_to_yx`, villa's own loader, imported
-  unmodified from `/home/alexr/vesuvius/_villa/volume-cartographer/scripts/spiral/`, called
+  unmodified from `<villa-checkout>/volume-cartographer/scripts/spiral/`, called
   with `downsample_factor=2` (pyramid level 1). This is the loader `fit_spiral.py:137` calls.
 - **Winding parameterisation**: `sample_spiral.get_theta_and_radii`, villa's own, unmodified,
   used for the secondary phase-concentration check (§9).
@@ -53,7 +53,7 @@ earlier two-scroll, ten-slice result does not enter the analysis in any way.
 - `fit_spiral.py` itself cannot run on this machine (no CUDA, Python 3.12 vs required 3.14, no
   prepared spiral dataset). This experiment is therefore a proxy for what the fitter sees, and
   says so wherever it is reported. Nothing about that changes here.
-- `/home/alexr/vesuvius/umbilici_repo` is read-only for this work.
+- `<work>/umbilici_repo` is read-only for this work.
 
 ## 3. Data
 

@@ -1,7 +1,7 @@
 {
  "scroll": "PHerc1203",
  "volume": "vesuvius-challenge-open-data/PHerc1203/volumes/20250820131727-9.362um-1.2m-113keV-masked.zarr",
- "umbilicus": "/home/alexr/vesuvius/umbilici_repo/PHerc1203_umbilicus.json",
+ "umbilicus": "<repo>/PHerc1203_umbilicus.json",
  "level": 1,
  "um_per_px": 18.724,
  "spec": "PREREGISTRATION.md 2026-08-13 17:35",

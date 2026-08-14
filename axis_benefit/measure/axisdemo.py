@@ -36,7 +36,7 @@ import numpy as np
 import torch
 from scipy.ndimage import map_coordinates, distance_transform_edt, gaussian_filter
 
-VILLA_SPIRAL = "/home/alexr/vesuvius/_villa/volume-cartographer/scripts/spiral"
+VILLA_SPIRAL = "<villa-checkout>/volume-cartographer/scripts/spiral"
 sys.path.insert(0, VILLA_SPIRAL)
 from umbilicus import json_umbilicus_z_to_yx  # noqa: E402  villa, unmodified
 import sample_spiral  # noqa: E402  villa, unmodified

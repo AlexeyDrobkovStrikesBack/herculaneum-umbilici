@@ -26,7 +26,7 @@ import tiled_st               # noqa: E402
 import zslice_http as Z       # noqa: E402
 from prereg_run import VOL, LEVEL, common_outer_radius_strict, R0_FRAC  # noqa: E402
 
-SRC = "/home/alexr/vesuvius/umbilici_repo/PHerc0813_umbilicus.json"
+SRC = "<repo>/PHerc0813_umbilicus.json"
 SUSPECT_Z = [6616, 9296]
 # by-eye placements, level-0 (x, y).  Read off the zoomed cross-sections from the
 # curvature of the sheets; the sections are badly crushed and these carry an
