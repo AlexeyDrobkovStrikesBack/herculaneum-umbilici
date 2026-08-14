@@ -7,28 +7,28 @@ would rather state them than have you find them.
 
 Requires `numpy`, `Pillow`, `scipy`, and `matplotlib` for `calib_figure.py`;
 `requirements.txt` pins the versions every number here was produced or
-re-verified with. The **five** that run on a fresh clone need **only `numpy` and
+re-verified with. The **six** that run on a fresh clone need **only `numpy` and
 `scipy`** — checked by running them against a clone with nothing but those two
 importable.
 
 ## Where they look for data
 
 Every script resolves its data from `UMBILICI_ROOT`, defaulting to the
-repository root. **`UMBILICI_TREE` is read by six of the thirteen** —
+repository root. **`UMBILICI_TREE` is read by six of the fifteen** —
 `axis_stats.py` (for `PHercNNNN/meta.json` and `ref_sean/`), `calib_sean.py`
 (for the slice PNGs and `ref_sean/`), `calib_figure.py`, which imports both
 variables from `calib_sean.py` and uses `UMBILICI_TREE` for `ref_sean/` only,
 `fetch_sean.py` (it installs into `{UMBILICI_TREE}/ref_sean/`), and the
 `--measure` modes of `stick_control.py` and `snapshot_recheck.py` (for the slice
-PNGs). The other seven — `validate_axes.py`, `validate_bands.py`, `qc_gates.py`,
-`qc_sheet.py`, `finalize.py`, `count_wins.py` and `order_stat.py` — take
-**everything** from
+PNGs). The other nine — `validate_axes.py`, `validate_bands.py`, `qc_gates.py`,
+`qc_sheet.py`, `finalize.py`, `count_wins.py`, `order_stat.py`,
+`pitch_table.py` and `axis_benefit.py` — take **everything** from
 `UMBILICI_ROOT`, tree data included: `validate_axes.py` reads
 `{UMBILICI_ROOT}/PHercNNNN/meta.json` and `{UMBILICI_ROOT}/submission/`
 (`validate_axes.py:164-165`), `finalize.py` reads `auto_centers.json` and
 `meta.json` from the same root (`finalize.py:39,75`), `qc_sheet.py` likewise
 (`qc_sheet.py:24,28`). Setting `UMBILICI_TREE` has no effect on any of those
-six. A previous version of this paragraph said every script honoured it, and
+nine (an earlier version of this paragraph said six, and listed seven). A previous version of this paragraph said every script honoured it, and
 the worked example it gave — `export UMBILICI_TREE=…` followed by
 `validate_axes.py` — did nothing for exactly that reason. The variable was
 introduced in this release; this is what it actually reaches.
@@ -41,6 +41,7 @@ python3 scripts/order_stat.py        # the winding-order statistic, from the fix
 python3 scripts/stick_control.py     # the straight-stick control
 python3 scripts/snapshot_recheck.py  # the same control on the snapshot and on the final files
 python3 scripts/pitch_table.py        # the five-spot winding pitch, voxel-corrected
+python3 scripts/axis_benefit.py      # the pre-registered axis-benefit run of README section 6
 
 # with the annotation tree — the three scripts that read UMBILICI_TREE:
 export UMBILICI_TREE=/path/to/annotation/tree
@@ -63,15 +64,16 @@ The annotation tree is **not** fully contained in this repository:
 | `ref_sean/` | sean's three published umbilici, for calibration | no — and **not on any public URL we could find**; see `fetch_sean.py`. Their sha256 and derived values ship in `qc/sean_reference.json` |
 | `qc/` | gate reports and json written by these scripts | no (it is gitignored); the published panels are in `panels/` |
 
-**Five scripts run on a fresh clone with nothing else**: `axis_stats.py`
+**Six scripts run on a fresh clone with nothing else**: `axis_stats.py`
 (everything about the ten polylines, the coverage columns, and all thirteen
 smoothness rows — sean's three from the shipped digest, marked as such),
 `count_wins.py` (the shifted-axis control from the raw json that
 `validate_axes.py` writes, which ships), `order_stat.py` (the winding-order
 statistic from the shipped fixtures), `stick_control.py` (the straight-stick
-control) and `snapshot_recheck.py` (the shifted-axis control on both the
-snapshot and the final files). `fetch_sean.py` needs no third-party package at
-all. The rest need the slice PNGs. The axes and the panels are self-contained; the
+control), `snapshot_recheck.py` (the shifted-axis control on both the
+snapshot and the final files) and `axis_benefit.py` (the pre-registered
+axis-benefit run, from the per-slice results in `axis_benefit/`).
+`fetch_sean.py` and `pitch_table.py` need no third-party package at all. The rest need the slice PNGs. The axes and the panels are self-contained; the
 scripts are here so the method is inspectable and so the numbers can be
 recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce it.
 
@@ -159,6 +161,17 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
 - `pitch_table.py` — **new.** Prints the five-spot winding-pitch table of the
   README caveats from `qc/winding_map_metrics.json`, applying the per-scroll
   voxel correction the demo pipeline missed. Standard library only.
+- `axis_benefit.py` — **new.** Every statistic in README section 6, recomputed
+  from the ten `axis_benefit/prereg_PHercNNNN.json`: the per-scroll table, the
+  primary Wilcoxon over the ten scroll means, both stick baselines, the
+  worst-case exclusion check, the displaced-axis control and the 1.81 mm
+  sensitivity floor, how far the stick actually sits from the annotated axis,
+  villa's R̄, and the three post-hoc PHerc0813 variants with the distances
+  between the three placements. It also re-derives the 300 slice indices from
+  the shipped umbilicus files and checks the run used exactly those, so the
+  sampling rule is verifiable rather than asserted. It does **not** measure
+  anything — the measurement is `axis_benefit/measure/`, which needs the public
+  volumes and villa's spiral code; see README section 6.9. About 5 seconds.
 - `fetch_sean.py` — **new.** Installs and verifies sean's three reference
   umbilici against the sha256 in `qc/sean_reference.json`, and states where they
   actually came from. It refuses to install a file whose hash does not match.

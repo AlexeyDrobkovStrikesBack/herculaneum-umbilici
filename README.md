@@ -43,6 +43,13 @@ Downstream consumer, run rather than assumed: villa's spiral loader
 of these files and sean's three. All thirteen parse and return a working
 z → (y, x) interpolator. See "Format compatibility" below.
 
+Parsing is not benefit, so that loader was then used to ask whether the axis buys
+the tool anything: on a rule fixed in writing beforehand, over 300 cross-sections
+of all ten scrolls, the annotated axis beats the best straight vertical stick on
+10 of 10 scrolls, p = 0.0020, 2.03× — and the measure that says so is blind below
+1.81 mm, so it credits gross placement and not annotation precision. That is
+validation check 6, and its figure failed.
+
 ## Method
 Manual annotation on ~31 axial slices per scroll (small web annotator with
 auto-suggested centers, triplanar side views and winding-ring overlays;
@@ -59,8 +66,15 @@ click, so we would rather list them.
 
 ## Validation
 
-Five checks, and they are not equally reproducible. To be exact:
+Six checks, and they are not equally reproducible. To be exact:
 
+- **Check 6 (does the axis help a tool?) reproduces from a fresh clone**, from
+  the ten `axis_benefit/prereg_PHercNNNN.json` via `scripts/axis_benefit.py`. It
+  is the only check here that asks whether these files benefit anything rather
+  than what they look like, and it is the only one that was pre-registered — the
+  specification ships as `axis_benefit/PREREGISTRATION.md`. The measurement that
+  produced those per-slice files does not run from a clone: it streams 5.7 GB out
+  of the public volumes and imports villa's spiral code. §6.9 says so exactly.
 - **Check 2 (the shifted-axis control) reproduces from a fresh clone.** Its raw
   per-slice measurements ship as `qc/validation_raw.json`, and
   `scripts/count_wins.py` recomputes every count, rate, median and p-value
@@ -564,10 +578,321 @@ smoothed version of itself — we cannot rule out with this design.
 Unlike section 2 this control was measured on the final shipped files, so it
 carries no snapshot caveat.
 
+### 6. Does the axis help a tool? A pre-registered run on all ten scrolls
+
+Sections 1–5 are statistics about the axes. None of them is a test of whether
+the axes help anyone, and that is the thing reviewers of contributions like this
+one ask for: a true test that it benefits current tooling — `fit_spiral.py` is
+the tool usually named — or images and demonstrations of accuracy. This package
+did not have one. This section is that test. Its figure failed; §6.7 says so
+before anyone has to ask.
+
+**The result.** Under a rule fixed in writing before any comparative quantity
+existed, the annotated axis makes the papyrus more concentric about it than the
+best straight vertical stick does about itself, on **10 of 10 scrolls** —
+Wilcoxon signed-rank over the ten per-scroll means, **W = 0.0, p = 0.0020**
+two-sided, pooled **+0.1611 against +0.0795, 2.03×**, 209 of 252 slices.
+
+**The bound, in the body and not in a footnote.** The measure is **blind below
+1.81 mm**. It resolves gross displacement, not annotation-scale accuracy — the
+same wall section 2 hits, reached again from a different direction with a
+different measure. **This section therefore credits gross axis placement and can
+never credit annotation precision.** It stands up because the straight stick is a
+median **6.0 mm** off, three times that floor, not because our clicking is good.
+
+`scripts/axis_benefit.py` recomputes every number below from `axis_benefit/` on a
+fresh clone with numpy and scipy. The measurement itself does not run here; §6.9
+says exactly what it needs.
+
+**There was an earlier attempt, and it is not hidden.** A first, exploratory run
+on ten cross-sections of two scrolls gave 7/10 slices, 0.138 against 0.084
+(1.65×), Wilcoxon p = 0.037 — **but its annulus rule was adopted after a first
+rule had returned a null** (5 of 8, p = 0.25). That is a forking path, so that
+number was never quoted and is not quoted here; it is why the run below was
+pre-registered instead. The two z-samplings do not intersect at all: **none of
+the 300 slices below was scored by the earlier run** (`scripts/axis_benefit.py`
+prints the 300 indices it re-derives; the earlier run used z = 6000, 7500, 9000,
+10500, 12000 on PHerc0268 and 4000, 6500, 9000, 11500, 14000 on PHerc0813, and
+not one of those ten is in the 300).
+
+#### 6.1 What was fixed in advance, and when
+
+The specification ships verbatim as `axis_benefit/PREREGISTRATION.md`, written
+before any comparison existed. In summary:
+
+| decision | fixed value |
+|---|---|
+| scrolls | all ten, none droppable afterwards |
+| slices | 30 per scroll, `z_k = round(z_min + k(z_max−z_min)/29)`, k = 0..29, decremented if odd; `z_min`, `z_max` = the first and last annotated control point |
+| axis A | villa's `json_umbilicus_z_to_yx` at `downsample_factor = 2` |
+| baseline B1 (primary) | straight vertical stick at the mean of that scroll's annotated control points — the strongest straight baseline |
+| baseline B2 (secondary) | straight vertical stick at the volume centre, i.e. no umbilicus at all |
+| annulus | equal-evidence: largest `r1` in [400, 2000] at which A, B1 **and** B2 each see a ring ≥ 95% on the scroll; `r0 = 0.25 r1` |
+| coverage inadequate | slice is non-scorable, counted and reported (§6.5) |
+| visibly bad annotation | **not excluded** — in particular the two PHerc0813 points §6.6 is about |
+| measure | radial gradient anisotropy `q`, 72 sectors, σ_d 1.5, σ_t 6.0, subsampling 2 |
+| primary statistic | per-scroll mean of (q_A − q_B1) |
+| primary test | two-sided Wilcoxon signed-rank over the ten scroll values, α = 0.05 |
+| failure | p ≥ 0.05, **or** fewer than 6 of 10 scrolls positive → claim not made |
+| third variant | forbidden |
+
+The slice indices were a rule, not a choice, and that is checkable rather than
+asserted: `scripts/axis_benefit.py` re-derives all 300 from the ten shipped
+`PHercNNNN_umbilicus.json` and reports that the run used exactly those.
+
+`q` = +1 means every sheet crosses every ray at right angles, i.e. the sheets are
+the circles villa's spiral model assumes; 0 means no preference; negative means
+sheets running radially. The structure tensor is computed once per slice and does
+not depend on the axis, so **all three conditions are scored on identical image
+evidence** — only the axis differs.
+
+#### 6.2 The tool, and what could not be run
+
+Villa's own `scripts/spiral/umbilicus.py` — the loader `fit_spiral.py:137` calls
+on `<dataset>/umbilicus.json`, which is what our ten files are — and villa's own
+`scripts/spiral/sample_spiral.py`, both imported **unmodified**. Nothing was
+reimplemented, so what is compared is the tool's model rather than a paraphrase
+of it.
+
+**`fit_spiral.py` itself could not be run here, and this is not its output.**
+Three separate reasons, each sufficient: it requires a CUDA-capable PyTorch and
+this machine has no NVIDIA device (`torch 2.13.0+cpu`, `torch.cuda.is_available()`
+false); its `scripts/spiral/.python-version` pins **3.14** and this machine has
+3.12.3; and it consumes a prepared dataset root containing `verified_patches/`,
+which does not exist for any of these ten scrolls and which we cannot produce
+here. So this is a proxy for one geometric property the fitter's model asserts,
+measured through the fitter's own loader and parameterisation. It is not the
+fitter's loss and does not stand in for it. See §6.8.
+
+#### 6.3 The pre-registered result
+
+| scroll | scorable | dropped | mean q annotated | mean q stick | **Δ** | slice wins |
+|---|---|---|---|---|---|---|
+| PHerc0191 | 30 | 0 | +0.1250 | +0.0783 | **+0.0467** | 20/30 |
+| PHerc0257 | 29 | 1 | +0.1292 | +0.0655 | **+0.0637** | 23/29 |
+| PHerc0268 | 28 | 2 | +0.1277 | +0.0867 | **+0.0410** | 23/28 |
+| PHerc0358 | 26 | 4 | +0.1787 | +0.0824 | **+0.0962** | 26/26 |
+| PHerc0800 | 26 | 4 | +0.2213 | +0.0646 | **+0.1566** | 26/26 |
+| PHerc0813 | 29 | 1 | +0.1701 | +0.0795 | **+0.0906** | 23/29 |
+| PHerc1203 | 29 | 1 | +0.2201 | +0.1374 | **+0.0828** | 24/29 |
+| PHerc1218 | 17 | 13 | +0.1154 | +0.0553 | **+0.0602** | 12/17 |
+| PHerc1447 | 25 | 5 | +0.1490 | +0.0603 | **+0.0887** | 20/25 |
+| PHerc1545 | 13 | 17 | +0.1636 | +0.0612 | **+0.1024** | 12/13 |
+
+- **Primary: Wilcoxon signed-rank on the ten Δ values, W = 0.0, p = 0.0020,
+  two-sided.** That is the smallest p this test can return at n = 10 — every
+  scroll moved the same way.
+- **10 of 10 scrolls positive**, against a pre-registered requirement of ≥ 6.
+- Pooled over the 252 scorable slices: **+0.1611 against +0.0795, 2.03×**;
+  medians +0.1482 against +0.0817; **209 of 252** slice-level wins.
+- Secondary, against the volume-centre stick: +0.1611 against +0.0766, **2.10×**,
+  W = 0.0, p = 0.0020, 10/10, 206/252 slices.
+- Secondary and **anticonservative, so not the headline**: slices within a scroll
+  are not independent, and the slice-level tests pseudoreplicate exactly the way
+  section 2's pooled binomial does. For completeness they are Wilcoxon
+  p = 1.3e-28 and sign test p = 2.3e-27. The scroll is the unit of replication.
+- The wins are large and the losses are small: mean gap +0.1050 on the 209 wins,
+  −0.0322 on the 43 losses. The annotated axis loses where it is already weak —
+  mean q +0.0927 on its losses against +0.1752 on its wins. **The 43 losses are
+  real and they are in the table above.**
+
+**Villa's own winding-phase concentration does not discriminate, and we report
+that too.** Computed with villa's `get_theta_and_radii` on all 252 slices, `dr`
+swept 4.0–30.0 independently per axis: mean R̄ 0.0145 (annotated), 0.0147 (mean
+stick), 0.0146 (volume-centre stick). At the noise floor for every axis on every
+slice and identical between them. A single global Archimedean spiral does not
+describe these crushed cross-sections regardless of the axis — which is why
+`fit_spiral` carries a deformation field — and this quantity cannot tell axes
+apart. It is reported because it is villa's own, not because it helps.
+
+#### 6.4 The sensitivity floor, which bounds what this can claim
+
+Our own axis displaced sideways by d in four directions, on the six
+pre-registered control slices per scroll (60; 53 had valid coverage). Displaced
+centres are kept only where the ring at r1 is still ≥ 95% on the scroll.
+
+| displacement | mm | slices | median q(annotated) − q(displaced) | mean | fraction degraded |
+|---|---|---|---|---|---|
+| 25 px | 0.45 | 53 | +0.0007 | +0.0006 | 0.70 |
+| 50 px | 0.91 | 53 | +0.0030 | +0.0027 | 0.70 |
+| **100 px** | **1.81** | 52 | **+0.0105** | +0.0104 | 0.77 |
+| 200 px | 3.63 | 51 | +0.0321 | +0.0342 | 0.80 |
+| 400 px | 7.23 | 45 | +0.0594 | +0.0823 | 0.87 |
+| 800 px | 14.27 | 18 | +0.0750 | +0.1001 | 0.94 |
+
+**The measure is not insensitive to the axis**: at the largest valid displacement
+the score is lower than at the annotated axis on **43 of 53** control slices, and
+it falls monotonically. **The floor is 100 px = 1.81 mm**, the first displacement
+whose median drop reaches the pre-registered 0.01 threshold. Below it, moving the
+axis half a millimetre changes q in the fourth decimal, which is noise.
+
+**Why the result is nevertheless not an artifact of a blind instrument.** The
+straight stick sits a median **6.0 mm** from the annotated axis over the 252
+slices (mean 7.4 mm; per-scroll medians 3.9 mm on PHerc1203 to 15.9 mm on
+PHerc0268). That is three times the floor. The gap we measure is +0.0816 pooled;
+the control says a displacement of this order should cost between **+0.0321**
+(its median at 3.63 mm) and **+0.0594** (its median at 7.23 mm, where its mean is
++0.0823). So the effect is the right size for an axis error of several
+millimetres — at the top of that bracket rather than in the middle of it, and we
+are not claiming a match to a decimal place.
+
+**What that leaves.** This section establishes that **a straight vertical axis is
+wrong by several millimetres on these scrolls and that this costs a downstream
+geometric measure about half of what it can score.** It establishes nothing about
+millimetre-scale annotation quality, and no experiment of this shape can. Section
+2 says the same thing in its own words — *"this measure resolves gross
+displacement, not annotation-scale accuracy"* — about a different measure on
+different slices.
+
+Note also what this does **not** repair: section 5's dose–response is still flat.
+That is a different measure (banded energy) binned by stick distance, and the
+monotone control above does not stand in for it.
+
+#### 6.5 The 48 non-scorable slices, charged against us
+
+The exclusion rule is a joint requirement on all three axes, so no slice can be
+dropped for the annotation alone. Of the 48 dropped, the axis whose ring failed
+the 95% coverage test at r = 400 was **the annotated axis on 8**, the
+annotation-mean stick on **37**, and the volume-centre stick on **41** (they
+overlap; a slice can fail for more than one). Most drops are the *sticks* running
+off the edge of the scroll — that is, the exclusion removes slices the annotated
+axis would mostly have won, so it works against this claim rather than for it.
+Two scrolls carry most of them (PHerc1545 17, PHerc1218 13), both because
+annotation and stick diverge so far that no common ring survives.
+
+**The adversarial version, pre-registered before the drops were known: charge
+every one of the 48 to the annotated axis as a loss.** Slice-level wins become
+**209/300, sign test p = 7.7e-12**. The result does not depend on the exclusions.
+
+#### 6.6 Post-hoc, and labelled post-hoc: the two bad PHerc0813 points
+
+Not part of the pre-registered result — the primary number above keeps these
+slices in, exactly as the specification required. Two PHerc0813 control points,
+z = 6616 at (x 4748, y 5784) and z = 9296 at (x 5710, y 3978), sit visibly off
+the coil centre on the rendered cross-sections. Three corrections were tried,
+each in a *copy* of the JSON; the shipped file was not touched.
+
+| variant | how the two points were re-placed | PHerc0813 Δ | primary test with it substituted |
+|---|---|---|---|
+| **pre-registered, unchanged** | not touched | **+0.0906** | W = 0.0, p = 0.0020 |
+| post-hoc "eye" | placed by eye from the sheet curvature, without reference to q | +0.0788 | W = 0.0, p = 0.0020 |
+| post-hoc "drop" | deleted, letting villa's loader interpolate across | +0.0721 | W = 0.0, p = 0.0020 |
+| post-hoc "argmax" | placed at the q-argmax on their own slice — **circular by construction, an upper bound** | +0.0829 | W = 0.0, p = 0.0020 |
+
+**All three corrections leave PHerc0813's Δ *lower* than the uncorrected
+annotation** — including the circular upper bound that was allowed to choose the
+axis the score likes best — and the primary test is unchanged at p = 0.0020 in
+every variant. Those two points are worth fixing for the package's own sake; they
+do not move this number.
+
+**The by-eye replacement is low-confidence and should be read that way.** Those
+two cross-sections are crushed flat and show no identifiable whorl, so the
+placement carries an uncertainty of roughly ±300 level-0 voxels (2.8 mm). It sits
+13.0 mm and 13.4 mm from the published points, and **13.7 mm and 16.3 mm from the
+q-argmax** — that disagreement is evidence the eye was not following q, which is
+what it was for, but it also means "eye" is one plausible correction, not the
+correction. `scripts/axis_benefit.py` prints all three placements and every
+pairwise distance.
+
+#### 6.7 The figure failed, and it is not shipped
+
+A reviewer asking for "accompanying images or demonstrations of accuracy"
+deserves to be told this before they go looking. **We tried to build the picture,
+under its own stated rule, and nothing passed.**
+
+The rule, fixed before rendering and never applied to any number in §6.3–§6.6:
+candidates are the 300 pre-registered slices ranked by q on the **annotated axis
+only** (ranking on one panel cannot manufacture a gap in the other), capped at 3
+per scroll; a narrow near-core annulus, `r_in` the smallest radius ≥ 40 px where
+both axes see a ≥ 95% ring and `r_out = r_in + 12 × pitch` from villa's own best
+`dr`; angular sampling at Nyquist along the arc; legibility = the fraction of the
+unwrap's spectral energy in the winding band sitting at angular frequency |m| ≤ 2,
+i.e. "how much of the layered signal runs horizontally"; ship only if the
+annotated panel shows readable horizontal bands and the stick panel their break.
+
+**Nothing passed.** The best full-turn legibility across all ten scrolls was
+PHerc0191 z = 3496 at **0.184 annotated against 0.049 for the stick** — a real
+and large ratio, and the panel still reads as chaos. PHerc0257 z = 3872 gave
+0.122 against 0.079; PHerc1203 z = 13558 gave 0.130 against 0.082, and there the
+two axes are only ~4 mm apart so the panels look alike anyway.
+
+**Checked on known-good data before blaming the material.** PHercParis4
+(Scroll 1) at 45.532 µm, an intact scroll, at its visible core, with the centre
+additionally optimised by search *for legibility*, reaches only **0.094** — no
+better than our crushed scrolls, and its unwrap shows a clean two-lobed sweep,
+which is ovality of the coil rather than a wrong centre. So the failure is not
+our axes and not our scrolls: sheets in a Herculaneum cross-section do not lie on
+circles about *any* point well enough to read as horizontal bands over a full
+turn at these resolutions.
+
+**The only crops that do read as bands are 90° windows chosen because they look
+right.** PHerc0191 z = 3496, sector 270–360°, reaches 0.642 against the stick's
+0.328 and is genuinely legible. That is a flattering crop; the honest answer to
+"why only a quarter turn?" is "because the other three quarters do not work", so
+**it is not shipped**.
+
+**The finding, plainly: a demonstration of this kind in unwrap form does not
+exist for this material.** The statistic is real at 2× and p = 0.0020 and it is
+not visible to the eye in a polar unwrap, because what q measures — a
+several-millimetre bias in a gradient-direction average over 72 sectors — is not
+what an eye picks out of a crushed cross-section. We stopped building this figure
+rather than ship a caption describing something the image does not contain.
+
+#### 6.8 What this establishes, and what it does not
+
+**Established.** Under a rule fixed in writing before the data were touched, the
+annotated axes make the papyrus more concentric than the best straight vertical
+stick on all ten scrolls, 2.03×, p = 0.0020, and the result survives charging
+every excluded slice against us. Villa's spiral geometry is demonstrably
+sensitive to the axis (43/53 control slices degrade monotonically). The
+sensitivity floor is 1.81 mm and the effect lives at a median 6.0 mm.
+
+**Not established, and not claimed.**
+
+- **This is not `fit_spiral`'s output** (§6.2). The real fitter also carries a
+  deformation field, surface tracks, patches and winding-consistency losses, any
+  of which could recover from a wrong axis or profit from a right one in ways
+  nothing here measures. The unambiguous version of this experiment is a GPU host
+  with a prepared spiral dataset and `fit_spiral` run twice on one scroll; that
+  is still the thing to do and this is not a substitute for it.
+- **Nothing here credits annotation precision** (§6.4), and no experiment of this
+  shape can.
+- Nothing here confirms or overturns sections 1–5, which use different measures
+  on different slices.
+- One thing this run suggested and did **not** test, left for a fresh
+  pre-registration rather than reported alongside as a result: the effect looks
+  largest where the annotation departs furthest from vertical. That is a new
+  claim and it needs its own specification, written first.
+
+#### 6.9 What ships, and what does not travel
+
+Shipped: `axis_benefit/PREREGISTRATION.md` (the specification, verbatim), the ten
+`axis_benefit/prereg_PHercNNNN.json` (every slice, every axis, every control
+displacement, with the q, the pixel count, the ring coverage, the displacement in
+µm and villa's R̄), the three post-hoc variants and the corrected copies they were
+run from, and `axis_benefit/measure/` (the measurement code as it ran). 760 KB in
+total. `scripts/axis_benefit.py` turns the per-slice values into every statistic
+above on a fresh clone.
+
+**What does not travel is the measurement itself.**
+`axis_benefit/measure/prereg_run.py` streams one z-plane at a time out of ten
+masked OME-Zarr volumes in `vesuvius-challenge-open-data` — level 1 of each
+scroll's prize volume, uint8, 3422² to 6073² per slice, so **12 to 38 MB of range
+reads per slice and about 5.7 GB across the 300** — and nothing is cached, so
+re-measuring means re-streaming. It also imports villa's `umbilicus.py` and
+`sample_spiral.py` from a `volume-cartographer` checkout: those are not ours to
+redistribute and are referenced by path rather than copied. It needs torch (CPU
+is enough). Every volume id is in `PREREGISTRATION.md` §3 and in each scroll's
+own `metadata.source_volume`, so the inputs are named exactly and are public.
+The run took 39 minutes of wall time in two processes of two torch threads each.
+
 ## What is scripted
 
 | number | script | runs on a fresh clone? |
 |---|---|---|
+| **every number in §6** — the per-scroll table, W = 0.0 / p = 0.0020, the pooled 2.03× and 2.10×, 209/252, the worst-case 209/300 at p = 7.7e-12, the drop attribution 8 / 37 / 41, the control table and the 1.81 mm floor, the 6.0 mm median stick distance, R̄, the three post-hoc variants and the distances between the three placements — and the check that the 300 slice indices are the ones the pre-registered rule gives | `scripts/axis_benefit.py` | **yes** — the ten `axis_benefit/prereg_PHercNNNN.json` ship (760 KB with the post-hoc files and the measurement code) |
+| **the per-slice q values themselves** | `axis_benefit/measure/prereg_run.py`, shipped verbatim as it ran | **no.** It streams 12–38 MB per slice, about 5.7 GB over the 300, out of the ten masked OME-Zarr volumes named in `axis_benefit/PREREGISTRATION.md` §3, and it imports villa's `umbilicus.py` and `sample_spiral.py` from a `volume-cartographer` checkout, which are referenced by path rather than redistributed. Needs torch; CPU is enough |
+| **the figure of §6.7** | **there is none, and that is the finding.** §6.7 gives the selection rule it was built under, the four best candidates and their scores, the Scroll 1 control at 0.094, and why the one legible crop was not shipped | — |
 | 20.7 mm / 19.9 mm deviation, 37.9 mm sweep, 19.0 mm optimal stick, largest gap 2400 vox **and its endpoints z 15480→17880** | `scripts/axis_stats.py` | **yes** |
 | **our ten rows** of the §3 kink table — all three columns, the z-spacing of each, and the matched-triple counts | `scripts/axis_stats.py` | **yes** |
 | **sean's three rows** of the §3 kink table, his 61–98 band and his 51–87 matched range | `scripts/axis_stats.py`, `scripts/fetch_sean.py` | **the values yes, the recomputation no.** His files are not ours to redistribute and are not on any public URL we could find (see the correction in §3), so the six numbers of each row ship in `qc/sean_reference.json` with the sha256 of the file they came from, and print marked as such. Supply his files and the script recomputes them and reports whether they agree |
@@ -666,6 +991,18 @@ adding only `source_volume` and `annotator_note`.
   recomputed without the tracer.
 - `qc/sean_reference.json` — sha256 and derived smoothness numbers for sean's
   three reference umbilici, which are not redistributed here (§3).
+- `axis_benefit/PREREGISTRATION.md` — the specification of §6, fixed in writing
+  before any comparative quantity existed, shipped verbatim.
+- `axis_benefit/prereg_PHercNNNN.json` × 10 — the per-slice results of §6: for
+  every one of the 300 slices, the q of each axis and of every control
+  displacement, with the pixel counts, ring coverage, the stick's displacement in
+  µm and villa's R̄. `scripts/axis_benefit.py` recomputes §6 from these.
+- `axis_benefit/prereg_PHerc0813_posthoc_{eye,drop,argmax}.json` and the three
+  corrected `PHerc0813_posthoc_*.json` they were run from — the post-hoc variants
+  of §6.6. These are **not** the published annotation; the shipped
+  `PHerc0813_umbilicus.json` is untouched.
+- `axis_benefit/measure/` — the measurement code of §6 as it ran. It does not run
+  from a bare clone (§6.9); it is here so the method is inspectable.
 - `qc/winding_map_metrics.json` — the winding-map measurement's own output for
   the five readable spots, copied verbatim from the annotation tree, so the
   pitch numbers in the caveats have a source (`scripts/pitch_table.py`).
@@ -682,6 +1019,7 @@ adding only `source_volume` and `annotator_note`.
   numbers above (`qc_gates.py`, `finalize.py`, `validate_axes.py`,
   `validate_bands.py`, `count_wins.py`, `calib_sean.py`, `calib_figure.py`,
   `axis_stats.py`, `qc_sheet.py`, `order_stat.py`, `stick_control.py`,
-  `snapshot_recheck.py`, `fetch_sean.py`, `pitch_table.py`).
+  `snapshot_recheck.py`, `fetch_sean.py`, `pitch_table.py`,
+  `axis_benefit.py`).
 
 The annotator itself is a small web page; happy to share it on request.

@@ -3,9 +3,10 @@
 # uses a recent feature, so older releases are very likely fine; these are the
 # ones we actually ran, not a guess.
 #
-# numpy + scipy alone are enough for the five scripts that run on a bare clone:
+# numpy + scipy alone are enough for the six scripts that run on a bare clone:
 #   axis_stats.py  count_wins.py  order_stat.py  stick_control.py
-#   snapshot_recheck.py   (fetch_sean.py needs neither)
+#   snapshot_recheck.py  axis_benefit.py
+#   (fetch_sean.py and pitch_table.py need neither)
 numpy==2.5.1
 scipy==1.18.0
 
