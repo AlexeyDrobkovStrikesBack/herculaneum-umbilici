@@ -134,10 +134,10 @@ def usable(r, stick):
     return True
 
 
-def block(data, stick):
-    print(f'\n=== annotated axis vs the {stick} stick ===')
-    print(f"{'scroll':10} {'wins':>7} {'rate':>6} {'median ratio':>13} "
-          f"{'median offset':>14} {'p (uncorrected)':>16}")
+def tally(data, stick):
+    """Per-scroll `(wins, n, median ratio, median offset)` against one stick, and
+    the slices the measure could not score. Pure — no printing — so a figure can
+    use exactly the counting `block` prints instead of a second copy of it."""
     per = {}
     dropped = []
     for name in SCROLLS:
@@ -154,6 +154,28 @@ def block(data, stick):
                          if r[f'h_{stick}'] > 0])
         off = np.median([r[f'off_{stick}'] for r in rows])
         per[name] = (w, len(rows), float(rat), float(off))
+    return per, dropped
+
+
+def dose_bins(data, stick):
+    """`(lo, hi, slices, wins)` per offset bin — the dose-response of section 5,
+    which is the half of that control that fails. Same pure-function reason."""
+    out = []
+    for lo, hi in BINS:
+        rows = [r for name in SCROLLS for r in data.get(name, [])
+                if usable(r, stick) and lo <= r[f'off_{stick}'] < hi]
+        if not rows:
+            continue
+        w = sum(1 for r in rows if r['h'] > r[f'h_{stick}'])
+        out.append((lo, hi, len(rows), w))
+    return out
+
+
+def block(data, stick):
+    print(f'\n=== annotated axis vs the {stick} stick ===')
+    print(f"{'scroll':10} {'wins':>7} {'rate':>6} {'median ratio':>13} "
+          f"{'median offset':>14} {'p (uncorrected)':>16}")
+    per, dropped = tally(data, stick)
     for name, (w, k, rat, off) in sorted(per.items(), key=lambda kv: -kv[1][0] / kv[1][1]):
         p = binomtest(w, k, 0.5, alternative='greater').pvalue
         mark = '  <- below 50%' if w / k < 0.5 else ''
@@ -180,15 +202,10 @@ def block(data, stick):
           f'centre and the {stick} stick at that slice):')
     print(f"{'offset':>14} {'slices':>7} {'wins':>7} {'rate':>6} "
           f"{'p (uncorrected)':>16}")
-    for lo, hi in BINS:
-        rows = [r for name in SCROLLS for r in data.get(name, [])
-                if usable(r, stick) and lo <= r[f'off_{stick}'] < hi]
-        if not rows:
-            continue
-        w = sum(1 for r in rows if r['h'] > r[f'h_{stick}'])
+    for lo, hi, n, w in dose_bins(data, stick):
         label = f'{lo}-{hi}' if hi < 10 ** 9 else f'{lo}+'
-        print(f'{label:>14} {len(rows):7d} {w:7d} {w/len(rows):6.3f} '
-              f'{binomtest(w, len(rows), 0.5, alternative="greater").pvalue:16.3f}')
+        print(f'{label:>14} {n:7d} {w:7d} {w/n:6.3f} '
+              f'{binomtest(w, n, 0.5, alternative="greater").pvalue:16.3f}')
 
 
 def main():

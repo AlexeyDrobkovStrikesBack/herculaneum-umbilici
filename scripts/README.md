@@ -5,30 +5,32 @@ are shipped as they were run rather than rewritten for publication; the three
 exceptions are named below. Read this first — there are known rough edges and we
 would rather state them than have you find them.
 
-Requires `numpy`, `Pillow`, `scipy`, and `matplotlib` for `calib_figure.py`;
-`requirements.txt` pins the versions every number here was produced or
-re-verified with. The **six** that run on a fresh clone need **only `numpy` and
-`scipy`** — checked by running them against a clone with nothing but those two
-importable.
+Requires `numpy`, `Pillow`, `scipy`, and `matplotlib` for the two figure
+scripts (`calib_figure.py`, `stat_figures.py`); `requirements.txt` pins the
+versions every number here was produced or re-verified with. The **six** that run
+on a fresh clone need **only `numpy` and `scipy`** — checked by running them
+against a clone with nothing but those two importable. `stat_figures.py` is a
+seventh that runs on a fresh clone and needs **`matplotlib` as well**, and
+nothing beyond it.
 
 ## Where they look for data
 
 Every script resolves its data from `UMBILICI_ROOT`, defaulting to the
-repository root. **`UMBILICI_TREE` is read by six of the fifteen** —
+repository root. **`UMBILICI_TREE` is read by six of the sixteen** —
 `axis_stats.py` (for `PHercNNNN/meta.json` and `ref_sean/`), `calib_sean.py`
 (for the slice PNGs and `ref_sean/`), `calib_figure.py`, which imports both
 variables from `calib_sean.py` and uses `UMBILICI_TREE` for `ref_sean/` only,
 `fetch_sean.py` (it installs into `{UMBILICI_TREE}/ref_sean/`), and the
 `--measure` modes of `stick_control.py` and `snapshot_recheck.py` (for the slice
-PNGs). The other nine — `validate_axes.py`, `validate_bands.py`, `qc_gates.py`,
+PNGs). The other ten — `validate_axes.py`, `validate_bands.py`, `qc_gates.py`,
 `qc_sheet.py`, `finalize.py`, `count_wins.py`, `order_stat.py`,
-`pitch_table.py` and `axis_benefit.py` — take **everything** from
+`pitch_table.py`, `axis_benefit.py` and `stat_figures.py` — take **everything** from
 `UMBILICI_ROOT`, tree data included: `validate_axes.py` reads
 `{UMBILICI_ROOT}/PHercNNNN/meta.json` and `{UMBILICI_ROOT}/submission/`
 (`validate_axes.py:164-165`), `finalize.py` reads `auto_centers.json` and
 `meta.json` from the same root (`finalize.py:39,75`), `qc_sheet.py` likewise
 (`qc_sheet.py:24,28`). Setting `UMBILICI_TREE` has no effect on any of those
-nine (an earlier version of this paragraph said six, and listed seven). A previous version of this paragraph said every script honoured it, and
+ten (an earlier version of this paragraph said six, and listed seven). A previous version of this paragraph said every script honoured it, and
 the worked example it gave — `export UMBILICI_TREE=…` followed by
 `validate_axes.py` — did nothing for exactly that reason. The variable was
 introduced in this release; this is what it actually reaches.
@@ -42,6 +44,8 @@ python3 scripts/stick_control.py     # the straight-stick control
 python3 scripts/snapshot_recheck.py  # the same control on the snapshot and on the final files
 python3 scripts/pitch_table.py        # the five-spot winding pitch, voxel-corrected
 python3 scripts/axis_benefit.py      # the pre-registered axis-benefit run of README section 6
+# the same fresh clone, plus matplotlib:
+python3 scripts/stat_figures.py      # the four statistics panels of README 6, 5, 2, 1
 
 # with the annotation tree — the three scripts that read UMBILICI_TREE:
 export UMBILICI_TREE=/path/to/annotation/tree
@@ -72,7 +76,11 @@ smoothness rows — sean's three from the shipped digest, marked as such),
 statistic from the shipped fixtures), `stick_control.py` (the straight-stick
 control), `snapshot_recheck.py` (the shifted-axis control on both the
 snapshot and the final files) and `axis_benefit.py` (the pre-registered
-axis-benefit run, from the per-slice results in `axis_benefit/`).
+axis-benefit run, from the per-slice results in `axis_benefit/`). A **seventh**,
+`stat_figures.py`, also runs on a fresh clone and needs `matplotlib` on top of
+those two — verified on 2026-08-14 by cloning this repository to an empty
+directory and regenerating all four of its panels there, byte-identically, with
+only numpy, scipy and matplotlib installed.
 `fetch_sean.py` and `pitch_table.py` need no third-party package at all. The rest need the slice PNGs. The axes and the panels are self-contained; the
 scripts are here so the method is inspectable and so the numbers can be
 recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce it.
@@ -172,15 +180,36 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
   sampling rule is verifiable rather than asserted. It does **not** measure
   anything — the measurement is `axis_benefit/measure/`, which needs the public
   volumes and villa's spiral code; see README section 6.9. About 5 seconds.
+- `stat_figures.py` — **new on 2026-08-14.** The four statistics panels of
+  README sections 6, 5, 2 and 1: `panels/prereg_axis_benefit.png`,
+  `stick_control.png`, `shifted_axis_controls.png` and `frozen_axis.png`.
+  Sections 5 and 6 had no figure of any kind before this; sections 2 and 1 had
+  none for the control that failed or for the frozen-axis comparison. It measures
+  nothing and reads only files that ship. Where a quantity already has a
+  producer it **imports that producer's counting** rather than writing a second
+  copy — `axis_benefit.per_scroll` / `control_table` / `stick_distances`,
+  `count_wins.tally`, `stick_control.tally` / `dose_bins`,
+  `order_stat.radial_sign` — so a panel cannot drift away from the table it
+  illustrates, and it **prints every number it draws** so the panels are
+  checkable as text. The one quantity with no prior producer is section 1's
+  frozen-axis scoring, which is implemented here as `frozen_table()` following
+  the recipe README section 1 gives, and it reproduces that section's table
+  exactly, including the 20.1% / 15.3% / 24.3% of sign decisions that change
+  status and the 0.3% / 0.2% / 0.7% that disagree. Takes a little over 20 seconds,
+  nearly all of it section 1. Two rates in it are drawn as stems from the 50% line
+  rather than as bars from zero, because both of those axes are truncated and a
+  bar growing off the left edge of a truncated axis overstates the quantity;
+  every other panel starts its axis at zero.
 - `fetch_sean.py` — **new.** Installs and verifies sean's three reference
   umbilici against the sha256 in `qc/sean_reference.json`, and states where they
   actually came from. It refuses to install a file whose hash does not match.
 
 ## The panel producers
 
-`calib_figure.py` (here) draws `panels/calibration_summary.png`. The other twenty-seven
-panels are drawn by three scripts that are **not** shipped, because all three need the
-annotation tree to run at all and would be dead code here: `qc/ось_панель_en.py` draws the
+`calib_figure.py` draws `panels/calibration_summary.png` and `stat_figures.py` draws the
+four statistics panels; those five are the ones that regenerate from a bare clone. The
+other twenty-seven panels are drawn by three scripts that are **not** shipped, because all
+three need the annotation tree to run at all and would be dead code here: `qc/ось_панель_en.py` draws the
 ten axis panels from each scroll's side projections, `qc/шаг2_код/viz_en.py` draws the six
 step2 panels from the traced stacks, and `qc/эвиденс_кандидаты/код/evidence_panels_en.py`
 draws the eleven added on 2026-08-14 — the ten-scroll axis atlas, the four annotation-site

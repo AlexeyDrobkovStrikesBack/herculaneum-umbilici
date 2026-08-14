@@ -144,8 +144,11 @@ common heights, which trims 385/229/266 to 358/223/260):
 | PHerc1203 | 0.850 (221) | **0.850 (221)** | 0.788 (205) | 260 |
 
 **Net gain from tracking the core slice by slice: +0.000 on all three — the same
-integer counts, not merely the same rounded rate.** Reproduce it from the
-shipped fixture in about twenty lines: load `qc/order_fixture_PHercNNNN.npz`,
+integer counts, not merely the same rounded rate.** This is now both scripted and
+drawn: `scripts/stat_figures.py frozen` recomputes the table above from the
+shipped fixtures and draws `panels/frozen_axis.png`, which puts the three
+candidates beside the distances that explain them. Or reproduce it yourself from
+the fixture in about twenty lines: load `qc/order_fixture_PHercNNNN.npz`,
 replace `man_c` with `man_c.mean(axis=0)` broadcast over the 25 heights, and
 score all three candidates with `order_stat.radial_sign` unchanged, keeping
 only pairs on which all three return a sign on ≥3 common heights. Take the
@@ -304,7 +307,11 @@ were first written down.
 A banded-energy measure is computed at each annotated centre and at the same
 centre displaced by a fixed number of voxels in four directions; a ratio above 1
 is a win for the annotated centre. Reproduce with
-`scripts/validate_axes.py` then `scripts/count_wins.py`.
+`scripts/validate_axes.py` then `scripts/count_wins.py`. Both displacements are
+drawn side by side, on the same scale and in the same scroll order, in
+`panels/shifted_axis_controls.png` (`scripts/stat_figures.py shifted`) — the one
+that passed and the one that failed, because the pair is what licenses the
+reading at the end of this section and neither alone does.
 
 At **+300 voxels** (≈2.6–2.8 mm, depending on the scroll's voxel size) the
 annotated centre wins **184/297** slices, 0.620.
@@ -579,14 +586,24 @@ smoothed version of itself — we cannot rule out with this design.
 Unlike section 2 this control was measured on the final shipped files, so it
 carries no snapshot caveat.
 
+**The figure is `panels/stick_control.png`** (`scripts/stat_figures.py stick`),
+and it gives the two halves panels of the same size: the ten scrolls on the left,
+the flat dose–response on the right with the confidence intervals that show the
+two small bins carry almost no information. A figure of the left panel alone
+would claim more than this section does.
+
 ### 6. Does the axis help a tool? A pre-registered run on all ten scrolls
 
 Sections 1–5 are statistics about the axes. None of them is a test of whether
 the axes help anyone, and that is the thing reviewers of contributions like this
 one ask for: a true test that it benefits current tooling — `fit_spiral.py` is
 the tool usually named — or images and demonstrations of accuracy. This package
-did not have one. This section is that test. Its figure failed; §6.7 says so
-before anyone has to ask.
+did not have one. This section is that test. Its *unwrap demonstration* failed;
+§6.7 says so before anyone has to ask. What it has instead is a statistics
+figure, `panels/prereg_axis_benefit.png`, which draws the ten pairings, the
+pooled result and — to scale, on one linear millimetre axis — the sensitivity
+floor against the distance the straight stick actually sits at. Those are
+different genres and §6.7's verdict is not softened by this one existing.
 
 **The result.** Under a rule fixed in writing before any comparative quantity
 existed, the annotated axis makes the papyrus more concentric about it than the
@@ -839,6 +856,19 @@ several-millimetre bias in a gradient-direction average over 72 sectors — is n
 what an eye picks out of a crushed cross-section. We stopped building this figure
 rather than ship a caption describing something the image does not contain.
 
+**What was built instead, on 2026-08-14, and why it is not a way around the
+above.** `panels/prereg_axis_benefit.png` draws the *arithmetic* of this section:
+the ten paired per-scroll values, the pooled result and the tests, and the
+sensitivity floor to scale against the stick distance. Every number on it is
+recomputed by `scripts/stat_figures.py` from the shipped per-slice results and
+printed, and its captions were written under the rule that none may claim more
+than the section it illustrates — which is why the panel that would otherwise be
+the flattering one, the bound, is given the full width and carries §6.4's ceiling
+in the image. **Nothing above is retracted.** The unwrap demonstration a reviewer
+asking for "images of accuracy" most likely has in mind still does not exist for
+this material, and no crop of one is shipped. A figure of a statistic is not a
+demonstration that the eye can check, and we would rather say which one this is.
+
 #### 6.8 What this establishes, and what it does not
 
 **Established.** Under a rule fixed in writing before the data were touched, the
@@ -889,7 +919,7 @@ The run took 39 minutes of wall time in two processes of two torch threads each.
 
 ## Panels
 
-Twenty-eight figures ship in `panels/`. None of them is the source of a number:
+Thirty-two figures ship in `panels/`. None of them is the source of a number:
 every quantity printed on a panel is one this README states and one of the
 scripts recomputes. Where a panel and this README disagreed, the panel was
 re-rendered — the ten-scroll atlas below is that case, and it is named rather
@@ -942,15 +972,49 @@ whose title asks whether the axis keeps the order *between* slices must not be
 left to imply that per-slice tracking is what does the work, because on these
 three stacks it demonstrably is not.
 
-**Sections 5 and 6 have no figure at all.** §6.7 says why the one attempted for
-§6 was not shipped.
+**The four statistics panels (§§6, 5, 2, 1)** — **new on 2026-08-14**, all four
+from `scripts/stat_figures.py`, which recomputes every number it draws from the
+shipped inputs and prints them, so each panel can be checked as text without
+opening the image. Sections 5 and 6 previously had no figure at all.
 
-`panels/calibration_summary.png` regenerates here, from `scripts/calib_figure.py`.
-The other twenty-seven do not: they come from three producers that need the
-annotation tree — the per-scroll L3 slice PNGs, the side projections and the
-tracer — and would be dead code in a bare clone. `scripts/README.md` names all
-three, says what each draws, and reports the byte-identity check each was
-verified with.
+- `prereg_axis_benefit.png` — §6. The ten paired per-scroll means with the ten
+  pairings drawn one to a row, so "10 of 10" is something to count rather than a
+  claim; the pooled +0.1611 against +0.0795 with W = 0.0, p = 0.0020 and 209/252;
+  and the bound, which is the panel that matters — the **1.81 mm sensitivity
+  floor drawn to scale on the same linear millimetre axis as the 6.0 mm median
+  stick distance**, with everything below the floor shaded as not credited. §6.4's
+  ceiling is therefore *in* the image: this run credits gross axis placement and
+  cannot credit annotation precision. The header says it is not `fit_spiral`'s
+  output (§6.2). This is a statistics figure and it is **not** the demonstration
+  §6.7 failed to build — that was an unwrap-form picture, a different genre, and
+  §6.7's verdict on it stands unchanged.
+- `stick_control.png` — §5, both halves, in two panels of the same size. Left:
+  all ten scrolls above 50% against both sticks, 188/296 and 184/295, sign test
+  p = 0.00098. Right: the **flat dose–response** across the four offset bins
+  (0.71 / 0.63 / 0.70 / 0.60 against the mean stick), with 95% Clopper–Pearson
+  intervals that show the two small bins carry almost nothing. A figure showing
+  only the left panel would be exactly the overclaim §5 exists to avoid, so the
+  right panel is the same width and the footer carries §5's own sentence: we do
+  not claim the win is because the axis follows the scroll's curvature.
+- `shifted_axis_controls.png` — §2's two displacements side by side, same scale,
+  same scroll order: **+300 passes** (184/297, 9/10 scrolls, p = 0.011) and
+  **+150 is null** (159/297, p = 0.12, 7/10, three scrolls on the wrong side).
+  Rates are drawn as stems from the 50% line rather than bars from zero, so a
+  scroll below chance points left. Showing the control that failed is the point.
+- `frozen_axis.png` — §1's frozen-axis comparison, which until now existed only
+  as a sentence. Left: the live axis, the same axis frozen at its own stack mean,
+  and the auto-centroid on one common pair sample — the first two identical to
+  the integer count (329/329, 200/200, 221/221). Right: why — the excursion being
+  frozen out (1.8–4.1, 1.5–3.3, 3.1–5.1 mm) against the 3–6 mm the metric can
+  resolve and the 13.30 / 13.44 / 6.75 mm gap between the two axes.
+
+**Five of the thirty-two regenerate from a bare clone**:
+`calibration_summary.png` from `scripts/calib_figure.py`, and the four
+statistics panels above from `scripts/stat_figures.py`. The other twenty-seven do
+not: they come from three producers that need the annotation tree — the
+per-scroll L3 slice PNGs, the side projections and the tracer — and would be dead
+code in a bare clone. `scripts/README.md` names all three, says what each draws,
+and reports the byte-identity check each was verified with.
 
 ## What is scripted
 
@@ -958,7 +1022,8 @@ verified with.
 |---|---|---|
 | **every number in §6** — the per-scroll table, W = 0.0 / p = 0.0020, the pooled 2.03× and 2.10×, 209/252, the worst-case 209/300 at p = 7.7e-12, the drop attribution 8 / 37 / 41, the control table and the 1.81 mm floor, the 6.0 mm median stick distance, R̄, the three post-hoc variants and the distances between the three placements — and the check that the 300 slice indices are the ones the pre-registered rule gives | `scripts/axis_benefit.py` | **yes** — the ten `axis_benefit/prereg_PHercNNNN.json` ship (760 KB with the post-hoc files and the measurement code) |
 | **the per-slice q values themselves** | `axis_benefit/measure/prereg_run.py`, shipped verbatim as it ran | **no.** It streams 12–38 MB per slice, about 5.7 GB over the 300, out of the ten masked OME-Zarr volumes named in `axis_benefit/PREREGISTRATION.md` §3, and it imports villa's `umbilicus.py` and `sample_spiral.py` from a `volume-cartographer` checkout, which are referenced by path rather than redistributed. Needs torch; CPU is enough |
-| **the figure of §6.7** | **there is none, and that is the finding.** §6.7 gives the selection rule it was built under, the four best candidates and their scores, the Scroll 1 control at 0.094, and why the one legible crop was not shipped | — |
+| **the unwrap demonstration of §6.7** | **there is none, and that is the finding.** §6.7 gives the selection rule it was built under, the four best candidates and their scores, the Scroll 1 control at 0.094, and why the one legible crop was not shipped. Unchanged on 2026-08-14: the statistics panel below is a different genre and does not revisit that verdict | — |
+| **the four statistics panels** — `prereg_axis_benefit.png` (§6, including the 1.81 mm floor drawn to scale against the 6.0 mm stick distance), `stick_control.png` (§5, the win and the flat dose–response), `shifted_axis_controls.png` (§2, the +300 that passed beside the +150 that failed), `frozen_axis.png` (§1, the frozen axis and the identical counts) | `scripts/stat_figures.py` | **yes** — it reads only `axis_benefit/`, `qc/validation_raw.json`, `qc/stick_control_raw.json`, `qc/order_fixture_*.npz`, the ten umbilicus files and the ten `PHercNNNN/meta.json`, all of which ship. numpy + scipy + matplotlib. It imports the counting from `axis_benefit.py`, `count_wins.py`, `stick_control.py` and `order_stat.py` rather than reimplementing it, and prints every number it draws. A little over 20 seconds, nearly all of it §1 |
 | 20.7 mm / 19.9 mm deviation, 37.9 mm sweep, 19.0 mm optimal stick, largest gap 2400 vox **and its endpoints z 15480→17880** | `scripts/axis_stats.py` | **yes** |
 | **our ten rows** of the §3 kink table — all three columns, the z-spacing of each, and the matched-triple counts | `scripts/axis_stats.py` | **yes** |
 | **sean's three rows** of the §3 kink table, his 61–98 band and his 51–87 matched range | `scripts/axis_stats.py`, `scripts/fetch_sean.py` | **the values yes, the recomputation no.** His files are not ours to redistribute and are not on any public URL we could find (see the correction in §3), so the six numbers of each row ship in `qc/sean_reference.json` with the sha256 of the file they came from, and print marked as such. Supply his files and the script recomputes them and reports whether they agree |
@@ -1051,6 +1116,16 @@ adding only `source_volume` and `annotator_note`.
   drawn without the slice image, and as a bump chart of arc rank.
 - `panels/calibration_summary.png` — our gates calibrated against sean's three
   published umbilici, all ten scrolls.
+- `panels/prereg_axis_benefit.png` — §6 as statistics: the ten pairings, the
+  pooled result, and the 1.81 mm sensitivity floor drawn to scale against the
+  6.0 mm median stick distance that bounds what the run may claim.
+- `panels/stick_control.png` — §5 in both halves: the win on all ten scrolls, and
+  beside it the flat dose–response across the offset bins.
+- `panels/shifted_axis_controls.png` — §2's two controls together: the +300 that
+  passed and the +150 that failed, same scale, same scroll order.
+- `panels/frozen_axis.png` — §1's frozen-axis comparison: the manual axis frozen
+  at its own stack mean scores identically to the live one, and the distances
+  that explain why.
 - See the "Panels" section above for what each one shows and what regenerates it.
 - `STEP2_CONSISTENCY.md` — the full evidence behind the winding-order test,
   including the results that go against us.
@@ -1094,6 +1169,6 @@ adding only `source_volume` and `annotator_note`.
   `validate_bands.py`, `count_wins.py`, `calib_sean.py`, `calib_figure.py`,
   `axis_stats.py`, `qc_sheet.py`, `order_stat.py`, `stick_control.py`,
   `snapshot_recheck.py`, `fetch_sean.py`, `pitch_table.py`,
-  `axis_benefit.py`).
+  `axis_benefit.py`, `stat_figures.py`).
 
 The annotator itself is a small web page; happy to share it on request.

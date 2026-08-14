@@ -7,6 +7,7 @@
 #   axis_stats.py  count_wins.py  order_stat.py  stick_control.py
 #   snapshot_recheck.py  axis_benefit.py
 #   (fetch_sean.py and pitch_table.py need neither)
+# stat_figures.py runs on a bare clone too and adds matplotlib, nothing else.
 numpy==2.5.1
 scipy==1.18.0
 
@@ -16,7 +17,9 @@ scipy==1.18.0
 # stick_control.py and snapshot_recheck.py.
 Pillow==12.3.0
 
-# Only for panels/calibration_summary.png (scripts/calib_figure.py). With this
-# version the shipped panel regenerates byte-identically
-# (md5 a1c597503489e7fa2f5f89a1799b5005).
+# For the two figure scripts: scripts/calib_figure.py, which draws
+# panels/calibration_summary.png, and scripts/stat_figures.py, which draws the
+# four statistics panels of README sections 6, 5, 2 and 1. With this version
+# calibration_summary.png regenerates byte-identically
+# (md5 a1c597503489e7fa2f5f89a1799b5005), and so do all four statistics panels.
 matplotlib==3.11.1

@@ -148,8 +148,11 @@ def exclusions():
 
 
 # ------------------------------------------------------------------ control --
-def control():
-    print("\n=== control: our own axis displaced sideways (PREREGISTRATION.md 10.4) ===")
+def control_table():
+    """The sensitivity control, as data rather than as printed lines: one row per
+    displacement `(d_px, mean d_mm, n, median drop, mean drop, frac degraded)`,
+    the monotonicity count, and the floor. Pure, so the figure that draws the
+    floor to scale draws the same numbers `control` prints."""
     per_d, per_mm, monot, n_slices = {x: [] for x in CONTROL_D}, {x: [] for x in CONTROL_D}, [], 0
     for s in SCROLLS:
         d = load(s)
@@ -172,37 +175,56 @@ def control():
                     last = float(np.mean(vals))
             if last is not None:
                 monot.append(q0 > last)
-    print(f"control slices with valid coverage: {n_slices}")
-    print(f"{'d (px)':>7s} {'d (mm)':>8s} {'n':>4s} {'median qA-qd':>13s} {'mean':>9s} "
-          f"{'frac degraded':>14s}")
-    floor = None
+    rows, floor = [], None
     for x in CONTROL_D:
         v = np.array(per_d[x])
         mm, med = float(np.mean(per_mm[x])), float(np.median(v))
-        print(f"{x:7d} {mm:8.2f} {len(v):4d} {med:+13.4f} {v.mean():+9.4f} "
-              f"{float((v > 0).mean()):14.2f}")
+        rows.append((x, mm, len(v), med, float(v.mean()), float((v > 0).mean())))
         if floor is None and med >= 0.01:
             floor = (x, mm)
-    print(f"largest valid displacement degrades q on {sum(monot)}/{len(monot)} "
+    return dict(rows=rows, floor=floor, n_slices=n_slices,
+                monot=(sum(monot), len(monot)))
+
+
+def stick_distances():
+    """How far the mean stick sits from the annotated axis, per scroll and
+    pooled, in mm. Pure — this is the quantity that decides whether the effect
+    of section 6 lives above the floor, so the figure states it to scale."""
+    per, allv = {}, []
+    for s in SCROLLS:
+        d = load(s)
+        v = np.array([r["conditions"]["stick_mean"]["displacement_um"] / 1000.0
+                      for r in scorable(d)])
+        allv.append(v)
+        per[s] = (len(v), float(np.median(v)), float(v.mean()), float(v.max()))
+    a = np.concatenate(allv)
+    return per, (float(np.median(a)), float(np.mean(a)), len(a))
+
+
+def control():
+    print("\n=== control: our own axis displaced sideways (PREREGISTRATION.md 10.4) ===")
+    t = control_table()
+    print(f"control slices with valid coverage: {t['n_slices']}")
+    print(f"{'d (px)':>7s} {'d (mm)':>8s} {'n':>4s} {'median qA-qd':>13s} {'mean':>9s} "
+          f"{'frac degraded':>14s}")
+    for x, mm, n, med, mean, frac in t["rows"]:
+        print(f"{x:7d} {mm:8.2f} {n:4d} {med:+13.4f} {mean:+9.4f} {frac:14.2f}")
+    print(f"largest valid displacement degrades q on {t['monot'][0]}/{t['monot'][1]} "
           f"control slices")
-    print(f"SENSITIVITY FLOOR: {floor[0]} px = {floor[1]:.2f} mm "
+    print(f"SENSITIVITY FLOOR: {t['floor'][0]} px = {t['floor'][1]:.2f} mm "
           f"(first d whose median drop reaches the pre-registered 0.01)")
 
 
 def stick_distance():
     print("\n=== how far the straight stick actually is from the annotated axis ===")
     print("(this is what decides whether the effect lives above the floor above)")
-    allv = []
+    per, pooled = stick_distances()
     for s in SCROLLS:
-        d = load(s)
-        v = np.array([r["conditions"]["stick_mean"]["displacement_um"] / 1000.0
-                      for r in scorable(d)])
-        allv.append(v)
-        print(f"  {s}  n={len(v):3d}  median {np.median(v):6.2f} mm  "
-              f"mean {v.mean():6.2f} mm  max {v.max():6.2f} mm")
-    a = np.concatenate(allv)
-    print(f"  pooled over the {len(a)} scorable slices: median {np.median(a):.2f} mm, "
-          f"mean {np.mean(a):.2f} mm")
+        n, med, mean, mx = per[s]
+        print(f"  {s}  n={n:3d}  median {med:6.2f} mm  "
+              f"mean {mean:6.2f} mm  max {mx:6.2f} mm")
+    print(f"  pooled over the {pooled[2]} scorable slices: median {pooled[0]:.2f} mm, "
+          f"mean {pooled[1]:.2f} mm")
 
 
 def losses_and_rbar():

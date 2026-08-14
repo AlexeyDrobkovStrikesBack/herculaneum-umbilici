@@ -45,7 +45,11 @@ ROOT = os.environ.get('UMBILICI_ROOT',
 RAW = os.path.join(ROOT, "qc", "validation_raw.json")
 
 
-def block(data, key):
+def tally(data, key):
+    """Per-scroll `(wins, n, median ratio)` for one displacement magnitude, plus
+    the number of NaN values dropped. Pure — it prints nothing — so that a
+    figure can be drawn from exactly the counting `block` below prints, rather
+    than from a second implementation of it that could drift."""
     per = {}
     dropped = 0
     for scroll, rows in sorted(data.items()):
@@ -59,6 +63,11 @@ def block(data, key):
             continue
         per[scroll] = (sum(1 for v in vals if v > 1.0), len(vals),
                        float(np.median(vals)))
+    return per, dropped
+
+
+def block(data, key):
+    per, dropped = tally(data, key)
 
     wins = sum(p[0] for p in per.values())
     n = sum(p[1] for p in per.values())
