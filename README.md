@@ -919,11 +919,13 @@ The run took 39 minutes of wall time in two processes of two torch threads each.
 
 ## Panels
 
-Thirty-two figures ship in `panels/`. None of them is the source of a number:
+Thirty-five figures ship in `panels/`. None of them is the source of a number:
 every quantity printed on a panel is one this README states and one of the
 scripts recomputes. Where a panel and this README disagreed, the panel was
 re-rendered — the ten-scroll atlas below is that case, and it is named rather
-than quietly fixed.
+than quietly fixed. One figure was rejected for printing a count that only it
+could produce, rebuilt without the count, and is described under "the two
+centres" below.
 
 **The axes themselves.**
 
@@ -950,6 +952,49 @@ than quietly fixed.
   json, not interpolated values. That was checked rather than assumed, and one
   column had to move — see `scripts/README.md`.
 - `calibration_summary.png` — our gates against sean's three, all ten scrolls (§3).
+
+**The two centres, side by side on one image** — `centre_in_core_PHercNNNN.png`
+× 3 (PHerc 0191, 0358, 1203), **new on 2026-08-15**. One slice at full
+brightness with *both* claimed centres drawn on it — the hand-placed node in
+green, the auto-centroid §1 tests against in blue — and the arcs traced from
+each of them, in each one's colour, by the same tracer with the same settings.
+The question is which centre the laminae actually wrap around, and the reader
+answers it by looking, because both crosses are in the same crop.
+
+Everything that could have been tuned to flatter the picture is fixed and
+printed on the panel: the slice is the **middle** height of §1's own stack
+(index 12 of the 25 in `qc/order_fixture_PHercNNNN.npz`, and on all three
+scrolls a hand-placed control point of the shipped json); the crop is the same
+43 mm on all three and is centred on the **midpoint between the crosses**, not
+on either of them; the tracer runs to the same 22 mm radius around both,
+independently of the crop; and the gate — 45 of 360 rays, tangent within 22° of
+the structure-tensor lamella direction, coherence ≥ 0.25, over runs of ≥ 30
+rays — is in the subtitle. A line is drawn only where the tracer holds a
+lamella and is cut where it does not; no circle is ever completed.
+
+**These panels print no count.** Their two numbers are the separation of the
+two axes at that height and its median over the stack — 16.71 / 13.30,
+16.09 / 13.44 and 9.16 / 6.75 mm — which are properties of the axes, not of the
+crop, and which `scripts/order_stat.py` now prints from the shipped fixtures
+alongside §1's statistic. The comparison the panels themselves make is visual,
+and their captions say so.
+
+**All three ship, including the one that goes against us.** On PHerc0358 and
+PHerc1203 the arcs the tracer holds bend and close around the hand-placed node
+while nothing goes round the auto-centroid. On PHerc0191, at its own middle
+height, it is the other way round: the laminae fold beside the auto-centroid
+and the manual axis stands on flat layering. That is worth having in the
+package rather than out of it — a slice can hold more than one swirl and the
+most visible one need not be the core, which is exactly why the axis comparison
+in §1 is made by a neutral method that does not depend on where a crop sits.
+PHerc0191 is also the scroll on which the manual axis wins §1 most clearly,
+92% against 83%; each panel carries that sentence.
+
+(This replaces a rejected figure. Its earlier form drew the two centres in two
+*different* crops, so nothing marked where the core was, and printed
+"12 segments traced around the cross against 9" — a count produced by no
+shipped script, dependent on the crop radius and the gate thresholds. The count
+is gone and there is one frame.)
 
 **The winding-order test (§1).**
 
@@ -1008,12 +1053,15 @@ opening the image. Sections 5 and 6 previously had no figure at all.
   frozen out (1.8–4.1, 1.5–3.3, 3.1–5.1 mm) against the 3–6 mm the metric can
   resolve and the 13.30 / 13.44 / 6.75 mm gap between the two axes.
 
-**Five of the thirty-two regenerate from a bare clone**:
+**Five of the thirty-five regenerate from a bare clone**:
 `calibration_summary.png` from `scripts/calib_figure.py`, and the four
-statistics panels above from `scripts/stat_figures.py`. The other twenty-seven do
+statistics panels above from `scripts/stat_figures.py`. The other thirty do
 not: they come from three producers that need the annotation tree — the
 per-scroll L3 slice PNGs, the side projections and the tracer — and would be dead
-code in a bare clone. `scripts/README.md` names all three, says what each draws,
+code in a bare clone. The three `centre_in_core_*.png` are in that second group
+and cannot move into the first: their numbers come from shipped fixtures, but
+their image is a level-3 slice and their lines come from the repaired tracer,
+neither of which is in this repository. `scripts/README.md` names all three, says what each draws,
 and reports the byte-identity check each was verified with.
 
 ## What is scripted
@@ -1036,6 +1084,8 @@ and reports the byte-identity check each was verified with.
 | the shipped axes themselves, from annotator output | `scripts/finalize.py` | needs `results/` |
 | **winding pitch 247–371 µm, the 380–468 µm cross-check, the per-spot 6%–90% ratios and the PHerc0800 voxel correction** | `scripts/pitch_table.py` | **yes** — the producer's own five-spot output ships verbatim as `qc/winding_map_metrics.json` and the script applies the voxel correction, taking each spot's voxel size from that scroll's shipped `metadata.source_volume`. The measurement that produced those five pairs (`qc/витковая_карта_код/` in the annotation tree) does not ship |
 | **85–92% vs 74–83%, 43:7 / 42:5 / 21:3** | `scripts/order_stat.py` | **yes** — recomputed from `qc/order_fixture_PHercNNNN.npz`, which ships. The *tracer* that produced those fixtures still does not: see the row below |
+| **the two axis separations on the `centre_in_core_*.png` panels** — the median over each §1 stack (13.30 / 13.44 / 6.75 mm, the same figures §1 quotes) and the value at the stack's middle height, which is the height each panel is drawn at (16.71 / 16.09 / 9.16 mm) | `scripts/order_stat.py` | **yes** — the same shipped fixtures; it prints them under the order table, with the height's z |
+| **the `centre_in_core_*.png` panels themselves** | `qc/эвиденс_кандидаты/код/evidence_panels_en.py` in the annotation tree | no — the numbers regenerate here, the picture does not: it needs the level-3 slice PNGs and the repaired tracer. The panels print **no count**, so nothing on them depends on that tracer being trusted for a quantity |
 | **the tracing that produces the fixtures** | **not shipped here.** `qc/шаг2_код/stack.py` (31 KB) plus `winding_map.py` (12 KB) and `numbering.py` (6 KB) from the same tree | no. Stated exactly, because "too big to ship" would not be true: the missing *data* is **14.6 MB** — 25 L3 slices for each of PHerc0191/0358/1203, each one plane `round(z/8)` of level 3 of that scroll's `…-masked.zarr` in `vesuvius-challenge-open-data`, normalised to the 1st/99th percentile of its non-zero pixels, exactly as `build.py` writes the catalogue slices. What blocks it is the ~49 KB of tracer code: it is Russian-commented, hard-wired to the annotation tree, and shipping it means proving it still regenerates the published numbers rather than merely running. We re-ran it on 2026-08-13 and it does (all nine figures exact), but translating and de-hardcoding it is a separate pass |
 | **the tolerance sweep and the resampling test** | **not shipped here.** Produced by `qc/эвиденс_кандидаты/код/развилка/развилка3.py` in the annotation tree; every number and its provenance is tabulated in `STEP2_CONSISTENCY.md` §13 | no |
 | **19/22 on PHerc0358** | **no script, journal-documented** | no |
@@ -1110,6 +1160,10 @@ adding only `source_volume` and `annotator_note`.
 - `panels/annotation_site_PHerc{0191,0358,1203}.png` and
   `panels/annotation_site_closeup_PHerc1203.png` — the annotation site itself:
   crop, detector suggestion, and the turns traced around an annotated node.
+- `panels/centre_in_core_PHerc{0191,0358,1203}.png` — one slice with both
+  claimed centres on it and the arcs traced from each, in two colours: which
+  centre the laminae wrap around, judged by eye. No count is printed; on
+  PHerc0191 the picture goes against us and ships anyway.
 - `panels/step2_stack_*.png`, `panels/step2_points_*.png` — the winding-order
   test on PHerc 0191, 0358 and 1203.
 - `panels/order_map_*.png`, `panels/order_bump_*.png` — the same three stacks

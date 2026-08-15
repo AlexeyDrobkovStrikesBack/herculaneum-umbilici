@@ -41,6 +41,11 @@ ROOT = os.environ.get('UMBILICI_ROOT',
                       os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SCROLLS = ['PHerc0191', 'PHerc0358', 'PHerc1203']
 
+# Level-3 pixel size of the 9.362 um volumes these fixtures were built from
+# (74.896 um = 9.362 um x scale 8.0; see each scroll's meta.json).  Used only
+# to report the axis separations of section 1 in millimetres.
+PX_UM_L3 = 74.896
+
 # Parameters of the sign test, identical to the producer's radial_sign().
 BIN_DEG = 2.0
 MIN_BINS = 5
@@ -139,6 +144,19 @@ def run(scroll):
             neither += 1
     out['cross'] = {'both': both_, 'man_only': mo, 'auto_only': ao,
                     'neither': neither}
+
+    # How far apart the two axes are on this stack.  Section 1 quotes the
+    # median; the panels centre_in_core_*.png quote the median and the value at
+    # the stack's middle height, which is the height they are drawn at.
+    sep = np.hypot(man_c[:, 0] - auto_c[:, 0],
+                   man_c[:, 1] - auto_c[:, 1]) * PX_UM_L3 / 1000.0
+    mid = len(sep) // 2
+    out['sep_mm'] = {'n': int(len(sep)),
+                     'median': round(float(np.median(sep)), 2),
+                     'min': round(float(sep.min()), 2),
+                     'max': round(float(sep.max()), 2),
+                     'mid_index': int(mid), 'mid_z': int(z['slice_z'][mid]),
+                     'mid': round(float(sep[mid]), 2)}
     return out
 
 
@@ -169,6 +187,16 @@ def main():
             c = r['cross']
             print(f'  {r["scroll"]}  {c["both"]} / {c["man_only"]} / '
                   f'{c["auto_only"]} / {c["neither"]}   tracks={r["n_tracks"]}')
+        print('\nseparation between the two axes on the same stack, mm '
+              '(section 1 quotes the median;')
+        print('the middle height is the one panels/centre_in_core_*.png are '
+              'drawn at):')
+        for r in rows:
+            s = r['sep_mm']
+            print(f'  {r["scroll"]}  median {s["median"]:.2f}  '
+                  f'range {s["min"]:.2f}-{s["max"]:.2f}  over {s["n"]} heights'
+                  f'   middle height (index {s["mid_index"]}, z={s["mid_z"]}): '
+                  f'{s["mid"]:.2f}')
     print('\nThis recomputes the statistic from the traced arcs. It does not '
           'run the tracer;\nsee README "What is scripted" for what that would '
           'take.')

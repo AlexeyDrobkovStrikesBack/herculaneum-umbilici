@@ -153,7 +153,12 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
   which holds the traced arcs and the two axes' centres for the three neutral
   stacks. It does **not** run the tracer; the sign rule and the pair selection
   are reimplemented here from the producer and reproduce it exactly. Takes about
-  20 seconds.
+  20 seconds. Since 2026-08-15 it also prints, from the same fixtures, how far
+  apart the two axes are on each stack — the median §1 quotes (13.30 / 13.44 /
+  6.75 mm) and the value at the stack's middle height (16.71 / 16.09 / 9.16 mm),
+  which is the height the `centre_in_core_*.png` panels are drawn at. That is
+  the only change to the file; the order statistic itself is untouched and was
+  re-run to confirm it.
 - `stick_control.py` — **new.** The control §5 reports: the annotated per-slice
   axis against a straight vertical stick, on the same 297 slices, with the
   banded-energy measure imported unchanged from `validate_axes.py`. Counts from
@@ -208,28 +213,43 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
 
 `calib_figure.py` draws `panels/calibration_summary.png` and `stat_figures.py` draws the
 four statistics panels; those five are the ones that regenerate from a bare clone. The
-other twenty-seven panels are drawn by three scripts that are **not** shipped, because all
+other thirty panels are drawn by three scripts that are **not** shipped, because all
 three need the annotation tree to run at all and would be dead code here: `qc/ось_панель_en.py` draws the
 ten axis panels from each scroll's side projections, `qc/шаг2_код/viz_en.py` draws the six
 step2 panels from the traced stacks, and `qc/эвиденс_кандидаты/код/evidence_panels_en.py`
 draws the eleven added on 2026-08-14 — the ten-scroll axis atlas, the four annotation-site
-panels and the six order-map / bump panels. Ask and we will send them.
+panels and the six order-map / bump panels — and the three `centre_in_core_*.png` added on
+2026-08-15. Ask and we will send them.
 
-All eleven of the last group need the tree twice over: the four annotation-site panels
+All fourteen of the last group need the tree twice over: the four annotation-site panels
 read the per-scroll L3 slice PNGs and the ring detector's `кандидаты_*.json`, the atlas
 reads the pre-rendered side projections, and the six order panels re-run the tracer that
 `order_stat.py`'s row in the top-level README explains is not in this repository. The
 `.npz` fixtures that ship are the tracer's *output*, which is enough to recompute §1's
-statistic but not enough to redraw the arcs on a slice.
+statistic but not enough to redraw the arcs on a slice. The three `centre_in_core_*.png`
+need both halves: the slice PNG for the image and the repaired tracer for the lines. What
+they do **not** need the tree for is their two numbers, which they read out of the shipped
+`qc/order_fixture_*.npz` and which `order_stat.py` prints.
 
 Every one of these panels was re-rendered from Russian into English rather than edited as
 pixels, and that re-render was checked rather than assumed. `viz_en.py` and
 `evidence_panels_en.py` both have a `--ru` mode that renders the original Russian strings
 through the same code path. In that mode `viz_en.py` reproduces all six previously
 published step2 panels **byte-identically**, and `evidence_panels_en.py` reproduces all
-eleven staged Russian candidates **byte-identically** (verified 2026-08-14, matplotlib
-3.11.1). The English panels therefore differ from them in text only — no number, colour,
-threshold or layout changed by accident.
+eleven staged Russian candidates **byte-identically** (verified 2026-08-14 and again on
+2026-08-15 after the stage-3 rebuild below, matplotlib 3.11.1). The English panels
+therefore differ from them in text only — no number, colour, threshold or layout changed
+by accident.
+
+The three `centre_in_core_*.png` are the exception to that check and get a stricter one
+instead, because they are a rebuild rather than a re-render and no Russian original of
+them exists. `evidence_panels_en.py` grew two QC switches for them. `--dump` writes the
+geometry it actually draws — both centres and every arc polyline — to `.npz`; the English
+and Russian runs produce **md5-identical dumps** on all three scrolls. `--notext`
+suppresses the only three strings drawn inside the image (the two cross labels and the
+scale bar's label); with it, the 1228×1228 image area of the English and Russian renders
+is **pixel-identical**, md5 for md5, on all three. Together those say what the byte check
+says for the other eleven: the two languages differ in text and in nothing else.
 
 Three differences are deliberate, and they are the reason for the re-render:
 
@@ -247,6 +267,20 @@ Three differences are deliberate, and they are the reason for the re-render:
    nearest kept control point to mid-height. This is the one change that is not text, and
    it is a correction; `--ru` keeps the original z so the byte check still covers the
    Russian file.
+
+**The stage-3 rebuild, 2026-08-15.** The staged Russian candidates for "the axis as the
+centre of the unwrap" were rejected rather than translated, and the three
+`centre_in_core_*.png` were built in their place. What was wrong with them: the two
+centres were drawn in two *different* crops, so nothing in either frame marked where the
+core was; and their headline, "12 segments traced around the cross against 9", was a count
+produced by no shipped script and dependent on both the crop radius and the gate
+thresholds — the panel was its own source. The rebuild puts both crosses on one frame at
+full brightness with the arcs from each centre in two colours, and prints no count at all;
+its only numbers are the axis separations, which come from the shipped fixtures. Its
+slice, crop and tracing radius are module constants stated on the panel, so none of them
+can be tuned per scroll. The tracer is the same repaired one the annotation-site panels
+use, with the same discipline: where it does not hold a lamella the line stops and no
+circle is completed.
 
 `calibration_summary.png` was re-rendered once more after that, to relabel its
 right-hand panel (see `calib_figure.py` above). Same check: the shipped script
