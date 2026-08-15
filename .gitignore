@@ -34,4 +34,14 @@ qc/*
 !qc/sean_reference.json
 !qc/order_fixture_*.npz
 !qc/winding_map_metrics.json
+# Added 2026-08-15 for README section 7, each read before being negated:
+#   the prior PHerc1218 annotation by Iyan Dopico, MIT-licensed and public
+#   since 2026-07-21 (365 z/y/x control points, no metadata block);
+#   its provenance note; the section-7 pre-registration; and two files of our
+#   own measurements. None of them contains any of sean's coordinates.
+!qc/prior_umbilicus_PHerc1218_IyanDopico.json
+!qc/prior_umbilicus_PHerc1218_SOURCE.md
+!qc/PRIOR1218_PREREGISTRATION.md
+!qc/prior_1218_raw.json
+!qc/prior_1218_centroid_raw.json
 ref_sean/

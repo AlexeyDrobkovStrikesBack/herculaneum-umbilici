@@ -46,6 +46,11 @@ python3 scripts/pitch_table.py        # the five-spot winding pitch, voxel-corre
 python3 scripts/axis_benefit.py      # the pre-registered axis-benefit run of README section 6
 # the same fresh clone, plus matplotlib:
 python3 scripts/stat_figures.py      # the four statistics panels of README 6, 5, 2, 1
+python3 scripts/prior_1218.py --figure  # README section 7 and its panel
+
+# these reach the public bucket every time and do not run offline:
+python3 scripts/stamp_frame.py --check   # the five frame keys of README section 8
+python3 scripts/prior_1218.py --check-bucket --measure-centroid
 
 # with the annotation tree — the three scripts that read UMBILICI_TREE:
 export UMBILICI_TREE=/path/to/annotation/tree
@@ -100,6 +105,32 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
   sparse one where it was; the third column is the genuinely spacing-matched one
   and it is blank where a polyline has no 480-voxel spacing anywhere in it.
   Every definition is in the docstring.
+- `prior_1218.py` — **new on 2026-08-15.** README section 7: our PHerc1218 axis
+  against Iyán Dopico's prior annotation, the only external check in this
+  package. Prints the shared frame, the overlap, the distance distribution in
+  voxels and millimetres, the same distance at our own hand-placed nodes only,
+  the mean offset and the residual after removing it, and the verdict against
+  the bands fixed in `qc/PRIOR1218_PREREGISTRATION.md` before it first ran.
+  `--figure` draws `panels/prior_1218_agreement.png` and prints every number on
+  it. Four optional legs leave the clone: `--fetch` re-downloads the prior file
+  and refuses to install a hash mismatch; `--check-bucket` re-reads the level-0
+  shape and `samplePixelSize`; `--villa DIR` redoes the interpolation through
+  villa's own `json_umbilicus_z_to_yx` instead of `np.interp` (it agrees to
+  0.0000 voxels); `--measure-centroid` re-streams 48 MB of level 5 to rebuild
+  `qc/prior_1218_centroid_raw.json`. Rough edge: the centroid reader handles
+  only raw uint8 C-order zarr and says so by refusing anything else — it is a
+  minimal reader for one known store, not a zarr library.
+- `stamp_frame.py` — **new on 2026-08-15.** Stamps and verifies the five frame
+  keys of PR villa#1454 (README section 8). `--check` writes nothing and prints,
+  per scroll, the voxel size from the volume id beside the one from the bucket's
+  `metadata.json`, the level-0 shape, whether the control points are inside it,
+  whether it matches that scroll's own `meta.json` `shape_L0`, and whether the
+  file is already stamped and agrees. `--write` restamps and prints the md5
+  before and after each file. It always goes to the network: no value is ever
+  taken from the file being checked. Rough edge: it does not create a backup —
+  the guarantee that it only appends the five keys rests on `json.dump(indent=1)`
+  round-tripping these files byte-for-byte, which `--check` on an unstamped file
+  demonstrates and `git diff` confirms.
 - `count_wins.py` — **new for this release.** Counts and tests the shifted-axis
   control from `qc/validation_raw.json`. Prints both displacement magnitudes
   (300 and 150 voxels), the pooled slice-level binomial (labelled as

@@ -184,6 +184,11 @@
   "created": "2026-08-10T00:18:33Z",
   "modified": "2026-08-10T00:18:33Z",
   "source_volume": "PHerc0813/volumes/20250821151723-9.362um-1.2m-113keV-masked.zarr",
-  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization"
+  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization",
+  "volume": "20250821151723-9.362um-1.2m-113keV-masked.zarr",
+  "voxelsize_um": 9.362,
+  "volume_width": 7947,
+  "volume_height": 7947,
+  "volume_slices": 16993
  }
 }

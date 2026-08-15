@@ -1,23 +1,56 @@
-# Umbilicus annotations for the 10 remaining First Letters scrolls
+# Umbilicus annotations for the ten First Letters prize scrolls
 
 Manual umbilicus (winding-axis) polylines for the ten First Letters prize
-scrolls that did not have one yet: PHerc 0191, 0257, 0268, 0358, 0800, 0813,
-1203, 1218, 1447, 1545. File format matches sean's published umbilicus files
-(integer voxel coordinates, per-point `score`, `metadata` block). Coordinates
-are level-0 voxels of each scroll's masked prize volume — 9.362 µm for six
-scrolls and **8.640 µm for PHerc 0268, 0800, 1218, 1447**; the exact volume
-id is recorded in each file's `metadata.source_volume`.
+scrolls: PHerc 0191, 0257, 0268, 0358, 0800, 0813, 1203, 1218, 1447, 1545.
+**Nine of them had no umbilicus. One did:** Iyán Dopico
+([@IyanDopico](https://github.com/IyanDopico)) published one for **PHerc1218**
+in [vesuvius-sheet-tools](https://github.com/IyanDopico/vesuvius-sheet-tools)
+on 2026-07-21, three weeks before ours. What that file is, and how our axis
+compares against it, is §7 — and it is the only external check in this package.
 
-Note on PHerc1203: the only existing 9.362 derivation in the bucket is
-`20250820131727-...-masked`; all coordinates refer to it.
+File format matches sean's published umbilicus files (integer voxel
+coordinates, per-point `score`, `metadata` block), plus the five frame keys of
+the open PR ScrollPrize/villa#1454 (§8). Coordinates are level-0 voxels of each
+scroll's masked prize volume — 9.362 µm for six scrolls and **8.640 µm for
+PHerc 0268, 0800, 1218, 1447** — and every file now carries that voxel size and
+its grid dimensions as machine-readable metadata, verified against the bucket by
+`scripts/stamp_frame.py`. The full bucket path stays in
+`metadata.source_volume`.
+
+Note on PHerc1203, and the same trap on every scroll the prize page lists. The
+visible label there for PHerc1203 is `20250720004030-9.362um-1.2m-113keV`, and
+**no such key exists in the bucket**: the only 9.362 µm derivation of PHerc1203
+is `20250820131727-9.362um-1.2m-113keV-masked`, which is what that same link
+actually resolves to and what all our coordinates refer to. This is not a typo
+in one row. On all thirteen scrolls listed on <https://scrollprize.org/prizes>
+the visible id differs from the id its own link resolves to: the visible one is
+the ESRF **scan-session** id, the bucket path carries the **reconstruction** id.
+The rule reproduces — for each of our ten, the visible label equals that
+volume's own `metadata.json` acquisition timestamp
+(`scan.tomo.acquisition.date`) converted to UTC, to the second. Iyán Dopico
+documented the same thing for PHerc1218 in his pack's `README.txt` in July; we
+checked it independently on all ten (`scripts/stamp_frame.py --check` reads that
+metadata). Cite the bucket id, not the label.
 
 ## Motivation
 
 We are working on the First Letters prize scrolls, and kept running into the
 same missing input: every winding-number assignment, every polar unwrap and
-every spiral fit we tried takes a centre per z-slice, and none of these ten had
-one. Three scrolls have a published umbilicus (sean's PHerc0125, 0211, 0826);
-the ten in the prize set did not.
+every spiral fit we tried takes a centre per z-slice, and nine of these ten had
+none. Three other scrolls have a published umbilicus (sean's PHerc0125, 0211,
+0826), and one of the prize ten — PHerc1218 — had one from Iyán Dopico three
+weeks before ours. The other nine had nothing.
+
+**That correction matters enough to say plainly.** Until 2026-08-15 this README
+was titled "the 10 remaining First Letters scrolls" and said the ten "did not
+have one yet". That was wrong about PHerc1218, and it had been wrong since the
+first commit: `data/spiral_input_pherc1218/umbilicus.json` has been public in
+[IyanDopico/vesuvius-sheet-tools](https://github.com/IyanDopico/vesuvius-sheet-tools)
+since commit `6a831e0` on 2026-07-21. We did not find it before publishing; we
+found it before publishing was final, and the claim is withdrawn rather than
+softened. The credit is his. What replaces the claim is worth more than it was:
+PHerc1218 is now the one place in this package where our annotation is measured
+against someone else's, and that is §7.
 
 What we kept running into is that substituting a straight vertical line for the
 axis is not a small approximation. On the ten shipped files the annotated centre
@@ -66,8 +99,16 @@ click, so we would rather list them.
 
 ## Validation
 
-Six checks, and they are not equally reproducible. To be exact:
+Seven checks, and they are not equally reproducible. To be exact:
 
+- **Check 7 (the one external check) reproduces from a fresh clone.** It is the
+  only check in this package that compares our annotation against somebody
+  else's annotation of the same scroll, and the only one whose other side we did
+  not make. It was pre-registered: `qc/PRIOR1218_PREREGISTRATION.md` was written
+  and hashed before `scripts/prior_1218.py` first ran, and its sha256 is quoted
+  in §7.2. Both polylines ship, so the distances recompute with numpy alone; the
+  post-hoc CT measurement inside it needs the network to *re-*measure but ships
+  its raw. It covers one scroll of ten, and §7.5 says so.
 - **Check 6 (does the axis help a tool?) reproduces from a fresh clone**, from
   the ten `axis_benefit/prereg_PHercNNNN.json` via `scripts/axis_benefit.py`. It
   is the only check here that asks whether these files benefit anything rather
@@ -917,9 +958,238 @@ is enough). Every volume id is in `PREREGISTRATION.md` §3 and in each scroll's
 own `metadata.source_volume`, so the inputs are named exactly and are public.
 The run took 39 minutes of wall time in two processes of two torch threads each.
 
+### 7. The one external check: PHerc1218 against a prior annotation
+
+Everything above compares our axes against a control we built ourselves — a
+displaced centre, a straight stick, an auto-centroid — or against sean's three
+files, which are three *other* scrolls. **On exactly one of our ten there is an
+independent annotation by someone who is not us**, and this section is it.
+
+#### 7.1 What the prior annotation is
+
+`data/spiral_input_pherc1218/umbilicus.json` in
+[IyanDopico/vesuvius-sheet-tools](https://github.com/IyanDopico/vesuvius-sheet-tools),
+added in commit
+[`6a831e0`](https://github.com/IyanDopico/vesuvius-sheet-tools/commit/6a831e0a9a)
+on **2026-07-21**, three weeks before our files. 33,718 bytes, sha256
+`a153ad7a…c29560`. MIT-licensed, and shipped here verbatim as
+`qc/prior_umbilicus_PHerc1218_IyanDopico.json` with its provenance and licence
+notice in `qc/prior_umbilicus_PHerc1218_SOURCE.md`, so this section runs from a
+bare clone rather than on our word.
+
+| | ours | the prior annotation |
+|---|---|---|
+| points | 28, integer, hand-placed | 365, float, generated |
+| z range / spacing | 3432 → 21144, median step 608 vox (one 1224 gap) | 32 → 23216, median step 64 vox |
+| shape | `{"control_points": [{x, y, z, score}], "metadata": {…}}` | `{"control_points": [{z, y, x}]}` — no metadata, no score |
+| frame | level-0 voxels of `20250521120456-8.640um-…-masked` | the same |
+| what a point *is* | a human's placement of the winding centre | **the centroid of the papyrus mask of that slice** |
+
+The last row is the finding, and it is a difference of convention, not of
+quality. Their generator, `scripts/constraints/make_umbilicus.py` in the same
+repository, composites the nonzero-label mask of their own instance
+segmentation at eight sampled slices per 256-slice slab, takes `ys.mean(),
+xs.mean()` of that mask, running-median smooths the z→(y, x) series over five
+samples, and multiplies by 2 to go from their L1 working grid to level 0.
+Slices with fewer than 10,000 nonzero mask pixels are dropped. It is a mass
+centroid, and it is honest about being one: the file is an input to a spiral
+fit's loss, not a claim about where the winding centre is.
+
+**The frame is shared, and that was checked rather than assumed.** Their
+generator hard-codes `FULL_Z = 23247`, `FULL_YX = 7593`; their pack's
+`README.txt` names the same volume our `metadata.source_volume` does; the
+bucket's `…/0/.zarray` returns `shape [23247, 7593, 7593]` and its
+`metadata.json` returns `samplePixelSize` 0.00864 mm. All four agree, so what
+follows is a distance and not a registration problem
+(`scripts/prior_1218.py --check-bucket`).
+
+#### 7.2 What was fixed before the numbers existed
+
+`qc/PRIOR1218_PREREGISTRATION.md`, sha256
+`e375f3730305218ebeec66205fdd92b8ec71636477119cbb2c808566164dc9b4`, written and
+hashed **before** `scripts/prior_1218.py` was first run. It states, in advance:
+that the two files are not defined to be the same point and that no result would
+be reported as one being right; what would be computed (the overlap, the
+distance distribution rather than a single number, the signed offset, the
+residual after removing it); and four bands, expressed in distances this package
+already publishes rather than in a number invented for the occasion:
+
+| band | meaning, fixed beforehand |
+|---|---|
+| median < **1.81 mm** | closer than the sensitivity floor of §6.4 — interchangeable for this package's own benefit test |
+| median < **6.0 mm** | smaller than the axis-to-stick distance §6 measures — agreement at the scale that matters |
+| median < **20.7 mm** | the size of the effect this package claims; would have to be explained, not absorbed |
+| median ≥ **20.7 mm** | larger than the Motivation number; the comparison failed and the framing is withheld |
+
+It also fixed what each *shape* of disagreement would mean: a constant offset
+would be a convention or frame difference; a z-dependent one, largest where a
+cross-section stops being symmetric, would be the centroid-versus-centre gap
+opening; a disagreement of the order of the scroll's radius would be an actual
+error in one of the two files.
+
+#### 7.3 The result
+
+Over the overlapping z — 3432 → 21144, 153.0 mm of scroll, 76% of the z their
+file spans — on their 64-voxel grid, 276 samples, our polyline interpolated
+linearly, which is what villa's own `json_umbilicus_z_to_yx` does:
+
+| | voxels | mm |
+|---|---|---|
+| min | 71.4 | 0.62 |
+| p25 | 160.5 | 1.39 |
+| **median** | **242.7** | **2.10** |
+| p75 | 354.7 | 3.06 |
+| p90 | 461.9 | 3.99 |
+| max (at z = 5856) | 569.0 | 4.92 |
+
+At our 28 hand-placed nodes only, with our file not interpolated at all, the
+median is 2.14 mm and the max 4.95 mm — the same answer, so none of it is an
+artifact of our own interpolation. Re-running the interpolation through villa's
+loader instead of `np.interp` changes the distances by **0.0000 voxels**
+(`--villa`).
+
+**Verdict, against the band fixed beforehand: the second one.** The two
+independent annotations of PHerc1218 differ by 2.10 mm in the median and never
+by more than 4.92 mm — below the 6.0 mm distance §6 measures between our axis
+and the straight stick it beats, and above the 1.81 mm floor of §6.4. The
+whole distribution and the figure are `panels/prior_1218_agreement.png`.
+
+**It is not a constant offset.** The mean (Δy, Δx) is (−10.2, +111.7) voxels =
+0.97 mm, and removing it leaves a median residual of 1.77 mm: a single constant
+vector explains only **16%** of the median distance. So this is not a frame or
+origin difference. It is z-dependent, and it is concentrated. Over eight equal z
+bands the medians are 1.17, **3.82**, **3.20**, 1.33, 1.37, 1.82, 2.67 and
+1.67 mm: one band of scroll around z 5700–10100 carries most of it.
+
+**And it is not our coarser sampling either.** Our nodes sit 608 voxels apart,
+theirs 64. Resampling *their* polyline onto our node grid and interpolating it
+back — the most a polyline sampled like ours could carry of a line sampled like
+theirs — loses a median of 0.17 mm, a p90 of 0.68 mm and at most 1.53 mm, well
+under the 2.10 mm.
+The two files genuinely put the centre in different places.
+
+#### 7.4 Why, measured rather than asserted — and post-hoc
+
+§7.1 says their points are a mass centroid. That is a statement about their
+source code, and it can be tested against the CT: if their file is a mass
+centroid, then the CT's own per-slice mass centroid should lie on their line and
+not on ours. **This was not pre-registered.** It was added after seeing that the
+disagreement was z-dependent rather than a constant offset — which is the outcome
+the pre-registration named — and it is a diagnostic of the mechanism, not a test
+of either file. `scripts/prior_1218.py --measure-centroid` streams level 5 of the
+same masked volume (276.5 µm per voxel, 24 chunks, about 48 MB) and takes three
+centroids per slice; its output ships as `qc/prior_1218_centroid_raw.json`.
+
+Over the 553 slices of the overlap:
+
+| centroid of | to ours | to theirs | theirs closer on |
+|---|---|---|---|
+| the nonzero mask | 2.08 mm | **0.25 mm** | 550 / 553 |
+| intensity, all nonzero | 2.00 mm | **0.24 mm** | 552 / 553 |
+| intensity, top 40% only | 1.88 mm | **1.20 mm** | 392 / 553 |
+
+The CT's mass centroid sits on their line, a quarter of a millimetre from it,
+on essentially every slice. Their generator says the file is a papyrus-mask
+centroid and the CT agrees that it is one. **So the 2.10 mm is the distance
+between a mass centroid and a hand-placed winding centre on this scroll — a
+property of PHerc1218's cross-sections, not annotation error on either side.**
+The third row is the interesting one, and it does not rescue the winding
+centre: restricting the weight to the densest 40% of the material moves the
+centroid 0.95 mm **off** their line but only 0.20 mm **towards** ours, and it
+still lands closer to theirs on 392 of the 553 slices. The hand-placed centre is
+not simply the centroid of the brighter papyrus either.
+
+#### 7.5 What this establishes, and what it does not
+
+It establishes that on the one scroll where an independent annotation exists,
+our hand-placed axis and an automatic mass centroid agree to 2.10 mm, that the
+residual is explained by the two being different quantities, and that the
+explanation is measurable in the CT rather than argued.
+
+It does **not** make either file ground truth — two methods can share a bias, and
+on a scroll that leans consistently to one side a human eye and a mass centroid
+can be pulled the same way. It covers one scroll of ten and only the z both files
+span. Nothing here licenses a claim about the other nine. And it is not a test of
+precision: 2.10 mm is above §6.4's 1.81 mm floor, so this comparison is at the
+edge of what any measurement in this package can resolve.
+
+### 8. Frame metadata: the villa#1454 keys, and the byte identity we retired
+
+Open PR [ScrollPrize/villa#1454](https://github.com/ScrollPrize/villa/pull/1454)
+(*umbilicus: frame metadata, project attachment, shared resolver*, opened
+2026-08-14, **not merged**) adds five optional keys to the `metadata` block of
+`umbilicus.json` — `volume`, `voxelsize_um`, `volume_width`, `volume_height`,
+`volume_slices` — and says outright that "longer term the detection tool should
+stamp these keys at generation time". **Our ten now carry them.**
+
+**Why, in one line:** our ten span two voxel sizes, 9.362 µm for six and
+8.640 µm for four. This README has carried that in prose since the first commit,
+where a consumer has to read it; these keys make it machine-checkable, and the
+consumer rule the PR states — rescale by `voxelsize_um / target_voxelsize_um` —
+is exactly the arithmetic a reader of our files has to get right.
+
+**The argument against, stated because it is real.** The PR is unmerged and its
+schema has already changed once under review: the first version stamped a
+pyramid level, `zarr_level`, and commit `85c5be1` replaced it with the three
+grid dimensions, on the reasoning that integer voxel counts identify a rescaled
+copy where rounded micrometre sizes are ambiguous. It can change again. We
+stamped anyway, because the keys are optional and additive — the PR's own loader
+reads unstamped files exactly as before, and any consumer that does not know
+them ignores them — so the cost of a further change is regenerating five lines,
+which `scripts/stamp_frame.py --write` does. What we do not do is claim
+conformance to a merged standard: this follows PR #1454 at commit `85c5be1`, and
+that is what the sentence should say wherever it is repeated.
+
+**No value was typed by hand.** `scripts/stamp_frame.py` derives every one from
+that file's own `metadata.source_volume` and verifies it against the bucket
+before writing:
+
+- `voxelsize_um` — the `-<n>um-` token of the volume id, **cross-checked** against
+  `<volume>/metadata.json` → `scan.tomo.acquisition.detector.samplePixelSize`
+  × 1000. All ten agree exactly (9.3620 and 8.6400); a mismatch is a hard error
+  and nothing is written.
+- `volume_width` / `volume_height` / `volume_slices` — `shape[2]` / `shape[1]` /
+  `shape[0]` of `<volume>/0/.zarray`.
+- `volume` — the store name, the last path component of `source_volume`. The full
+  bucket path stays in `source_volume`, which was not touched.
+
+Two further checks it runs and prints: every control point of every file is
+inside the shape it is stamped with, and the shape matches the `shape_L0`
+recorded independently in that scroll's own `PHercNNNN/meta.json` when the
+slices were cut. All ten pass both.
+
+**A limit of these ten files, printed per scroll so it cannot be missed:** all
+ten volumes have `shape[1] == shape[2]`, so `volume_width` and `volume_height`
+are equal in every one of them. Our files therefore cannot distinguish the two
+conventions and must not be read as evidence for either.
+
+**The byte-identity invariant is deliberately retired at this commit.** Until
+now the ten json files were byte-identical to commit `da52f97`, and that was
+worth something: every number in this README was measured on files nobody had
+touched. Stamping changes them. The change is five lines appended inside
+`metadata` and nothing else — the rewrite is `json.dump(indent=1)` with no
+trailing newline, which round-trips these files byte-for-byte when nothing is
+added, so the diff is the five keys and only the five keys, and `git diff` shows
+exactly that. **No coordinate, no score and no existing metadata field moved,
+and every number in §§1–7 is unaffected.** The hashes, so the old files remain
+identifiable:
+
+| scroll | md5 at `da52f97` | md5 now |
+|---|---|---|
+| PHerc0191 | `bffb38e51d4bfd4b75912c44816b72c8` | `a850067c227caab3ed09a1f9e7e79298` |
+| PHerc0257 | `ed40d7c7a2e2ad2a18371320ff1316c2` | `7f1aa8e7b232bc183b51c8d7bfc3211c` |
+| PHerc0268 | `7280c94dcf7575fdf240d6065e780dc0` | `16380cea367374808a129c50ff9f75f1` |
+| PHerc0358 | `0345614a1468886bc4e74be89441adde` | `91e75cf40ad7644d3677795e53c0cb82` |
+| PHerc0800 | `3bae66bf7b0846a9cb16ffa37bf591d7` | `55e591ac2ebff738ab3aa20675dee5e9` |
+| PHerc0813 | `3b268edc47c9f9d9cb1469ebd8631e11` | `276d60f9b08bc024f5867c40fa802c4d` |
+| PHerc1203 | `a64ea80a7197139074abb05211cc6e3f` | `9ca94cb82b7950738b57746547046777` |
+| PHerc1218 | `13e542d12855d64bfca65c40ac7a2e58` | `9e8f53e74cbf7878d7737f3d02ddcaa2` |
+| PHerc1447 | `d05acb9d7a0e9ca89bce2b1da93aae22` | `9d6ea06fe8e09169526a176edeea09e9` |
+| PHerc1545 | `bc6d5fe47f945267d9f6c24327b3769b` | `f965763fd3629b20f024d30810cb45f4` |
+
 ## Panels
 
-Thirty-five figures ship in `panels/`. None of them is the source of a number:
+Thirty-six figures ship in `panels/`. None of them is the source of a number:
 every quantity printed on a panel is one this README states and one of the
 scripts recomputes. Where a panel and this README disagreed, the panel was
 re-rendered — the ten-scroll atlas below is that case, and it is named rather
@@ -952,6 +1222,20 @@ centres" below.
   json, not interpolated values. That was checked rather than assumed, and one
   column had to move — see `scripts/README.md`.
 - `calibration_summary.png` — our gates against sean's three, all ten scrolls (§3).
+- `prior_1218_agreement.png` — **new.** §7: our PHerc1218 axis against Iyán
+  Dopico's prior annotation. Both axes component by component and looking down
+  the scroll; the disagreement along z with §6.4's 1.81 mm floor, §6's 6.0 mm
+  stick distance and the Motivation's 20.7 mm all drawn **to scale on the same
+  millimetre axis**, so how small 2.10 mm is against the effect this package
+  claims is something to look at rather than a sentence; and the whole
+  distribution as an ECDF, because §7 reports a distribution and a panel that
+  showed only the median would be reporting less than the section does. It also
+  carries the post-hoc CT mass centroid (§7.4) in a third colour, which is the
+  panel's real work: the reader can see it lying on *their* line, which is why
+  the 2.10 mm is a difference of definition. The header says in the image, not
+  in a caption elsewhere, that the two files are not defined to be the same
+  point. `scripts/prior_1218.py --figure`, and every number on it is printed to
+  stdout by the same run.
 
 **The two centres, side by side on one image** — `centre_in_core_PHercNNNN.png`
 × 3 (PHerc 0191, 0358, 1203), **new on 2026-08-15**. One slice at full
@@ -1053,10 +1337,11 @@ opening the image. Sections 5 and 6 previously had no figure at all.
   frozen out (1.8–4.1, 1.5–3.3, 3.1–5.1 mm) against the 3–6 mm the metric can
   resolve and the 13.30 / 13.44 / 6.75 mm gap between the two axes.
 
-**Five of the thirty-five regenerate from a bare clone**:
-`calibration_summary.png` from `scripts/calib_figure.py`, and the four
-statistics panels above from `scripts/stat_figures.py`. The other thirty do
-not: they come from three producers that need the annotation tree — the
+**Six of the thirty-six regenerate from a bare clone**:
+`calibration_summary.png` from `scripts/calib_figure.py`, the four statistics
+panels above from `scripts/stat_figures.py`, and `prior_1218_agreement.png` from
+`scripts/prior_1218.py` — the last of these because both files it draws ship,
+and so does the raw of its post-hoc CT measurement. The other thirty do not: they come from three producers that need the annotation tree — the
 per-scroll L3 slice PNGs, the side projections and the tracer — and would be dead
 code in a bare clone. The three `centre_in_core_*.png` are in that second group
 and cannot move into the first: their numbers come from shipped fixtures, but
@@ -1072,6 +1357,8 @@ and reports the byte-identity check each was verified with.
 | **the per-slice q values themselves** | `axis_benefit/measure/prereg_run.py`, shipped verbatim as it ran | **no.** It streams 12–38 MB per slice, about 5.7 GB over the 300, out of the ten masked OME-Zarr volumes named in `axis_benefit/PREREGISTRATION.md` §3, and it imports villa's `umbilicus.py` and `sample_spiral.py` from a `volume-cartographer` checkout, which are referenced by path rather than redistributed. Needs torch; CPU is enough |
 | **the unwrap demonstration of §6.7** | **there is none, and that is the finding.** §6.7 gives the selection rule it was built under, the four best candidates and their scores, the Scroll 1 control at 0.094, and why the one legible crop was not shipped. Unchanged on 2026-08-14: the statistics panel below is a different genre and does not revisit that verdict | — |
 | **the four statistics panels** — `prereg_axis_benefit.png` (§6, including the 1.81 mm floor drawn to scale against the 6.0 mm stick distance), `stick_control.png` (§5, the win and the flat dose–response), `shifted_axis_controls.png` (§2, the +300 that passed beside the +150 that failed), `frozen_axis.png` (§1, the frozen axis and the identical counts) | `scripts/stat_figures.py` | **yes** — it reads only `axis_benefit/`, `qc/validation_raw.json`, `qc/stick_control_raw.json`, `qc/order_fixture_*.npz`, the ten umbilicus files and the ten `PHercNNNN/meta.json`, all of which ship. numpy + scipy + matplotlib. It imports the counting from `axis_benefit.py`, `count_wins.py`, `stick_control.py` and `order_stat.py` rather than reimplementing it, and prints every number it draws. A little over 20 seconds, nearly all of it §1 |
+| **every number in §7** — the overlap, the distance distribution (median 2.10 mm, max 4.92 mm at z = 5856), the 2.14 mm at our own nodes, the 0.97 mm mean offset and the 16% it explains, the verdict against the pre-registered bands, and the post-hoc CT-centroid table (0.25 / 0.24 / 1.20 mm, 550 / 552 / 392 of 553) | `scripts/prior_1218.py` | **yes** — the prior annotation ships verbatim as `qc/prior_umbilicus_PHerc1218_IyanDopico.json` (MIT, sha256 recorded), and `qc/prior_1218_centroid_raw.json` carries the CT measurement. `--fetch` re-downloads the prior file and refuses a hash mismatch, `--check-bucket` re-reads the frame, `--villa DIR` re-runs the interpolation through villa's own loader (it agrees to 0.0000 vox), `--measure-centroid` re-streams the 48 MB. All four are optional |
+| **the five frame keys of §8**, and the checks behind them — the voxel size against `samplePixelSize`, the level-0 shape, the in-bounds test and the agreement with each `PHercNNNN/meta.json` `shape_L0` | `scripts/stamp_frame.py` | **no, by design** — it reads the bucket every time. `--check` verifies the ten as they stand and writes nothing; `--write` restamps. Values are never taken from the file being checked |
 | 20.7 mm / 19.9 mm deviation, 37.9 mm sweep, 19.0 mm optimal stick, largest gap 2400 vox **and its endpoints z 15480→17880** | `scripts/axis_stats.py` | **yes** |
 | **our ten rows** of the §3 kink table — all three columns, the z-spacing of each, and the matched-triple counts | `scripts/axis_stats.py` | **yes** |
 | **sean's three rows** of the §3 kink table, his 61–98 band and his 51–87 matched range | `scripts/axis_stats.py`, `scripts/fetch_sean.py` | **the values yes, the recomputation no.** His files are not ours to redistribute and are not on any public URL we could find (see the correction in §3), so the six numbers of each row ship in `qc/sean_reference.json` with the sha256 of the file they came from, and print marked as such. Supply his files and the script recomputes them and reports whether they agree |
@@ -1143,6 +1430,23 @@ and reports the byte-identity check each was verified with.
   159/297 to 158/297, and leaves both scroll-level sign tests identical. See §2
   and `scripts/snapshot_recheck.py`. The straight-stick control of §5 was
   measured on the final files from the start.
+- **The one external check covers one scroll.** §7 compares us against an
+  independent annotation on PHerc1218 and nowhere else, because nowhere else is
+  there one. The nine other axes in this package have never been checked against
+  anybody but ourselves. That is a limit of the field's data, not a claim we can
+  argue around, and the 2.10 mm of §7 says nothing about PHerc0268 or any other
+  scroll.
+- **The frame keys follow an unmerged PR.** §8's five `metadata` keys track
+  ScrollPrize/villa#1454 at commit `85c5be1`. That PR is open, and its schema has
+  already changed once under review. The keys are optional and additive, so
+  nothing breaks if it changes again, but this package does not claim
+  conformance to a merged standard and the wording should not drift into
+  claiming it.
+- **The ten json files are no longer byte-identical to `da52f97`.** That
+  invariant was retired deliberately at the commit that added the frame keys, the
+  diff is those five lines and nothing else, and both md5s of every file are
+  tabulated in §8. Every measured number in this README predates the stamp and is
+  unaffected by it.
 
 ## Format compatibility
 Field-for-field against sean's three files: top-level keys identical and in the
@@ -1150,7 +1454,16 @@ same order; per-point keys `x, y, z, score` identical and in the same order; all
 coordinates integer on both sides; `score: 100` on every point on both sides;
 `z_grid_spacing: 0` is sean's own convention; `min_score_threshold` and
 `high_score_threshold` both 0.75. Our `metadata` is an exact superset of his,
-adding only `source_volume` and `annotator_note`.
+adding `source_volume`, `annotator_note` and the five frame keys of PR
+villa#1454 at commit `85c5be1` — `volume`, `voxelsize_um`, `volume_width`,
+`volume_height`, `volume_slices` (§8). Those five are optional in that PR's
+loader and unknown to every consumer that predates it, so the files still read
+as before wherever they are not understood.
+
+Against the prior PHerc1218 annotation (§7) the format differs and neither side
+is wrong: it is a bare `{"control_points": [{z, y, x}]}` with float coordinates,
+no `score` and no `metadata` block, which is the minimum villa's json loader
+accepts. Both parse through `json_umbilicus_z_to_yx` without special-casing.
 
 ## Files
 - `PHercNNNN_umbilicus.json` × 10 — the axes.
@@ -1194,6 +1507,21 @@ adding only `source_volume` and `annotator_note`.
   recomputed without the tracer.
 - `qc/sean_reference.json` — sha256 and derived smoothness numbers for sean's
   three reference umbilici, which are not redistributed here (§3).
+- `qc/prior_umbilicus_PHerc1218_IyanDopico.json` — the prior PHerc1218
+  annotation, redistributed verbatim under its MIT licence so §7 runs from a
+  bare clone. **Not our file.**
+- `qc/prior_umbilicus_PHerc1218_SOURCE.md` — where it came from: repository,
+  commit, path, bytes, sha256, git blob sha1, its generator, its licence notice
+  reproduced, and what its points are.
+- `qc/PRIOR1218_PREREGISTRATION.md` — the specification of §7, written and
+  hashed before `scripts/prior_1218.py` was first run; its sha256 is in §7.2.
+- `qc/prior_1218_raw.json` — §7's per-sample distances, so the distribution can
+  be recomputed without re-reading either polyline.
+- `qc/prior_1218_centroid_raw.json` — the post-hoc CT mass-centroid measurement
+  of §7.4 (level 5, 727 slices), so that table does not need the network.
+- `panels/prior_1218_agreement.png` — §7 as one figure: both axes, the
+  disagreement against this package's own yardsticks to scale, the whole
+  distribution, and the CT centroid that explains the residual.
 - `axis_benefit/PREREGISTRATION.md` — the specification of §6, fixed in writing
   before any comparative quantity existed, shipped verbatim.
 - `axis_benefit/prereg_PHercNNNN.json` × 10 — the per-slice results of §6: for
