@@ -1332,7 +1332,9 @@ opening the image. Sections 5 and 6 previously had no figure at all.
   not claim the win is because the axis follows the scroll's curvature.
 - `shifted_axis_controls.png` — §2's two displacements side by side, same scale,
   same scroll order: **+300 passes** (184/297, 9/10 scrolls, p = 0.011) and
-  **+150 is null** (159/297, p = 0.12, 7/10, three scrolls on the wrong side).
+  **+150 is null** (159/297 slices, pooled p = 0.12; 7/10 scrolls, sign-test
+  p = 0.17; three scrolls on the wrong side). The two p-values are the two units
+  of replication, not two runs — `count_wins.py` prints both from one pass.
   Rates are drawn as stems from the 50% line rather than bars from zero, so a
   scroll below chance points left. Showing the control that failed is the point.
 - `frozen_axis.png` — §1's frozen-axis comparison, which until now existed only
@@ -1342,11 +1344,16 @@ opening the image. Sections 5 and 6 previously had no figure at all.
   frozen out (1.8–4.1, 1.5–3.3, 3.1–5.1 mm) against the 3–6 mm the metric can
   resolve and the 13.30 / 13.44 / 6.75 mm gap between the two axes.
 
-**Six of the thirty-six regenerate from a bare clone**:
-`calibration_summary.png` from `scripts/calib_figure.py`, the four statistics
+**Five of the thirty-six regenerate from a bare clone**: the four statistics
 panels above from `scripts/stat_figures.py`, and `prior_1218_agreement.png` from
 `scripts/prior_1218.py` — the last of these because both files it draws ship,
-and so does the raw of its post-hoc CT measurement. The other thirty do not: they come from three producers that need the annotation tree — the
+and so does the raw of its post-hoc CT measurement. All five were re-checked on
+a fresh clone on 2026-08-15 and came back byte-identical.
+`calibration_summary.png` is **not** among them, although `scripts/calib_figure.py`
+ships and draws it: its input `qc/calibration_sean.json` holds sean's verbatim
+coordinates and is deliberately withheld (`.gitignore` — the package ships only
+the twelve-scalar digest `qc/sean_reference.json`), so the script stops at its
+first read on a clone. The other thirty do not regenerate either: they come from three producers that need the annotation tree — the
 per-scroll L3 slice PNGs, the side projections and the tracer — and would be dead
 code in a bare clone. The three `centre_in_core_*.png` are in that second group
 and cannot move into the first: their numbers come from shipped fixtures, but

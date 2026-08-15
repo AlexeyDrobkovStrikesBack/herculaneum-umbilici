@@ -5,26 +5,33 @@ are shipped as they were run rather than rewritten for publication; the three
 exceptions are named below. Read this first — there are known rough edges and we
 would rather state them than have you find them.
 
-Requires `numpy`, `Pillow`, `scipy`, and `matplotlib` for the two figure
-scripts (`calib_figure.py`, `stat_figures.py`); `requirements.txt` pins the
-versions every number here was produced or re-verified with. The **six** that run
-on a fresh clone need **only `numpy` and `scipy`** — checked by running them
-against a clone with nothing but those two importable. `stat_figures.py` is a
-seventh that runs on a fresh clone and needs **`matplotlib` as well**, and
-nothing beyond it.
+Requires `numpy`, `Pillow`, `scipy`, and `matplotlib` for the three figure
+scripts (`calib_figure.py`, `stat_figures.py`, `prior_1218.py --figure`);
+`requirements.txt` pins the
+versions every number here was produced or re-verified with. The **seven** that run
+on a fresh clone need **only `numpy` and `scipy`** — `axis_stats.py`,
+`count_wins.py`, `order_stat.py`, `stick_control.py`, `snapshot_recheck.py`,
+`axis_benefit.py` and `prior_1218.py` (which needs `numpy` alone unless you pass
+`--figure`) — checked by running them
+against a clone with nothing but those two importable, most recently on
+2026-08-15. `stat_figures.py` is an
+eighth that runs on a fresh clone and needs **`matplotlib` as well**, and
+nothing beyond it. `pitch_table.py` and `fetch_sean.py` run on a fresh clone
+needing neither.
 
 ## Where they look for data
 
 Every script resolves its data from `UMBILICI_ROOT`, defaulting to the
-repository root. **`UMBILICI_TREE` is read by six of the sixteen** —
+repository root. **`UMBILICI_TREE` is read by six of the eighteen** —
 `axis_stats.py` (for `PHercNNNN/meta.json` and `ref_sean/`), `calib_sean.py`
 (for the slice PNGs and `ref_sean/`), `calib_figure.py`, which imports both
 variables from `calib_sean.py` and uses `UMBILICI_TREE` for `ref_sean/` only,
 `fetch_sean.py` (it installs into `{UMBILICI_TREE}/ref_sean/`), and the
 `--measure` modes of `stick_control.py` and `snapshot_recheck.py` (for the slice
-PNGs). The other ten — `validate_axes.py`, `validate_bands.py`, `qc_gates.py`,
+PNGs). The other twelve — `validate_axes.py`, `validate_bands.py`, `qc_gates.py`,
 `qc_sheet.py`, `finalize.py`, `count_wins.py`, `order_stat.py`,
-`pitch_table.py`, `axis_benefit.py` and `stat_figures.py` — take **everything** from
+`pitch_table.py`, `axis_benefit.py`, `prior_1218.py`, `stamp_frame.py` and
+`stat_figures.py` — take **everything** from
 `UMBILICI_ROOT`, tree data included: `validate_axes.py` reads
 `{UMBILICI_ROOT}/PHercNNNN/meta.json` and `{UMBILICI_ROOT}/submission/`
 (`validate_axes.py:164-165`), `finalize.py` reads `auto_centers.json` and
@@ -73,19 +80,23 @@ The annotation tree is **not** fully contained in this repository:
 | `ref_sean/` | sean's three published umbilici, for calibration | no — and **not on any public URL we could find**; see `fetch_sean.py`. Their sha256 and derived values ship in `qc/sean_reference.json` |
 | `qc/` | gate reports and json written by these scripts | no (it is gitignored); the published panels are in `panels/` |
 
-**Six scripts run on a fresh clone with nothing else**: `axis_stats.py`
+**Seven scripts run on a fresh clone with nothing else**: `axis_stats.py`
 (everything about the ten polylines, the coverage columns, and all thirteen
 smoothness rows — sean's three from the shipped digest, marked as such),
 `count_wins.py` (the shifted-axis control from the raw json that
 `validate_axes.py` writes, which ships), `order_stat.py` (the winding-order
 statistic from the shipped fixtures), `stick_control.py` (the straight-stick
 control), `snapshot_recheck.py` (the shifted-axis control on both the
-snapshot and the final files) and `axis_benefit.py` (the pre-registered
-axis-benefit run, from the per-slice results in `axis_benefit/`). A **seventh**,
+snapshot and the final files), `axis_benefit.py` (the pre-registered
+axis-benefit run, from the per-slice results in `axis_benefit/`) and
+`prior_1218.py` (README section 7, on numpy alone unless `--figure` is passed).
+An **eighth**,
 `stat_figures.py`, also runs on a fresh clone and needs `matplotlib` on top of
 those two — verified on 2026-08-14 by cloning this repository to an empty
 directory and regenerating all four of its panels there, byte-identically, with
-only numpy, scipy and matplotlib installed.
+only numpy, scipy and matplotlib installed, and re-verified on 2026-08-15
+together with `prior_1218.py --figure`, whose panel came back byte-identical on
+the same clone.
 `fetch_sean.py` and `pitch_table.py` need no third-party package at all. The rest need the slice PNGs. The axes and the panels are self-contained; the
 scripts are here so the method is inspectable and so the numbers can be
 recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce it.
@@ -242,8 +253,13 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
 
 ## The panel producers
 
-`calib_figure.py` draws `panels/calibration_summary.png` and `stat_figures.py` draws the
-four statistics panels; those five are the ones that regenerate from a bare clone. The
+`stat_figures.py` draws the four statistics panels and `prior_1218.py --figure` draws
+`panels/prior_1218_agreement.png`; those five are the ones that regenerate from a bare
+clone, and all five were re-checked byte-identical on a fresh clone on 2026-08-15.
+`calib_figure.py` also ships and draws `panels/calibration_summary.png`, but that panel
+does **not** regenerate here: it reads `qc/calibration_sean.json`, which holds sean's
+verbatim coordinates and is deliberately withheld by `.gitignore`, so on a clone the
+script stops at its first read. The
 other thirty panels are drawn by three scripts that are **not** shipped, because all
 three need the annotation tree to run at all and would be dead code here: `qc/ось_панель_en.py` draws the
 ten axis panels from each scroll's side projections, `qc/шаг2_код/viz_en.py` draws the six

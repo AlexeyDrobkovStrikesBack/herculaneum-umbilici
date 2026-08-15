@@ -3,11 +3,13 @@
 # uses a recent feature, so older releases are very likely fine; these are the
 # ones we actually ran, not a guess.
 #
-# numpy + scipy alone are enough for the six scripts that run on a bare clone:
+# numpy + scipy alone are enough for the seven scripts that run on a bare clone:
 #   axis_stats.py  count_wins.py  order_stat.py  stick_control.py
-#   snapshot_recheck.py  axis_benefit.py
-#   (fetch_sean.py and pitch_table.py need neither)
-# stat_figures.py runs on a bare clone too and adds matplotlib, nothing else.
+#   snapshot_recheck.py  axis_benefit.py  prior_1218.py
+#   (prior_1218.py needs numpy alone unless you pass --figure;
+#    fetch_sean.py and pitch_table.py need neither)
+# stat_figures.py runs on a bare clone too and adds matplotlib, nothing else,
+# and so does prior_1218.py --figure.
 numpy==2.5.1
 scipy==1.18.0
 
@@ -17,9 +19,13 @@ scipy==1.18.0
 # stick_control.py and snapshot_recheck.py.
 Pillow==12.3.0
 
-# For the two figure scripts: scripts/calib_figure.py, which draws
-# panels/calibration_summary.png, and scripts/stat_figures.py, which draws the
-# four statistics panels of README sections 6, 5, 2 and 1. With this version
-# calibration_summary.png regenerates byte-identically
-# (md5 a1c597503489e7fa2f5f89a1799b5005), and so do all four statistics panels.
+# For the figure scripts: scripts/stat_figures.py, which draws the four
+# statistics panels of README sections 6, 5, 2 and 1; scripts/prior_1218.py
+# --figure, which draws panels/prior_1218_agreement.png; and
+# scripts/calib_figure.py, which draws panels/calibration_summary.png. With this
+# version the first five regenerate byte-identically on a bare clone (re-checked
+# 2026-08-15). calibration_summary.png regenerates byte-identically too
+# (md5 a1c597503489e7fa2f5f89a1799b5005) but only where
+# qc/calibration_sean.json is present, and that file is deliberately not
+# shipped — see .gitignore — so it does not regenerate from a clone.
 matplotlib==3.11.1
