@@ -1271,8 +1271,13 @@ and the manual axis stands on flat layering. That is worth having in the
 package rather than out of it — a slice can hold more than one swirl and the
 most visible one need not be the core, which is exactly why the axis comparison
 in §1 is made by a neutral method that does not depend on where a crop sits.
-PHerc0191 is also the scroll on which the manual axis wins §1 most clearly,
-92% against 83%; each panel carries that sentence.
+The manual axis still wins §1 on PHerc0191, 92% against 83%, and each panel
+carries that sentence. (An earlier version of this line called PHerc0191 the
+scroll where the manual axis wins §1 *most clearly*. Withdrawn: the widest §1
+margin of the three is PHerc0358's, 0.900 against 0.738 — +0.162 against
+PHerc0191's +0.093 — and PHerc0358 also has the wider paired count, 8.4×
+against 6.1×. The 92/83 figures are unchanged, and no panel ever carried the
+superlative.)
 
 (This replaces a rejected figure. Its earlier form drew the two centres in two
 *different* crops, so nothing marked where the core was, and printed
