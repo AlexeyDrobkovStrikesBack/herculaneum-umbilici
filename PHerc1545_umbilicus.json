@@ -43,15 +43,33 @@
    "score": 100
   },
   {
+   "x": 4062,
+   "y": 2813,
+   "z": 6120,
+   "score": 100
+  },
+  {
    "x": 4104,
    "y": 2920,
    "z": 6392,
    "score": 100
   },
   {
-   "x": 2873,
-   "y": 2949,
+   "x": 3912,
+   "y": 2893,
+   "z": 6664,
+   "score": 100
+  },
+  {
+   "x": 3500,
+   "y": 2963,
    "z": 6944,
+   "score": 100
+  },
+  {
+   "x": 3030,
+   "y": 3066,
+   "z": 7216,
    "score": 100
   },
   {
@@ -91,9 +109,21 @@
    "score": 100
   },
   {
+   "x": 3462,
+   "y": 3306,
+   "z": 10800,
+   "score": 100
+  },
+  {
    "x": 3484,
    "y": 3411,
    "z": 11352,
+   "score": 100
+  },
+  {
+   "x": 3561,
+   "y": 3475,
+   "z": 11896,
    "score": 100
   },
   {
@@ -167,16 +197,11 @@
   "z_grid_spacing": 0,
   "min_score_threshold": 0.75,
   "high_score_threshold": 0.75,
-  "total_points": 27,
-  "timestamp": "2026-08-10T00:18:33Z",
-  "created": "2026-08-10T00:18:33Z",
-  "modified": "2026-08-10T00:18:33Z",
+  "total_points": 32,
+  "timestamp": "2026-08-19T14:51:05Z",
+  "created": "2026-08-19T14:51:05Z",
+  "modified": "2026-08-19T14:51:05Z",
   "source_volume": "PHerc1545/volumes/20250821151648-9.362um-1.2m-113keV-masked.zarr",
-  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization",
-  "volume": "20250821151648-9.362um-1.2m-113keV-masked.zarr",
-  "voxelsize_um": 9.362,
-  "volume_width": 7506,
-  "volume_height": 7506,
-  "volume_slices": 20961
+  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization"
  }
 }

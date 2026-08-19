@@ -97,6 +97,39 @@ points that sit within 10 voxels of their auto-suggestion — PHerc1447 z=11888
 deliberate micro-adjustments, but they are not distinguishable from a slipped
 click, so we would rather list them.
 
+### Second pass, 19 August 2026 — density where the axis bends
+
+Paul (pmh47) pointed out that ~30 slices is thin where the umbilicus xy moves
+quickly with z, and suggested looking at slices halfway between control points.
+We measured that before drawing anything: `scripts/midpoint_audit.py` drops each
+interior control point, interpolates its neighbours at that z and reports the
+miss in micrometres — a leave-one-out measurement of how wrong linear
+interpolation is, with no CT read and no model involved. It put 161 of 269
+intervals above 280 µm and 27 above 1 mm.
+
+Midpoint slices were then fetched for the worst intervals and annotated by the
+same hand as the first pass. **279 → 393 human-confirmed points.** The largest
+estimated midpoint miss per scroll, before and after, in micrometres:
+
+| scroll | before | after | | scroll | before | after |
+|---|---:|---:|---|---|---:|---:|
+| PHerc0191 | 1931 | 892 | | PHerc0813 | 1755 | 417 |
+| PHerc0257 | 1706 | 775 | | PHerc1203 | 673 | 443 |
+| PHerc0268 | 1901 | 1064 | | PHerc1218 | 1014 | 736 |
+| PHerc0358 | 1196 | 516 | | PHerc1447 | 1209 | 492 |
+| PHerc0800 | 1893 | 820 | | PHerc1545 | 1524 | 550 |
+
+PHerc1203 is the instructive one. Its existing points did not move in this pass,
+yet the denser grid pushed its worst interval from 673 µm to 1462 µm: the
+density had exposed a bend the sparse polyline was too coarse to see. A further
+pass on that stretch brought it to 443 µm, and the same sequence played out on
+PHerc0813 (930 → 417 µm). Where a scroll got *worse* on this measure, the
+annotation had not degraded — the measurement had got sharper.
+
+**What this does not cover yet.** The pre-registered axis-benefit run described
+below was measured on the 15 August curves, not on these. It has not been
+re-run, and its numbers describe the earlier, sparser polylines.
+
 ## Validation
 
 Seven checks, and they are not equally reproducible. To be exact:

@@ -19,9 +19,21 @@
    "score": 100
   },
   {
-   "x": 4413,
-   "y": 5644,
+   "x": 4549,
+   "y": 5254,
+   "z": 4072,
+   "score": 100
+  },
+  {
+   "x": 4580,
+   "y": 5286,
    "z": 4312,
+   "score": 100
+  },
+  {
+   "x": 4743,
+   "y": 5192,
+   "z": 4552,
    "score": 100
   },
   {
@@ -31,9 +43,21 @@
    "score": 100
   },
   {
-   "x": 4973,
-   "y": 4758,
+   "x": 4889,
+   "y": 4793,
+   "z": 5024,
+   "score": 100
+  },
+  {
+   "x": 4874,
+   "y": 4856,
    "z": 5264,
+   "score": 100
+  },
+  {
+   "x": 4989,
+   "y": 4301,
+   "z": 5744,
    "score": 100
   },
   {
@@ -43,9 +67,21 @@
    "score": 100
   },
   {
-   "x": 3838,
-   "y": 3995,
+   "x": 4586,
+   "y": 4233,
+   "z": 6696,
+   "score": 100
+  },
+  {
+   "x": 4182,
+   "y": 4364,
    "z": 7168,
+   "score": 100
+  },
+  {
+   "x": 4203,
+   "y": 4427,
+   "z": 7408,
    "score": 100
   },
   {
@@ -55,15 +91,33 @@
    "score": 100
   },
   {
+   "x": 4261,
+   "y": 3861,
+   "z": 7880,
+   "score": 100
+  },
+  {
    "x": 4257,
    "y": 4041,
    "z": 8120,
    "score": 100
   },
   {
+   "x": 4093,
+   "y": 3546,
+   "z": 8360,
+   "score": 100
+  },
+  {
    "x": 4210,
    "y": 3511,
    "z": 8600,
+   "score": 100
+  },
+  {
+   "x": 4313,
+   "y": 3295,
+   "z": 8832,
    "score": 100
   },
   {
@@ -157,9 +211,21 @@
    "score": 100
   },
   {
+   "x": 4245,
+   "y": 4154,
+   "z": 15984,
+   "score": 100
+  },
+  {
    "x": 4348,
    "y": 4465,
    "z": 16224,
+   "score": 100
+  },
+  {
+   "x": 4350,
+   "y": 4327,
+   "z": 16456,
    "score": 100
   },
   {
@@ -179,16 +245,11 @@
   "z_grid_spacing": 0,
   "min_score_threshold": 0.75,
   "high_score_threshold": 0.75,
-  "total_points": 29,
-  "timestamp": "2026-08-10T00:18:33Z",
-  "created": "2026-08-10T00:18:33Z",
-  "modified": "2026-08-10T00:18:33Z",
+  "total_points": 40,
+  "timestamp": "2026-08-19T14:51:05Z",
+  "created": "2026-08-19T14:51:05Z",
+  "modified": "2026-08-19T14:51:05Z",
   "source_volume": "PHerc0257/volumes/20250821151750-9.362um-1.2m-113keV-masked.zarr",
-  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization",
-  "volume": "20250821151750-9.362um-1.2m-113keV-masked.zarr",
-  "voxelsize_um": 9.362,
-  "volume_width": 8388,
-  "volume_height": 8388,
-  "volume_slices": 18872
+  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization"
  }
 }

@@ -13,39 +13,81 @@
    "score": 100
   },
   {
+   "x": 3126,
+   "y": 3744,
+   "z": 4656,
+   "score": 100
+  },
+  {
    "x": 3109,
    "y": 3916,
    "z": 5264,
    "score": 100
   },
   {
-   "x": 3242,
-   "y": 4323,
+   "x": 3349,
+   "y": 3754,
+   "z": 5568,
+   "score": 100
+  },
+  {
+   "x": 3497,
+   "y": 3883,
    "z": 5872,
    "score": 100
   },
   {
-   "x": 4205,
-   "y": 4423,
+   "x": 4174,
+   "y": 4162,
+   "z": 6488,
+   "score": 100
+  },
+  {
+   "x": 4220,
+   "y": 4486,
    "z": 7096,
    "score": 100
   },
   {
-   "x": 4309,
-   "y": 4096,
+   "x": 3988,
+   "y": 4430,
+   "z": 7400,
+   "score": 100
+  },
+  {
+   "x": 4295,
+   "y": 4156,
    "z": 7712,
    "score": 100
   },
   {
-   "x": 3816,
-   "y": 3640,
+   "x": 4048,
+   "y": 4142,
+   "z": 8016,
+   "score": 100
+  },
+  {
+   "x": 4385,
+   "y": 3653,
    "z": 8320,
    "score": 100
   },
   {
-   "x": 4233,
-   "y": 4048,
+   "x": 4551,
+   "y": 3629,
+   "z": 8624,
+   "score": 100
+  },
+  {
+   "x": 4613,
+   "y": 3772,
    "z": 8928,
+   "score": 100
+  },
+  {
+   "x": 4508,
+   "y": 3893,
+   "z": 9232,
    "score": 100
   },
   {
@@ -157,6 +199,12 @@
    "score": 100
   },
   {
+   "x": 3389,
+   "y": 3681,
+   "z": 20224,
+   "score": 100
+  },
+  {
    "x": 3387,
    "y": 3399,
    "z": 20528,
@@ -173,16 +221,11 @@
   "z_grid_spacing": 0,
   "min_score_threshold": 0.75,
   "high_score_threshold": 0.75,
-  "total_points": 28,
-  "timestamp": "2026-08-10T00:18:33Z",
-  "created": "2026-08-10T00:18:33Z",
-  "modified": "2026-08-10T00:18:33Z",
+  "total_points": 36,
+  "timestamp": "2026-08-19T14:51:05Z",
+  "created": "2026-08-19T14:51:05Z",
+  "modified": "2026-08-19T14:51:05Z",
   "source_volume": "PHerc1218/volumes/20250521120456-8.640um-1.2m-116keV-masked.zarr",
-  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization",
-  "volume": "20250521120456-8.640um-1.2m-116keV-masked.zarr",
-  "voxelsize_um": 8.64,
-  "volume_width": 7593,
-  "volume_height": 7593,
-  "volume_slices": 23247
+  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization"
  }
 }

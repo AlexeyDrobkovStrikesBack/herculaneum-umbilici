@@ -1,21 +1,45 @@
 {
  "control_points": [
   {
+   "x": 5771,
+   "y": 3768,
+   "z": 3672,
+   "score": 100
+  },
+  {
    "x": 5658,
    "y": 3744,
    "z": 4256,
    "score": 100
   },
   {
-   "x": 6621,
-   "y": 4100,
+   "x": 5530,
+   "y": 4069,
+   "z": 4552,
+   "score": 100
+  },
+  {
+   "x": 5638,
+   "y": 3792,
    "z": 4848,
+   "score": 100
+  },
+  {
+   "x": 6300,
+   "y": 3648,
+   "z": 5136,
    "score": 100
   },
   {
    "x": 6496,
    "y": 3631,
    "z": 5432,
+   "score": 100
+  },
+  {
+   "x": 6324,
+   "y": 3913,
+   "z": 5728,
    "score": 100
   },
   {
@@ -37,14 +61,26 @@
    "score": 100
   },
   {
+   "x": 5939,
+   "y": 4876,
+   "z": 7792,
+   "score": 100
+  },
+  {
    "x": 5376,
    "y": 4525,
    "z": 8384,
    "score": 100
   },
   {
-   "x": 5339,
-   "y": 5012,
+   "x": 5277,
+   "y": 4623,
+   "z": 8680,
+   "score": 100
+  },
+  {
+   "x": 5265,
+   "y": 4888,
    "z": 8976,
    "score": 100
   },
@@ -73,9 +109,21 @@
    "score": 100
   },
   {
+   "x": 4206,
+   "y": 5297,
+   "z": 11624,
+   "score": 100
+  },
+  {
    "x": 4073,
    "y": 5671,
    "z": 11920,
+   "score": 100
+  },
+  {
+   "x": 4085,
+   "y": 5225,
+   "z": 12216,
    "score": 100
   },
   {
@@ -133,15 +181,33 @@
    "score": 100
   },
   {
-   "x": 3564,
-   "y": 5838,
+   "x": 3531,
+   "y": 5706,
+   "z": 17520,
+   "score": 100
+  },
+  {
+   "x": 3748,
+   "y": 5959,
    "z": 17816,
    "score": 100
   },
   {
-   "x": 5518,
-   "y": 5598,
+   "x": 4784,
+   "y": 5706,
+   "z": 18112,
+   "score": 100
+  },
+  {
+   "x": 5398,
+   "y": 5454,
    "z": 18408,
+   "score": 100
+  },
+  {
+   "x": 5662,
+   "y": 5345,
+   "z": 18704,
    "score": 100
   },
   {
@@ -167,22 +233,23 @@
    "y": 5024,
    "z": 20760,
    "score": 100
+  },
+  {
+   "x": 5614,
+   "y": 5201,
+   "z": 21352,
+   "score": 100
   }
  ],
  "metadata": {
   "z_grid_spacing": 0,
   "min_score_threshold": 0.75,
   "high_score_threshold": 0.75,
-  "total_points": 28,
-  "timestamp": "2026-08-10T00:18:33Z",
-  "created": "2026-08-10T00:18:33Z",
-  "modified": "2026-08-10T00:18:33Z",
+  "total_points": 40,
+  "timestamp": "2026-08-19T14:51:05Z",
+  "created": "2026-08-19T14:51:05Z",
+  "modified": "2026-08-19T14:51:05Z",
   "source_volume": "PHerc0800/volumes/20250521135224-8.640um-1.2m-116keV-masked.zarr",
-  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization",
-  "volume": "20250521135224-8.640um-1.2m-116keV-masked.zarr",
-  "voxelsize_um": 8.64,
-  "volume_width": 9867,
-  "volume_height": 9867,
-  "volume_slices": 24298
+  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization"
  }
 }
