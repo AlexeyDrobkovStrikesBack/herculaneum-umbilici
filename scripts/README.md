@@ -219,8 +219,9 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
 - `axis_benefit.py` — **new.** Every statistic in README section 6, recomputed
   from the ten `axis_benefit/prereg_PHercNNNN.json`: the per-scroll table, the
   primary Wilcoxon over the ten scroll means, both stick baselines, the
-  worst-case exclusion check, the displaced-axis control and the 1.81 mm
-  sensitivity floor, how far the stick actually sits from the annotated axis,
+  worst-case exclusion check, the displaced-axis control and the 3.63 mm
+  sensitivity floor (1.81 mm before the 2026-08-19 re-measurement; see README
+  section 6.4), how far the stick actually sits from the annotated axis,
   villa's R̄, and the three post-hoc PHerc0813 variants with the distances
   between the three placements. It also re-derives the 300 slice indices from
   the shipped umbilicus files and checks the run used exactly those, so the

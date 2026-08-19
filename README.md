@@ -55,15 +55,15 @@ against someone else's, and that is §7.
 What we kept running into is that substituting a straight vertical line for the
 axis is not a small approximation. On the ten shipped files the annotated centre
 departs from a vertical line through the scroll's own mean centre by up to
-**20.7 mm** (PHerc0268; second largest PHerc0800 at 19.9 mm), and the axis
-sweeps **37.9 mm** laterally over the height of that scroll. At the 247–371 µm
+**19.3 mm** (PHerc0268; second largest PHerc0800 at 18.4 mm), and the axis
+sweeps **36.7 mm** laterally over the height of that scroll. At the 247–371 µm
 pitch we measure at five readable spots (see caveats — those spots are locally
 separated, and tightly-wound material is finer, which would make this count
-larger not smaller), 20.7 mm of lateral error crosses
-roughly 56 to 84 windings — far more than enough to assign a sheet to the wrong
+larger not smaller), 19.3 mm of lateral error crosses
+roughly 52 to 78 windings — far more than enough to assign a sheet to the wrong
 turn at the top or bottom of a scroll. Placing the vertical optimally
 instead of through the mean centre does not rescue it: the best a straight stick
-can do on PHerc0268 is still 19.0 mm (`scripts/axis_stats.py`, `cheby_mm`).
+can do on PHerc0268 is still 18.4 mm (`scripts/axis_stats.py`, `cheby_mm`).
 
 So we annotated the ten by hand, in the same format sean published. We are
 contributing them because a per-slice centre is an input that several tools in
@@ -79,12 +79,13 @@ z → (y, x) interpolator. See "Format compatibility" below.
 Parsing is not benefit, so that loader was then used to ask whether the axis buys
 the tool anything: on a rule fixed in writing beforehand, over 300 cross-sections
 of all ten scrolls, the annotated axis beats the best straight vertical stick on
-10 of 10 scrolls, p = 0.0020, 2.03× — and the measure that says so is blind below
-1.81 mm, so it credits gross placement and not annotation precision. That is
+10 of 10 scrolls, p = 0.0020, 2.09× — and the measure that says so is blind below
+3.63 mm, so it credits gross placement and not annotation precision. That is
 validation check 6, and its figure failed.
 
 ## Method
-Manual annotation on ~31 axial slices per scroll (small web annotator with
+Manual annotation on 32 to 49 axial slices per scroll after the second pass
+(31 or fewer before it; small web annotator with
 auto-suggested centers, triplanar side views and winding-ring overlays;
 khartes `exp-2025-08-01` used to cross-check ambiguous spots). Untouched
 auto-suggestions were dropped at finalization — polylines interpolate
@@ -95,7 +96,11 @@ from. Two voxels at L3 is a quarter of a pixel, so we name the three published
 points that sit within 10 voxels of their auto-suggestion — PHerc1447 z=11888
 (3.3 vox), PHerc0257 z=15272 (6.6 vox), PHerc0813 z=3496 (9.9 vox). These are
 deliberate micro-adjustments, but they are not distinguishable from a slipped
-click, so we would rather list them.
+click, so we would rather list them. **That list is the first pass's**
+(`scripts/finalize.py` needs the annotator output, which does not ship, so it
+cannot be recomputed from a clone); of the three, PHerc0813 z=3496 was
+re-placed in the second pass and now sits 808 voxels from where it was, so the
+entry describes a point that no longer exists at that position.
 
 ### Second pass, 19 August 2026 — density where the axis bends
 
@@ -105,7 +110,10 @@ We measured that before drawing anything: `scripts/midpoint_audit.py` drops each
 interior control point, interpolates its neighbours at that z and reports the
 miss in micrometres — a leave-one-out measurement of how wrong linear
 interpolation is, with no CT read and no model involved. It put 161 of 269
-intervals above 280 µm and 27 above 1 mm.
+intervals above 280 µm and 27 above 1 mm. Run again on the densified curves it
+now reports **188 of 383 intervals above 280 µm and 2 above 1 mm** — more
+intervals over 280 µm because there are more intervals, and an order of
+magnitude fewer of the bad ones.
 
 Midpoint slices were then fetched for the worst intervals and annotated by the
 same hand as the first pass. **279 → 393 human-confirmed points.** The largest
@@ -126,9 +134,67 @@ pass on that stretch brought it to 443 µm, and the same sequence played out on
 PHerc0813 (930 → 417 µm). Where a scroll got *worse* on this measure, the
 annotation had not degraded — the measurement had got sharper.
 
-**What this does not cover yet.** The pre-registered axis-benefit run described
-below was measured on the 15 August curves, not on these. It has not been
-re-run, and its numbers describe the earlier, sparser polylines.
+### 19 August 2026 — the pre-registered run repeated on these curves, and what it says
+
+An earlier version of this section said the axis-benefit run of §6 had not been
+re-run on the densified curves. It has been, and this README now quotes the
+repeated run throughout. Three things, and the third is the one that matters.
+
+**1. The pre-registered claim holds.** `scripts/axis_benefit.py` on the new
+per-slice outputs prints, for the primary comparison and for the secondary one,
+*"verdict under PREREGISTRATION.md 10.2: CLAIM SUPPORTED"* — 10 of 10 scrolls
+positive, W = 0.0, p = 0.0020, exactly as before. The old per-slice outputs are
+not deleted: they ship as `axis_benefit/superseded_2026-08-15/`, so the two runs
+can be compared by anyone who wants to check what follows.
+
+**2. The slice rule was re-derived where the annotated range grew.** The
+pre-registered sampling rule reads `z_min` and `z_max` off the first and last
+control point of each shipped file. On PHerc0268 and PHerc0800 the second pass
+extended the annotated range — PHerc0268's `z_min` from 5320 to 2680, and
+PHerc0800's from 4256 to 3672 with its `z_max` from 20760 to 21352 — so the rule
+gives different z on those two, and those two scrolls were re-measured on the z
+the rule now gives.
+`axis_benefit/measure/scroll_meta.json` carries the new range and
+`scripts/axis_benefit.py` re-derives all 300 indices and reports *"all ten: the
+run used exactly the slices the rule gives"*. The consequence is stated rather
+than buried: on those two scrolls the two runs share **2 and 0** of their thirty
+slices respectively, so nothing about PHerc0268 or PHerc0800 pairs across the
+two runs.
+
+**3. The densification did not measurably improve the axis on this instrument.**
+This is the honest headline of the repeat and it is not the one we wanted.
+Pairing every slice that is scorable in both runs — 198 of them, over the eight
+scrolls whose z are unchanged plus the two PHerc0268 slices that survive —
+
+- the annotated axis **did not move at all** on 112 of the 198, and moved less
+  than even the optimistic 1.81 mm floor on 148 of them;
+- q on the annotated axis is a coin flip: 60 up, 64 down, 74 exactly tied,
+  Wilcoxon p = 0.93;
+- the gap over the straight stick moves +0.0044 on average, Wilcoxon p = 0.17;
+- restricted to the 50 slices where the axis moved at least 1.81 mm, 28 are
+  better and 22 worse, and the mean change in the gap is **negative**
+  (−0.0063); at the 3.63 mm floor §6.4 now measures it is 18 better against
+  20 worse;
+- at the scroll level, the change in each scroll's mean gap is positive on 5 of
+  10, Wilcoxon **p = 1.00** (on the eight scrolls that pair slice for slice,
+  5 of 8, p = 0.84).
+
+**And the pooled ratio's rise is the baseline degrading, not our axis
+improving.** Pooled it went 2.03× → 2.09×. On the 197 slices that pair across
+the eight unchanged scrolls, the annotated axis's mean q fell by 0.0003 while
+the straight stick's fell by 0.0045: densification moved the mean of the control
+points, which is where the stick stands, so the comparator got worse faster than
+we did. A wider ratio earned that way is not evidence of a better axis and we do
+not present it as one.
+
+**What that does and does not mean.** It does not mean the second pass was
+worthless. The pass operated at a scale — median movement 0.000 mm, three
+quarters of the slices under the floor — that this instrument is blind to by its
+own §6.4 measurement, so the null is a statement about the instrument as much as
+about the annotation. It does mean that this package has **no measurement that
+shows the densification helped**, and it should not be sold as if it had one.
+The measure that would show it must resolve sub-millimetre axis error, and there
+is no such measure here.
 
 ## Validation
 
@@ -143,7 +209,10 @@ Seven checks, and they are not equally reproducible. To be exact:
   post-hoc CT measurement inside it needs the network to *re-*measure but ships
   its raw. It covers one scroll of ten, and §7.5 says so.
 - **Check 6 (does the axis help a tool?) reproduces from a fresh clone**, from
-  the ten `axis_benefit/prereg_PHercNNNN.json` via `scripts/axis_benefit.py`. It
+  the ten `axis_benefit/prereg_PHercNNNN.json` via `scripts/axis_benefit.py`.
+  It was re-measured on the 19 August densified curves and the previous run
+  ships beside it as `axis_benefit/superseded_2026-08-15/`, so the two are
+  comparable from a clone as well. It
   is the only check here that asks whether these files benefit anything rather
   than what they look like, and it is the only one that was pre-registered — the
   specification ships as `axis_benefit/PREREGISTRATION.md`. The measurement that
@@ -441,6 +510,13 @@ Median ring-gate displacement: **ours 268.3 voxels over all ten shipped axes
 both cases and it does not separate us: it measures how crushed a cross-section
 is, not how well it was annotated.
 
+> **Dated, 2026-08-19.** Those 279 points are the 15 August curves. The shipped
+> files now carry **393** points and this number has not been recomputed on
+> them: `calib_sean.py` needs the per-slice PNGs and `ref_sean/`, neither of
+> which ships, so it cannot run from a clone and did not run here. Read 268.3 as
+> "measured on the ten 279-point axes of 15 August", and the same for
+> `panels/calibration_summary.png`, which draws it.
+
 > **Correction.** An earlier version of this README said "ours 265 vs sean's 274".
 > That 265 was three of our ten scrolls (PHerc0191/0257/0268, 93 points), read
 > from the pre-finalization annotator output — 31-point polylines that still
@@ -460,23 +536,23 @@ panel is `scripts/calib_figure.py`):
 | PHerc0211 | sean | 32 | 188 | 98 | 474 | **87** | 16 |
 | PHerc0125 | sean | 39 | 212 | 61 | 465 | **51** | 16 |
 | PHerc0826 | sean | 63 | 283 | 92 | 467 | **70** | 9 |
-| PHerc0358 | ours | 86 | 368 | 153 | 376 | – | 0 |
-| PHerc1218 | ours | 89 | 608 | 84 | 608 | – | 0 |
-| PHerc1447 | ours | 119 | 640 | 127 | 640 | – | 0 |
-| PHerc1203 | ours | 123 | 520 | 123 | 520 | **123** | 29 |
-| PHerc1545 | ours | 140 | 552 | 140 | 552 | **137** | 22 |
-| PHerc0800 | ours | 178 | 592 | 178 | 592 | – | 0 |
-| PHerc0257 | ours | 182 | 480 | 177 | 480 | **172** | 23 |
-| PHerc0813 | ours | 182 | 448 | 208 | 448 | **166** | 17 |
-| PHerc0268 | ours | 261 | 328 | 469 | 336 | – | 0 |
-| PHerc0191 | ours | 264 | 480 | 264 | 480 | **187** | 14 |
+| PHerc0358 | ours | 78 | 368 | 176 | 376 | **251** | 3 |
+| PHerc1447 | ours | 78 | 640 | 64 | 640 | – | 0 |
+| PHerc1218 | ours | 84 | 608 | 78 | 608 | – | 0 |
+| PHerc0813 | ours | 90 | 224 | 160 | 448 | **156** | 18 |
+| PHerc1203 | ours | 99 | 512 | 106 | 520 | **103** | 22 |
+| PHerc1545 | ours | 134 | 552 | 134 | 552 | **127** | 24 |
+| PHerc0257 | ours | 154 | 472 | 177 | 480 | **177** | 28 |
+| PHerc0800 | ours | 155 | 584 | 168 | 588 | – | 0 |
+| PHerc0268 | ours | 165 | 168 | 328 | 496 | **544** | 9 |
+| PHerc0191 | ours | 166 | 240 | 252 | 480 | **252** | 24 |
 
 **The middle column is not a common-step comparison, and an earlier version of
 this README wrongly said it was.** The thinning keeps, for each point of a
 480-voxel target grid, the nearest point that already exists. That resamples a
 *dense* polyline onto ~480 — it does exactly that for sean, whose three land at
 465/474/467 — but it cannot manufacture a spacing a sparse polyline does not
-have. Ours end up at 336 to 640, a 1.9× spread, and only two of the ten land on
+have. Ours end up at 376 to 640, a 1.7× spread, and only two of the ten land on
 480. So "thinned to a common 480-voxel z-step" was wrong about our own side, and
 the sentence that called that column the fair one named the wrong column. The
 error ran against us rather than for us — it made our roughest scroll look 1.8×
@@ -485,31 +561,46 @@ worth correcting either way.
 
 The last column is the comparison that convention was meant to be: only those
 triples whose **both** chords are within ±20% of 480 voxels, and no resampling
-at all. **On that column sean is 51–87 and the five of ours that can be measured
-on it are 123–187** — our smoothest matched scroll is 1.4× his roughest matched
-value and our roughest is 2.1×. The other five of our ten contain no pair of
-adjacent chords near 480 anywhere and simply cannot be placed on that axis; for
-those we quote the as-published figure with its spacing, and nothing else.
+at all. **On that column sean is 51–87 and the seven of ours that can be
+measured on it are 103–544** — our smoothest matched scroll is 1.2× his roughest
+matched value and our roughest is 6.3×. The remaining three of our ten contain
+no pair of adjacent chords near 480 anywhere and simply cannot be placed on that
+axis; for those we quote the as-published figure with its spacing, and nothing
+else.
 
-**PHerc0268's 469 was an artifact of that resampling and we withdraw it.** The
-thinning takes it from 23 points to 16, with a median gap of 336 but a mean of
-484 and a maximum of 664: the result alternates short and doubled gaps, and the
-median kink is then dominated by the long ones. Its honest as-published figure
-is **261, over 328-voxel chords**. It and PHerc0191 (264, over 480-voxel chords)
-are the two roughest of our ten in both columns where both of them appear, but
-they are measured over different chord lengths and neither has a matched-spacing
-value, so we do not rank them against each other.
+**The second pass changed this table more than it changed anything else here,
+and not uniformly in our favour.** Denser annotation means shorter chords, so
+the as-published column falls across the board — our range was 86–264 on the
+15 August curves and is 78–166 now — but that is the chord length talking, which
+is exactly the trap this section exists to name, and it is not a claim that the
+annotation got smoother. The matched column is the one to read, and there the
+news is mixed: five scrolls that could be measured on it before still can, two
+more (PHerc0358 and PHerc0268) now can, and **PHerc0268 lands at 544 — the
+roughest matched value of all thirteen rows in this table, six times sean's
+roughest.** PHerc0358's 251 rests on three triples and should not be leaned on.
 
-What does not change: **sean's axes are smoother than ours.** That holds in
-every one of the three columns — as published (his 32–63 against our 86–264),
-after thinning (his 61–98, with exactly one of our ten, PHerc1218 at 84, inside
-that band) and at matched spacing (his 51–87 against our 123–187). Only the
-*size* of the gap depends on which column is used, and the largest version of it
-was the artifact. An earlier version of this README said "our later scrolls
-match his range" — that is false on the shipped files and it is removed. The two
-sides are annotated at different z-densities and we have not shown that the
-difference costs anything downstream, but we are not going to claim parity we do
-not have.
+**PHerc0268's 469 was an artifact of resampling and that withdrawal stands.**
+On the 15 August curves its honest as-published figure was 261 over 328-voxel
+chords and it had no matched-spacing value at all. The second pass took it from
+23 points to 44, which brings its median spacing down to 168 and its
+as-published kink to 165, and — for the first time — gives it nine triples at
+matched spacing. That matched value is **544**, worse than the 469 the
+resampling artifact had produced. The withdrawal was still right: 469 was
+measured the wrong way. But nobody should read this section as PHerc0268 having
+come out better, because on the one column that compares like with like it is
+now the worst row on the page.
+
+What does not change: **sean's axes are smoother than ours.** As published his
+32–63 sit below our 78–166 with no overlap, and at matched spacing his 51–87 sit
+below our 103–544 with no overlap. The one column where the two sides interleave
+is the thinned one — his 61–98 against our 64–328, with two of our ten
+(PHerc1447 at 64 and PHerc1218 at 78) inside his band — and that is the column
+this section has already said is not a fair comparison. Only the *size* of the
+gap depends on which column is used. An earlier version of this README said "our
+later scrolls match his range" — that is false on the shipped files and it is
+removed. The two sides are annotated at different z-densities and we have not
+shown that the difference costs anything downstream, but we are not going to
+claim parity we do not have.
 
 > **Correction, and it is about reproducibility rather than about a number.**
 > An earlier version of this README told you to fetch sean's three files "from
@@ -612,16 +703,24 @@ when it was run.
 
 The Motivation section argues that a straight vertical line is not a substitute
 for a per-slice axis, and until now it argued that **geometrically**: our points
-move by up to 20.7 mm. That says our annotation moves. It does not say that
+move by up to 19.3 mm. That says our annotation moves. It does not say that
 moving with it buys anything. Section 2 is a different question again — it
 displaces the centre by a fixed 150 or 300 voxels in four directions. Nothing in
 this package had ever put the annotated axis against the straight stick and
 measured which one the data prefers. `scripts/stick_control.py` does, on the
 same 297 slices, with the banded-energy measure of section 2 imported unchanged,
 against two sticks: the vertical through the mean of each scroll's annotated
-points (the reference the 20.7 mm is measured from) and the optimally placed
-vertical (the Chebyshev centre, the reference behind the 19.0 mm). Its raw
+points (the reference the 19.3 mm is measured from) and the optimally placed
+vertical (the Chebyshev centre, the reference behind the 18.4 mm). Its raw
 output ships as `qc/stick_control_raw.json`, so it recomputes from a bare clone.
+
+**Dated, 2026-08-19: this control was not re-measured on the densified curves.**
+`qc/stick_control_raw.json` is the 15 August measurement and re-measuring needs
+the slice PNGs, which do not ship. Every number in this section therefore
+describes the 279-point axes, and the sticks in it stand at the mean and the
+Chebyshev centre of *those* points. §6 was re-measured and this was not; where
+the two sections quote a stick distance they are no longer quoting the same
+sticks.
 
 **The positive half.** Against the mean stick the annotated axis wins 188/296
 slices; against the optimally placed stick, 184/295. Per scroll it is ahead in
@@ -683,14 +782,22 @@ different genres and §6.7's verdict is not softened by this one existing.
 existed, the annotated axis makes the papyrus more concentric about it than the
 best straight vertical stick does about itself, on **10 of 10 scrolls** —
 Wilcoxon signed-rank over the ten per-scroll means, **W = 0.0, p = 0.0020**
-two-sided, pooled **+0.1611 against +0.0795, 2.03×**, 209 of 252 slices.
+two-sided, pooled **+0.1590 against +0.0760, 2.09×**, 202 of 256 slices.
+(Re-measured on the 19 August densified curves; the 15 August run gave
++0.1611 against +0.0795, 2.03×, 209 of 252, and ships as
+`axis_benefit/superseded_2026-08-15/`.)
 
 **The bound, in the body and not in a footnote.** The measure is **blind below
-1.81 mm**. It resolves gross displacement, not annotation-scale accuracy — the
-same wall section 2 hits, reached again from a different direction with a
-different measure. **This section therefore credits gross axis placement and can
-never credit annotation precision.** It stands up because the straight stick is a
-median **6.0 mm** off, three times that floor, not because our clicking is good.
+3.63 mm**. On the 15 August curves the same pre-registered rule put that floor
+at 1.81 mm; on these curves it is 3.63 mm, and §6.4 gives the table and says how
+much weight the change will bear. We quote the worse of the two, because it is
+the one measured on the files this package ships. It resolves gross
+displacement, not annotation-scale accuracy — the same wall section 2 hits,
+reached again from a different direction with a different measure. **This
+section therefore credits gross axis placement and can never credit annotation
+precision.** It stands up because the straight stick is a median **6.24 mm**
+off, not quite twice that floor rather than the three times the earlier floor
+allowed us to say, and not because our clicking is good.
 
 `scripts/axis_benefit.py` recomputes every number below from `axis_benefit/` on a
 fresh clone with numpy and scipy. The measurement itself does not run here; §6.9
@@ -760,38 +867,44 @@ fitter's loss and does not stand in for it. See §6.8.
 
 | scroll | scorable | dropped | mean q annotated | mean q stick | **Δ** | slice wins |
 |---|---|---|---|---|---|---|
-| PHerc0191 | 30 | 0 | +0.1250 | +0.0783 | **+0.0467** | 20/30 |
-| PHerc0257 | 29 | 1 | +0.1292 | +0.0655 | **+0.0637** | 23/29 |
-| PHerc0268 | 28 | 2 | +0.1277 | +0.0867 | **+0.0410** | 23/28 |
-| PHerc0358 | 26 | 4 | +0.1787 | +0.0824 | **+0.0962** | 26/26 |
-| PHerc0800 | 26 | 4 | +0.2213 | +0.0646 | **+0.1566** | 26/26 |
-| PHerc0813 | 29 | 1 | +0.1701 | +0.0795 | **+0.0906** | 23/29 |
-| PHerc1203 | 29 | 1 | +0.2201 | +0.1374 | **+0.0828** | 24/29 |
-| PHerc1218 | 17 | 13 | +0.1154 | +0.0553 | **+0.0602** | 12/17 |
-| PHerc1447 | 25 | 5 | +0.1490 | +0.0603 | **+0.0887** | 20/25 |
-| PHerc1545 | 13 | 17 | +0.1636 | +0.0612 | **+0.1024** | 12/13 |
+| PHerc0191 | 30 | 0 | +0.1386 | +0.0955 | **+0.0431** | 20/30 |
+| PHerc0257 | 29 | 1 | +0.1299 | +0.0596 | **+0.0703** | 23/29 |
+| PHerc0268 | 28 | 2 | +0.1416 | +0.1018 | **+0.0398** | 21/28 |
+| PHerc0358 | 26 | 4 | +0.1830 | +0.0944 | **+0.0886** | 21/26 |
+| PHerc0800 | 27 | 3 | +0.2118 | +0.0582 | **+0.1536** | 27/27 |
+| PHerc0813 | 29 | 1 | +0.1460 | +0.0311 | **+0.1150** | 22/29 |
+| PHerc1203 | 29 | 1 | +0.2208 | +0.1363 | **+0.0845** | 23/29 |
+| PHerc1218 | 19 | 11 | +0.1049 | +0.0423 | **+0.0627** | 14/19 |
+| PHerc1447 | 24 | 6 | +0.1527 | +0.0546 | **+0.0981** | 20/24 |
+| PHerc1545 | 15 | 15 | +0.1366 | +0.0681 | **+0.0684** | 11/15 |
 
 - **Primary: Wilcoxon signed-rank on the ten Δ values, W = 0.0, p = 0.0020,
   two-sided.** That is the smallest p this test can return at n = 10 — every
   scroll moved the same way.
 - **10 of 10 scrolls positive**, against a pre-registered requirement of ≥ 6.
-- Pooled over the 252 scorable slices: **+0.1611 against +0.0795, 2.03×**;
-  medians +0.1482 against +0.0817; **209 of 252** slice-level wins.
-- Secondary, against the volume-centre stick: +0.1611 against +0.0766, **2.10×**,
-  W = 0.0, p = 0.0020, 10/10, 206/252 slices.
+- Pooled over the 256 scorable slices: **+0.1590 against +0.0760, 2.09×**;
+  medians +0.1461 against +0.0744; **202 of 256** slice-level wins.
+- Secondary, against the volume-centre stick: +0.1590 against +0.0768, **2.07×**,
+  W = 0.0, p = 0.0020, 10/10, 211/256 slices.
 - Secondary and **anticonservative, so not the headline**: slices within a scroll
   are not independent, and the slice-level tests pseudoreplicate exactly the way
   section 2's pooled binomial does. For completeness they are Wilcoxon
-  p = 1.3e-28 and sign test p = 2.3e-27. The scroll is the unit of replication.
-- The wins are large and the losses are small: mean gap +0.1050 on the 209 wins,
-  −0.0322 on the 43 losses. The annotated axis loses where it is already weak —
-  mean q +0.0927 on its losses against +0.1752 on its wins. **The 43 losses are
+  p = 4.9e-28 and sign test p = 2.7e-21. The scroll is the unit of replication.
+- The wins are large and the losses are small: mean gap +0.1116 on the 202 wins,
+  −0.0238 on the 54 losses. The annotated axis loses where it is already weak —
+  mean q +0.1059 on its losses against +0.1732 on its wins. **The 54 losses are
   real and they are in the table above.**
+- **All ten Δ values moved from the 15 August run, and five of them
+  down** (PHerc0191 +0.0467 → +0.0431, PHerc0268 +0.0410 → +0.0398, PHerc0358
+  +0.0962 → +0.0886, PHerc0800 +0.1566 → +0.1536, PHerc1545 +0.1024 → +0.0684).
+  The dated section above shows that the pooled ratio's rise comes from the
+  straight stick getting worse rather than from our axis getting better, and
+  that at the scroll level the change is null at p = 1.00.
 
 **Villa's own winding-phase concentration does not discriminate, and we report
-that too.** Computed with villa's `get_theta_and_radii` on all 252 slices, `dr`
-swept 4.0–30.0 independently per axis: mean R̄ 0.0145 (annotated), 0.0147 (mean
-stick), 0.0146 (volume-centre stick). At the noise floor for every axis on every
+that too.** Computed with villa's `get_theta_and_radii` on all 256 slices, `dr`
+swept 4.0–30.0 independently per axis: mean R̄ 0.0138 (annotated), 0.0145 (mean
+stick), 0.0142 (volume-centre stick). At the noise floor for every axis on every
 slice and identical between them. A single global Archimedean spiral does not
 describe these crushed cross-sections regardless of the axis — which is why
 `fit_spiral` carries a deformation field — and this quantity cannot tell axes
@@ -800,33 +913,51 @@ apart. It is reported because it is villa's own, not because it helps.
 #### 6.4 The sensitivity floor, which bounds what this can claim
 
 Our own axis displaced sideways by d in four directions, on the six
-pre-registered control slices per scroll (60; 53 had valid coverage). Displaced
+pre-registered control slices per scroll (60; 52 had valid coverage). Displaced
 centres are kept only where the ring at r1 is still ≥ 95% on the scroll.
 
 | displacement | mm | slices | median q(annotated) − q(displaced) | mean | fraction degraded |
 |---|---|---|---|---|---|
-| 25 px | 0.45 | 53 | +0.0007 | +0.0006 | 0.70 |
-| 50 px | 0.91 | 53 | +0.0030 | +0.0027 | 0.70 |
-| **100 px** | **1.81** | 52 | **+0.0105** | +0.0104 | 0.77 |
-| 200 px | 3.63 | 51 | +0.0321 | +0.0342 | 0.80 |
-| 400 px | 7.23 | 45 | +0.0594 | +0.0823 | 0.87 |
-| 800 px | 14.27 | 18 | +0.0750 | +0.1001 | 0.94 |
+| 25 px | 0.45 | 52 | +0.0003 | +0.0001 | 0.60 |
+| 50 px | 0.91 | 52 | +0.0018 | +0.0018 | 0.65 |
+| 100 px | 1.82 | 51 | +0.0076 | +0.0082 | 0.73 |
+| **200 px** | **3.63** | 50 | **+0.0255** | +0.0321 | 0.80 |
+| 400 px | 7.24 | 44 | +0.0713 | +0.0818 | 0.84 |
+| 800 px | 14.32 | 14 | +0.1119 | +0.1363 | 1.00 |
 
 **The measure is not insensitive to the axis**: at the largest valid displacement
-the score is lower than at the annotated axis on **43 of 53** control slices, and
-it falls monotonically. **The floor is 100 px = 1.81 mm**, the first displacement
+the score is lower than at the annotated axis on **42 of 52** control slices, and
+it falls monotonically. **The floor is 200 px = 3.63 mm**, the first displacement
 whose median drop reaches the pre-registered 0.01 threshold. Below it, moving the
-axis half a millimetre changes q in the fourth decimal, which is noise.
+axis a millimetre and a half changes q in the third decimal, which is noise.
+
+**The floor got worse, and that is the single number in this README that the
+second annotation pass moved against us.** On the 15 August curves the same
+pre-registered rule returned **100 px = 1.81 mm**: the median drop at 100 px was
++0.0105, just over the 0.01 threshold, and it is +0.0076 now, just under. Read
+honestly, the threshold is a step function sitting on a median that is within
+noise of 0.01 from either side. Paired on the 40 control slices the two runs
+share, the 100 px drop goes from a median +0.0134 to +0.0097 with Wilcoxon
+p = 0.43: the floor moved, the quantity under it did not, in any sense a test
+can see. So the defensible statement is
+that **this measure's blind zone is somewhere between 1.8 and 3.6 mm**, and that
+1.81 mm was the optimistic end of it. Everywhere this README used to quote
+1.81 mm it now quotes 3.63 mm, because 3.63 mm is what the pre-registered rule
+returns on the files that ship. The old table, and the run behind it, are in
+`axis_benefit/superseded_2026-08-15/`.
 
 **Why the result is nevertheless not an artifact of a blind instrument.** The
-straight stick sits a median **6.0 mm** from the annotated axis over the 252
-slices (mean 7.4 mm; per-scroll medians 3.9 mm on PHerc1203 to 15.9 mm on
-PHerc0268). That is three times the floor. The gap we measure is +0.0816 pooled;
-the control says a displacement of this order should cost between **+0.0321**
-(its median at 3.63 mm) and **+0.0594** (its median at 7.23 mm, where its mean is
-+0.0823). So the effect is the right size for an axis error of several
-millimetres — at the top of that bracket rather than in the middle of it, and we
-are not claiming a match to a decimal place.
+straight stick sits a median **6.24 mm** from the annotated axis over the 256
+slices (mean 7.03 mm; per-scroll medians 4.09 mm on PHerc1203 to 12.07 mm on
+PHerc0813). That clears the new floor on every scroll, but by a factor of 1.1 on
+PHerc1203 rather than the comfortable margin the 1.81 mm floor used to give, and
+that narrowing is part of the cost of this update. The gap we measure is +0.0830
+pooled; the control's median drop is +0.0255 at 3.63 mm and +0.0713 at 7.24 mm,
+so the observed gap sits **above** what the control predicts for a displacement
+of the observed size. The effect is therefore the right order of magnitude for
+an axis error of several millimetres and no more than that; we are not claiming
+a match to a decimal place, and we note that the mismatch runs in our favour,
+which is a reason to be careful with it rather than pleased about it.
 
 **What that leaves.** This section establishes that **a straight vertical axis is
 wrong by several millimetres on these scrolls and that this costs a downstream
@@ -840,57 +971,82 @@ Note also what this does **not** repair: section 5's dose–response is still fl
 That is a different measure (banded energy) binned by stick distance, and the
 monotone control above does not stand in for it.
 
-#### 6.5 The 48 non-scorable slices, charged against us
+#### 6.5 The 44 non-scorable slices, charged against us
 
 The exclusion rule is a joint requirement on all three axes, so no slice can be
-dropped for the annotation alone. Of the 48 dropped, the axis whose ring failed
-the 95% coverage test at r = 400 was **the annotated axis on 8**, the
-annotation-mean stick on **37**, and the volume-centre stick on **41** (they
+dropped for the annotation alone. Of the 44 dropped, the axis whose ring failed
+the 95% coverage test at r = 400 was **the annotated axis on 9**, the
+annotation-mean stick on **33**, and the volume-centre stick on **39** (they
 overlap; a slice can fail for more than one). Most drops are the *sticks* running
 off the edge of the scroll — that is, the exclusion removes slices the annotated
 axis would mostly have won, so it works against this claim rather than for it.
-Two scrolls carry most of them (PHerc1545 17, PHerc1218 13), both because
+Two scrolls carry most of them (PHerc1545 15, PHerc1218 11), both because
 annotation and stick diverge so far that no common ring survives.
 
 **The adversarial version, pre-registered before the drops were known: charge
-every one of the 48 to the annotated axis as a loss.** Slice-level wins become
-**209/300, sign test p = 7.7e-12**. The result does not depend on the exclusions.
+every one of the 44 to the annotated axis as a loss.** Slice-level wins become
+**202/300, sign test p = 1.9e-09**. The result does not depend on the exclusions.
+(On the 15 August curves this was 48 drops, 8 / 37 / 41, and 209/300 at
+p = 7.7e-12.)
 
 #### 6.6 Post-hoc, and labelled post-hoc: the two bad PHerc0813 points
 
 Not part of the pre-registered result — the primary number above keeps these
 slices in, exactly as the specification required. Two PHerc0813 control points,
-z = 6616 at (x 4748, y 5784) and z = 9296 at (x 5710, y 3978), sit visibly off
-the coil centre on the rendered cross-sections. Three corrections were tried,
-each in a *copy* of the JSON; the shipped file was not touched.
+z = 6616 and z = 9296, sit visibly off the coil centre on the rendered
+cross-sections. Three corrections were tried, each in a *copy* of the JSON; the
+shipped file was not touched.
 
 | variant | how the two points were re-placed | PHerc0813 Δ | primary test with it substituted |
 |---|---|---|---|
-| **pre-registered, unchanged** | not touched | **+0.0906** | W = 0.0, p = 0.0020 |
-| post-hoc "eye" | placed by eye from the sheet curvature, without reference to q | +0.0788 | W = 0.0, p = 0.0020 |
-| post-hoc "drop" | deleted, letting villa's loader interpolate across | +0.0721 | W = 0.0, p = 0.0020 |
-| post-hoc "argmax" | placed at the q-argmax on their own slice — **circular by construction, an upper bound** | +0.0829 | W = 0.0, p = 0.0020 |
+| **pre-registered, unchanged** | not touched | **+0.1150** | W = 0.0, p = 0.0020 |
+| post-hoc "eye" ‡ | placed by eye from the sheet curvature, without reference to q | +0.0788 | W = 0.0, p = 0.0020 |
+| post-hoc "drop" ‡ | deleted, letting villa's loader interpolate across | +0.0721 | W = 0.0, p = 0.0020 |
+| post-hoc "argmax" ‡ | placed at the q-argmax on their own slice — **circular by construction, an upper bound** | +0.0829 | W = 0.0, p = 0.0020 |
+
+> ‡ **Read this table with the date in mind, and it is a caveat we would rather
+> print than let a reader find.** The pre-registered row is the 19 August
+> re-measurement on the densified curves. **The three post-hoc rows are not**:
+> `axis_benefit/PHerc0813_posthoc_{eye,drop,argmax}.json` are corrected copies of
+> the 29-point 15 August file, they were measured on 13 August, and they have not
+> been re-made against the 49-point file that ships. So the three variants are
+> only strictly comparable with the 15 August pre-registered value of +0.0906,
+> which is what they were built against and which is in
+> `axis_benefit/superseded_2026-08-15/`. Against that value the reading below
+> holds exactly as written. Against the +0.1150 in the row above them, the
+> comparison is between two different curves and should not be made.
 
 **All three corrections leave PHerc0813's Δ *lower* than the uncorrected
-annotation** — including the circular upper bound that was allowed to choose the
-axis the score likes best — and the primary test is unchanged at p = 0.0020 in
-every variant. Those two points are worth fixing for the package's own sake; they
-do not move this number.
+annotation they were built from** (+0.0906) — including the circular upper bound
+that was allowed to choose the axis the score likes best — and the primary test
+is unchanged at p = 0.0020 in every variant. Those two points are worth fixing
+for the package's own sake; they do not move this number.
+
+**Both of those points were re-placed in the second annotation pass**, so the
+shipped file no longer holds the coordinates the three variants were corrections
+of: z = 6616 is now (x 4890, y 5714) and z = 9296 is now (x 5716, y 3728). That
+is a fourth placement, made by the same hand on denser evidence and without
+reference to q, and it is the one that ships. It is not a fifth row of the table
+because it was never measured as a variant — it is simply the annotation.
 
 **The by-eye replacement is low-confidence and should be read that way.** Those
 two cross-sections are crushed flat and show no identifiable whorl, so the
 placement carries an uncertainty of roughly ±300 level-0 voxels (2.8 mm). It sits
-13.0 mm and 13.4 mm from the published points, and **13.7 mm and 16.3 mm from the
-q-argmax** — that disagreement is evidence the eye was not following q, which is
-what it was for, but it also means "eye" is one plausible correction, not the
-correction. `scripts/axis_benefit.py` prints all three placements and every
-pairwise distance.
+12.6 mm and 14.0 mm from the currently published points, and **13.7 mm and
+16.3 mm from the q-argmax** — that disagreement is evidence the eye was not
+following q, which is what it was for, but it also means "eye" is one plausible
+correction, not the correction. `scripts/axis_benefit.py` prints all three
+placements and every pairwise distance, measured against the shipped file as it
+stands.
 
 #### 6.7 The figure failed, and it is not shipped
 
 A reviewer asking for "accompanying images or demonstrations of accuracy"
 deserves to be told this before they go looking. **We tried to build the picture,
-under its own stated rule, and nothing passed.**
+under its own stated rule, and nothing passed.** (This attempt was made on the
+15 August curves and was not repeated on the densified ones. Repeating it would
+need the volumes again, and the finding it reached is about the material rather
+than about our axes, so nothing in it turns on the extra points.)
 
 The rule, fixed before rendering and never applied to any number in §6.3–§6.6:
 candidates are the 300 pre-registered slices ranked by q on the **annotated axis
@@ -924,7 +1080,7 @@ right.** PHerc0191 z = 3496, sector 270–360°, reaches 0.642 against the stick
 **it is not shipped**.
 
 **The finding, plainly: a demonstration of this kind in unwrap form does not
-exist for this material.** The statistic is real at 2× and p = 0.0020 and it is
+exist for this material.** The statistic is real at 2.09× and p = 0.0020 and it is
 not visible to the eye in a polar unwrap, because what q measures — a
 several-millimetre bias in a gradient-direction average over 72 sectors — is not
 what an eye picks out of a crushed cross-section. We stopped building this figure
@@ -947,10 +1103,13 @@ demonstration that the eye can check, and we would rather say which one this is.
 
 **Established.** Under a rule fixed in writing before the data were touched, the
 annotated axes make the papyrus more concentric than the best straight vertical
-stick on all ten scrolls, 2.03×, p = 0.0020, and the result survives charging
-every excluded slice against us. Villa's spiral geometry is demonstrably
-sensitive to the axis (43/53 control slices degrade monotonically). The
-sensitivity floor is 1.81 mm and the effect lives at a median 6.0 mm.
+stick on all ten scrolls, 2.09×, p = 0.0020, and the result survives charging
+every excluded slice against us. That holds on both releases of the curves: the
+15 August run gave 2.03× and the 19 August re-measurement gives 2.09×, with
+W = 0.0, p = 0.0020 and 10/10 in each. Villa's spiral geometry is demonstrably
+sensitive to the axis (42/52 control slices degrade monotonically). The
+sensitivity floor is 3.63 mm and the effect lives at a median 6.24 mm — a factor
+of 1.7, where the earlier floor made it a factor of 3.3.
 
 **Not established, and not claimed.**
 
@@ -961,7 +1120,9 @@ sensitivity floor is 1.81 mm and the effect lives at a median 6.0 mm.
   with a prepared spiral dataset and `fit_spiral` run twice on one scroll; that
   is still the thing to do and this is not a substitute for it.
 - **Nothing here credits annotation precision** (§6.4), and no experiment of this
-  shape can.
+  shape can. The second annotation pass is the demonstration: it added 114
+  hand-confirmed points and this test cannot see them (dated section above,
+  scroll-level p = 1.00).
 - Nothing here confirms or overturns sections 1–5, which use different measures
   on different slices.
 - One thing this run suggested and did **not** test, left for a fresh
@@ -975,7 +1136,10 @@ Shipped: `axis_benefit/PREREGISTRATION.md` (the specification, verbatim), the te
 `axis_benefit/prereg_PHercNNNN.json` (every slice, every axis, every control
 displacement, with the q, the pixel count, the ring coverage, the displacement in
 µm and villa's R̄), the three post-hoc variants and the corrected copies they were
-run from, and `axis_benefit/measure/` (the measurement code as it ran). 760 KB in
+run from, and `axis_benefit/measure/` (the measurement code as it ran), and
+since 2026-08-19 the whole of the previous run under
+`axis_benefit/superseded_2026-08-15/` (a further 590 KB), so that the two
+releases of the curves can be compared rather than taken on trust. 1.4 MB in
 total. `scripts/axis_benefit.py` turns the per-slice values into every statistic
 above on a fresh clone.
 
@@ -1012,8 +1176,8 @@ bare clone rather than on our word.
 
 | | ours | the prior annotation |
 |---|---|---|
-| points | 28, integer, hand-placed | 365, float, generated |
-| z range / spacing | 3432 → 21144, median step 608 vox (one 1224 gap) | 32 → 23216, median step 64 vox |
+| points | 36, integer, hand-placed | 365, float, generated |
+| z range / spacing | 3432 → 21144, step 304–616 vox, median 608 | 32 → 23216, median step 64 vox |
 | shape | `{"control_points": [{x, y, z, score}], "metadata": {…}}` | `{"control_points": [{z, y, x}]}` — no metadata, no score |
 | frame | level-0 voxels of `20250521120456-8.640um-…-masked` | the same |
 | what a point *is* | a human's placement of the winding centre | **the centroid of the papyrus mask of that slice** |
@@ -1054,6 +1218,17 @@ already publishes rather than in a number invented for the occasion:
 | median < **20.7 mm** | the size of the effect this package claims; would have to be explained, not absorbed |
 | median ≥ **20.7 mm** | larger than the Motivation number; the comparison failed and the framing is withheld |
 
+**Those three thresholds are frozen at the values §6.4, §6 and the Motivation
+section carried on 15 August, and they stay frozen** — a pre-registered band
+that is re-tuned after the fact is not a pre-registered band, and
+`scripts/prior_1218.py` still prints them as written. What they mean has
+shifted, and a reader is entitled to know by how much: §6.4's floor is now
+3.63 mm rather than 1.81 mm, §6's median stick distance is 6.24 rather than
+6.0 mm, and the Motivation number is 19.3 rather than 20.7 mm. The verdict below
+is unaffected — it falls in the second band on either set of thresholds — but
+the first band would now be a *weaker* statement than it was, not a stronger
+one, and §7.5 says what that does to the reading.
+
 It also fixed what each *shape* of disagreement would mean: a constant offset
 would be a convention or frame difference; a z-dependent one, largest where a
 cross-section stops being symmetric, would be the centroid-versus-centre gap
@@ -1069,36 +1244,46 @@ linearly, which is what villa's own `json_umbilicus_z_to_yx` does:
 | | voxels | mm |
 |---|---|---|
 | min | 71.4 | 0.62 |
-| p25 | 160.5 | 1.39 |
-| **median** | **242.7** | **2.10** |
-| p75 | 354.7 | 3.06 |
-| p90 | 461.9 | 3.99 |
-| max (at z = 5856) | 569.0 | 4.92 |
+| p25 | 157.4 | 1.36 |
+| **median** | **231.9** | **2.00** |
+| p75 | 362.3 | 3.13 |
+| p90 | 506.3 | 4.37 |
+| max (at z = 8608) | 833.3 | 7.20 |
 
-At our 28 hand-placed nodes only, with our file not interpolated at all, the
-median is 2.14 mm and the max 4.95 mm — the same answer, so none of it is an
+At our 36 hand-placed nodes only, with our file not interpolated at all, the
+median is 2.20 mm and the max 7.25 mm — the same answer, so none of it is an
 artifact of our own interpolation. Re-running the interpolation through villa's
 loader instead of `np.interp` changes the distances by **0.0000 voxels**
 (`--villa`).
 
-**Verdict, against the band fixed beforehand: the second one.** The two
-independent annotations of PHerc1218 differ by 2.10 mm in the median and never
-by more than 4.92 mm — below the 6.0 mm distance §6 measures between our axis
-and the straight stick it beats, and above the 1.81 mm floor of §6.4. The
-whole distribution and the figure are `panels/prior_1218_agreement.png`.
+**Recomputed on the 19 August curves; the median came down and the tail went
+up.** On the 15 August 28-point axis this section read median 2.10 mm and max
+4.92 mm at z = 5856. The densified axis agrees with the prior annotation
+slightly better in the middle (2.00 mm) and disagrees considerably more at its
+worst (7.20 mm, at z = 8608, inside the band §7.3 already identified as carrying
+the disagreement). We are not going to describe a 46% larger maximum as an
+improvement because the median moved 0.1 mm the other way.
 
-**It is not a constant offset.** The mean (Δy, Δx) is (−10.2, +111.7) voxels =
-0.97 mm, and removing it leaves a median residual of 1.77 mm: a single constant
-vector explains only **16%** of the median distance. So this is not a frame or
+**Verdict, against the band fixed beforehand: the second one, and the script
+prints it.** The two independent annotations of PHerc1218 differ by 2.00 mm in
+the median and by up to 7.20 mm — below the 6.24 mm distance §6 measures between
+our axis and the straight stick it beats in the median, though the tail now
+exceeds it, and above the 1.81 mm the pre-registered band names. The whole
+distribution and the figure are `panels/prior_1218_agreement.png`.
+
+**It is not a constant offset.** The mean (Δy, Δx) is (−33.5, +161.5) voxels =
+1.42 mm, and removing it leaves a median residual of 1.78 mm: a single constant
+vector explains only **11%** of the median distance. So this is not a frame or
 origin difference. It is z-dependent, and it is concentrated. Over eight equal z
-bands the medians are 1.17, **3.82**, **3.20**, 1.33, 1.37, 1.82, 2.67 and
-1.67 mm: one band of scroll around z 5700–10100 carries most of it.
+bands the medians are 1.15, **3.52**, **5.15**, 1.33, 1.37, 1.82, 2.67 and
+1.67 mm: one band of scroll around z 5700–10100 carries most of it, and the
+densified axis makes that band worse rather than better (3.82/3.20 → 3.52/5.15).
 
-**And it is not our coarser sampling either.** Our nodes sit 608 voxels apart,
-theirs 64. Resampling *their* polyline onto our node grid and interpolating it
-back — the most a polyline sampled like ours could carry of a line sampled like
-theirs — loses a median of 0.17 mm, a p90 of 0.68 mm and at most 1.53 mm, well
-under the 2.10 mm.
+**And it is not our coarser sampling either.** Our nodes sit a median 608 voxels
+apart, theirs 64. Resampling *their* polyline onto our node grid and
+interpolating it back — the most a polyline sampled like ours could carry of a
+line sampled like theirs — loses a median of 0.15 mm, a p90 of 0.44 mm and at
+most 1.16 mm, well under the 2.00 mm.
 The two files genuinely put the centre in different places.
 
 #### 7.4 Why, measured rather than asserted — and post-hoc
@@ -1117,25 +1302,35 @@ Over the 553 slices of the overlap:
 
 | centroid of | to ours | to theirs | theirs closer on |
 |---|---|---|---|
-| the nonzero mask | 2.08 mm | **0.25 mm** | 550 / 553 |
-| intensity, all nonzero | 2.00 mm | **0.24 mm** | 552 / 553 |
-| intensity, top 40% only | 1.88 mm | **1.20 mm** | 392 / 553 |
+| the nonzero mask | 1.96 mm | **0.25 mm** | 550 / 553 |
+| intensity, all nonzero | 1.93 mm | **0.24 mm** | 552 / 553 |
+| intensity, top 40% only | 2.05 mm | **1.20 mm** | 403 / 553 |
+
+The CT measurement itself is frozen — `qc/prior_1218_centroid_raw.json` is the
+13 August streaming run and their file has not changed — so the "to theirs"
+column is identical to the earlier version of this table and only the "to ours"
+column moves with our axis.
 
 The CT's mass centroid sits on their line, a quarter of a millimetre from it,
 on essentially every slice. Their generator says the file is a papyrus-mask
-centroid and the CT agrees that it is one. **So the 2.10 mm is the distance
+centroid and the CT agrees that it is one. **So the 2.00 mm is the distance
 between a mass centroid and a hand-placed winding centre on this scroll — a
 property of PHerc1218's cross-sections, not annotation error on either side.**
 The third row is the interesting one, and it does not rescue the winding
-centre: restricting the weight to the densest 40% of the material moves the
-centroid 0.95 mm **off** their line but only 0.20 mm **towards** ours, and it
-still lands closer to theirs on 392 of the 553 slices. The hand-placed centre is
-not simply the centroid of the brighter papyrus either.
+centre — less than ever. Restricting the weight to the densest 40% of the
+material moves the centroid 0.95 mm **off** their line and, on the densified
+axis, 0.09 mm **further from** ours rather than closer to it; it still lands
+closer to theirs on 403 of the 553 slices, which is 11 more than before. On the
+15 August axis that row moved 0.20 mm towards ours and we said so; on these
+curves it moves the other way, and the honest reading is that the hand-placed
+centre is not the centroid of the brighter papyrus either, and is now a little
+further from it than it was.
 
 #### 7.5 What this establishes, and what it does not
 
 It establishes that on the one scroll where an independent annotation exists,
-our hand-placed axis and an automatic mass centroid agree to 2.10 mm, that the
+our hand-placed axis and an automatic mass centroid agree to 2.00 mm in the
+median, that the
 residual is explained by the two being different quantities, and that the
 explanation is measurable in the CT rather than argued.
 
@@ -1143,8 +1338,17 @@ It does **not** make either file ground truth — two methods can share a bias, 
 on a scroll that leans consistently to one side a human eye and a mass centroid
 can be pulled the same way. It covers one scroll of ten and only the z both files
 span. Nothing here licenses a claim about the other nine. And it is not a test of
-precision: 2.10 mm is above §6.4's 1.81 mm floor, so this comparison is at the
-edge of what any measurement in this package can resolve.
+precision — **less of one than this section used to claim.** On the 15 August
+curves the median 2.10 mm sat just above §6.4's then-floor of 1.81 mm, which put
+the comparison at the edge of what this package can resolve. §6.4's floor is now
+3.63 mm and the median is now 2.00 mm, so the whole of this agreement sits
+**inside** the blind zone of the only instrument here that could have priced it.
+Two axes 2.00 mm apart are, by this package's own benefit measure, the same
+axis. That does not make the agreement worthless — it is still an independent
+annotation agreeing with ours at a scale far below the effect §6 measures — but
+it does mean this section can no longer be read as evidence about millimetre
+accuracy, and the 7.20 mm maximum is the part of the distribution that the
+instrument could actually see.
 
 ### 8. Frame metadata: the villa#1454 keys, and the byte identity we retired
 
@@ -1230,18 +1434,54 @@ than quietly fixed. One figure was rejected for printing a count that only it
 could produce, rebuilt without the count, and is described under "the two
 centres" below.
 
+> **All thirty-six panels predate the 19 August densification, and none of them
+> has been re-rendered for it.** Every one was drawn on the 15 August,
+> 279-point curves. That is a labelling problem rather than a wrong-number
+> problem for most of them, but it is not nothing, so each entry below that is
+> affected says so and the four worst cases are named here:
+>
+> - `prereg_axis_benefit.png` prints the **superseded** §6 run — +0.1611 against
+>   +0.0795, 2.03×, 209/252, and the 1.81 mm floor against a 6.0 mm stick
+>   distance. §6 now reports +0.1590/+0.0760, 2.09×, 202/256, a 3.63 mm floor
+>   and a 6.24 mm stick distance. The panel's arithmetic was right for its
+>   inputs; its inputs are the archived ones.
+> - `prior_1218_agreement.png` prints the **superseded** §7 distribution —
+>   2.10 mm median, 4.92 mm maximum — against the 1.81 mm and 6.0 mm yardsticks,
+>   all three of which have moved.
+> - `axis_polylines_all_ten.png` draws the ten axes **as they were at 22–31
+>   nodes**, and prints the Motivation's 20.7 mm and §3's 268.3-over-279. The
+>   shipped files now carry 32–49 nodes each and the Motivation number is
+>   19.3 mm.
+> - `centre_in_core_PHerc0191.png` is drawn at z = 15480, and the hand-placed
+>   node at that height **moved 12.3 mm in the second pass**. The green cross on
+>   that panel is no longer where the shipped file puts the centre. The other two
+>   panels of that set, PHerc0358 at z = 11432 and PHerc1203 at z = 11632, are
+>   drawn at nodes that did not move.
+>
+> Nothing is retracted by this. The panels are not the source of any number and
+> the sections they illustrate now carry the current ones. We would rather ship
+> a stale figure with a date on it than a re-rendered figure whose regeneration
+> nobody checked.
+
 **The axes themselves.**
 
-- `axis_PHercNNNN.png` × 10 — each axis drawn on its scroll.
+- `axis_PHercNNNN.png` × 10 — each axis drawn on its scroll. **Drawn on the
+  15 August curves**: nine of the ten gained points on 19 August and nine had at
+  least one existing point re-placed, so read these as the first pass's axes.
 - `axis_polylines_all_ten.png` — **new.** All ten axes on the XZ side
   projection: the hand-placed nodes and the linear interpolation between them,
   which is exactly what a consumer of these files reads. The per-scroll node
-  counts are the `control_points` counts of the shipped json, 22 to 31. Its two
+  counts are the `control_points` counts of the json as it stood when the panel
+  was drawn, 22 to 31. Its two
   quantities are the 20.7 mm of the Motivation section (`scripts/axis_stats.py`,
   PHerc0268) and the ring-gate calibration of §3 — ours 268.3 voxels over 279
   points against sean's 273.6 over 75. **The earlier draft of this panel printed
   "265 against 274".** That is the withdrawn three-scroll, pre-finalization
   figure §3 corrects; the shipped panel carries the current one and cites §3.
+  **Superseded on 2026-08-19**: the node counts, the polylines themselves and
+  the 20.7 mm are the 15 August curves; the shipped files now carry 32 to 49
+  nodes and the Motivation number is 19.3 mm. The 268.3-over-279 is unchanged
+  because §3 has not been recomputed either — see the dated note there.
 - `annotation_site_PHercNNNN.png` × 3 (PHerc 0191, 0358, 1203) and
   `annotation_site_closeup_PHerc1203.png` — **new.** What the annotator was
   looking at: a crop around an annotated node — ~26 mm, ~38 mm for the close-up
@@ -1251,15 +1491,23 @@ centres" below.
   lamella direction, and nothing is interpolated across a gap, so the empty
   regions are where the tracer does not hold a sheet, not where there is no
   papyrus. Every column is a height that was actually annotated: all ten of the
-  crosses on these four panels are hand-placed control points of the shipped
-  json, not interpolated values. That was checked rather than assumed, and one
-  column had to move — see `scripts/README.md`.
-- `calibration_summary.png` — our gates against sean's three, all ten scrolls (§3).
-- `prior_1218_agreement.png` — **new.** §7: our PHerc1218 axis against Iyán
+  crosses on these four panels were hand-placed control points of the json as it
+  stood on 15 August, not interpolated values. That was checked rather than
+  assumed, and one column had to move — see `scripts/README.md`. **The check has
+  not been redone against the 19 August files**, on which nine of ten scrolls
+  have re-placed points (PHerc0191 nine of them, PHerc0358 four, PHerc1203
+  none), so a cross on the PHerc0191 or PHerc0358 panel may no longer sit where
+  the shipped file puts that node.
+- `calibration_summary.png` — our gates against sean's three, all ten scrolls
+  (§3). **Superseded on 2026-08-19** in the same way §3's number is: it draws
+  the ten 279-point axes, and `calib_sean.py` cannot be re-run from a clone.
+- `prior_1218_agreement.png` — **superseded on 2026-08-19; see the box above.**
+  §7: our PHerc1218 axis against Iyán
   Dopico's prior annotation. Both axes component by component and looking down
   the scroll; the disagreement along z with §6.4's 1.81 mm floor, §6's 6.0 mm
   stick distance and the Motivation's 20.7 mm all drawn **to scale on the same
-  millimetre axis**, so how small 2.10 mm is against the effect this package
+  millimetre axis** — all three of those yardsticks have since moved to 3.63,
+  6.24 and 19.3 mm — so how small 2.10 mm is against the effect this package
   claims is something to look at rather than a sentence; and the whole
   distribution as an ECDF, because §7 reports a distribution and a panel that
   showed only the median would be reporting less than the section does. It also
@@ -1281,7 +1529,10 @@ answers it by looking, because both crosses are in the same crop.
 Everything that could have been tuned to flatter the picture is fixed and
 printed on the panel: the slice is the **middle** height of §1's own stack
 (index 12 of the 25 in `qc/order_fixture_PHercNNNN.npz`, and on all three
-scrolls a hand-placed control point of the shipped json); the crop is the same
+scrolls a hand-placed control point of the json as it stood when the panel was
+drawn — **on PHerc0191, z = 15480, that node moved 12.3 mm in the second pass,
+so the green cross on that one panel is not where the shipped file now puts the
+centre**; PHerc0358 z = 11432 and PHerc1203 z = 11632 did not move); the crop is the same
 43 mm on all three and is centred on the **midpoint between the crosses**, not
 on either of them; the tracer runs to the same 22 mm radius around both,
 independently of the crop; and the gate — 45 of 360 rays, tangent within 22° of
@@ -1291,9 +1542,10 @@ lamella and is cut where it does not; no circle is ever completed.
 
 **These panels print no count.** Their two numbers are the separation of the
 two axes at that height and its median over the stack — 16.71 / 13.30,
-16.09 / 13.44 and 9.16 / 6.75 mm — which are properties of the axes, not of the
-crop, and which `scripts/order_stat.py` now prints from the shipped fixtures
-alongside §1's statistic. The comparison the panels themselves make is visual,
+16.09 / 13.44 and 9.16 / 6.75 mm — which are properties of the 15 August axes,
+not of the crop, and which `scripts/order_stat.py` still prints from the shipped
+fixtures alongside §1's statistic; the fixtures were not rebuilt on 19 August
+and rebuilding them needs the tracer, which does not ship. The comparison the panels themselves make is visual,
 and their captions say so.
 
 **All three ship, including the one that goes against us.** On PHerc0358 and
@@ -1344,7 +1596,9 @@ from `scripts/stat_figures.py`, which recomputes every number it draws from the
 shipped inputs and prints them, so each panel can be checked as text without
 opening the image. Sections 5 and 6 previously had no figure at all.
 
-- `prereg_axis_benefit.png` — §6. The ten paired per-scroll means with the ten
+- `prereg_axis_benefit.png` — §6, **and it draws the superseded 15 August run**;
+  the figures below are the ones on the image, not the ones §6 now reports. The
+  ten paired per-scroll means with the ten
   pairings drawn one to a row, so "10 of 10" is something to count rather than a
   claim; the pooled +0.1611 against +0.0795 with W = 0.0, p = 0.0020 and 209/252;
   and the bound, which is the panel that matters — the **1.81 mm sensitivity
@@ -1371,7 +1625,9 @@ opening the image. Sections 5 and 6 previously had no figure at all.
   Rates are drawn as stems from the 50% line rather than bars from zero, so a
   scroll below chance points left. Showing the control that failed is the point.
 - `frozen_axis.png` — §1's frozen-axis comparison, which until now existed only
-  as a sentence. Left: the live axis, the same axis frozen at its own stack mean,
+  as a sentence. Like everything in §1 it is computed from
+  `qc/order_fixture_*.npz`, whose manual-axis centres are the 15 August ones;
+  the fixtures are frozen inputs and the panel is exact for them. Left: the live axis, the same axis frozen at its own stack mean,
   and the auto-centroid on one common pair sample — the first two identical to
   the integer count (329/329, 200/200, 221/221). Right: why — the excursion being
   frozen out (1.8–4.1, 1.5–3.3, 3.1–5.1 mm) against the 3–6 mm the metric can
@@ -1381,7 +1637,16 @@ opening the image. Sections 5 and 6 previously had no figure at all.
 panels above from `scripts/stat_figures.py`, and `prior_1218_agreement.png` from
 `scripts/prior_1218.py` — the last of these because both files it draws ship,
 and so does the raw of its post-hoc CT measurement. All five were re-checked on
-a fresh clone on 2026-08-15 and came back byte-identical.
+a fresh clone on 2026-08-15 and came back byte-identical. **That byte-identity
+no longer holds for two of the five, and we have not re-rendered them.**
+`prereg_axis_benefit.png` and `prior_1218_agreement.png` read the ten
+`axis_benefit/prereg_*.json` and the shipped PHerc1218 axis, both of which
+changed on 19 August, so regenerating them today produces different pictures
+with the current numbers on them. The other three read frozen raw files
+(`qc/validation_raw.json`, `qc/stick_control_raw.json`,
+`qc/order_fixture_*.npz`) and still come back byte-identical. We left all five
+as they were rather than ship two re-renders nobody had checked; §6 and §7 carry
+the current numbers in text.
 `calibration_summary.png` is **not** among them, although `scripts/calib_figure.py`
 ships and draws it: its input `qc/calibration_sean.json` holds sean's verbatim
 coordinates and is deliberately withheld (`.gitignore` — the package ships only
@@ -1398,47 +1663,66 @@ and reports the byte-identity check each was verified with.
 
 | number | script | runs on a fresh clone? |
 |---|---|---|
-| **every number in §6** — the per-scroll table, W = 0.0 / p = 0.0020, the pooled 2.03× and 2.10×, 209/252, the worst-case 209/300 at p = 7.7e-12, the drop attribution 8 / 37 / 41, the control table and the 1.81 mm floor, the 6.0 mm median stick distance, R̄, the three post-hoc variants and the distances between the three placements — and the check that the 300 slice indices are the ones the pre-registered rule gives | `scripts/axis_benefit.py` | **yes** — the ten `axis_benefit/prereg_PHercNNNN.json` ship (760 KB with the post-hoc files and the measurement code) |
+| **every number in §6** — the per-scroll table, W = 0.0 / p = 0.0020, the pooled 2.09× and 2.07×, 202/256, the worst-case 202/300 at p = 1.9e-09, the drop attribution 9 / 33 / 39, the control table and the 3.63 mm floor, the 6.24 mm median stick distance, R̄, the three post-hoc variants and the distances between the three placements — and the check that the 300 slice indices are the ones the pre-registered rule gives | `scripts/axis_benefit.py` | **yes** — the ten `axis_benefit/prereg_PHercNNNN.json` ship (1.4 MB with the post-hoc files, the measurement code and the archived 15 August run) |
 | **the per-slice q values themselves** | `axis_benefit/measure/prereg_run.py`, shipped verbatim as it ran | **no.** It streams 12–38 MB per slice, about 5.7 GB over the 300, out of the ten masked OME-Zarr volumes named in `axis_benefit/PREREGISTRATION.md` §3, and it imports villa's `umbilicus.py` and `sample_spiral.py` from a `volume-cartographer` checkout, which are referenced by path rather than redistributed. Needs torch; CPU is enough |
 | **the unwrap demonstration of §6.7** | **there is none, and that is the finding.** §6.7 gives the selection rule it was built under, the four best candidates and their scores, the Scroll 1 control at 0.094, and why the one legible crop was not shipped. Unchanged on 2026-08-14: the statistics panel below is a different genre and does not revisit that verdict | — |
-| **the four statistics panels** — `prereg_axis_benefit.png` (§6, including the 1.81 mm floor drawn to scale against the 6.0 mm stick distance), `stick_control.png` (§5, the win and the flat dose–response), `shifted_axis_controls.png` (§2, the +300 that passed beside the +150 that failed), `frozen_axis.png` (§1, the frozen axis and the identical counts) | `scripts/stat_figures.py` | **yes** — it reads only `axis_benefit/`, `qc/validation_raw.json`, `qc/stick_control_raw.json`, `qc/order_fixture_*.npz`, the ten umbilicus files and the ten `PHercNNNN/meta.json`, all of which ship. numpy + scipy + matplotlib. It imports the counting from `axis_benefit.py`, `count_wins.py`, `stick_control.py` and `order_stat.py` rather than reimplementing it, and prints every number it draws. A little over 20 seconds, nearly all of it §1 |
-| **every number in §7** — the overlap, the distance distribution (median 2.10 mm, max 4.92 mm at z = 5856), the 2.14 mm at our own nodes, the 0.97 mm mean offset and the 16% it explains, the verdict against the pre-registered bands, and the post-hoc CT-centroid table (0.25 / 0.24 / 1.20 mm, 550 / 552 / 392 of 553) | `scripts/prior_1218.py` | **yes** — the prior annotation ships verbatim as `qc/prior_umbilicus_PHerc1218_IyanDopico.json` (MIT, sha256 recorded), and `qc/prior_1218_centroid_raw.json` carries the CT measurement. `--fetch` re-downloads the prior file and refuses a hash mismatch, `--check-bucket` re-reads the frame, `--villa DIR` re-runs the interpolation through villa's own loader (it agrees to 0.0000 vox), `--measure-centroid` re-streams the 48 MB. All four are optional |
+| **the four statistics panels** — `prereg_axis_benefit.png` (§6, **as shipped it draws the superseded 15 August run**, including its 1.81 mm floor against a 6.0 mm stick distance; re-running the script now redraws it with §6's current numbers and it will not match the shipped bytes), `stick_control.png` (§5, the win and the flat dose–response), `shifted_axis_controls.png` (§2, the +300 that passed beside the +150 that failed), `frozen_axis.png` (§1, the frozen axis and the identical counts) | `scripts/stat_figures.py` | **yes** — it reads only `axis_benefit/`, `qc/validation_raw.json`, `qc/stick_control_raw.json`, `qc/order_fixture_*.npz`, the ten umbilicus files and the ten `PHercNNNN/meta.json`, all of which ship. numpy + scipy + matplotlib. It imports the counting from `axis_benefit.py`, `count_wins.py`, `stick_control.py` and `order_stat.py` rather than reimplementing it, and prints every number it draws. A little over 20 seconds, nearly all of it §1 |
+| **every number in §7** — the overlap, the distance distribution (median 2.00 mm, max 7.20 mm at z = 8608), the 2.20 mm at our own nodes, the 1.42 mm mean offset and the 11% it explains, the verdict against the pre-registered bands, and the post-hoc CT-centroid table (0.25 / 0.24 / 1.20 mm, 550 / 552 / 403 of 553) | `scripts/prior_1218.py` | **yes** — the prior annotation ships verbatim as `qc/prior_umbilicus_PHerc1218_IyanDopico.json` (MIT, sha256 recorded), and `qc/prior_1218_centroid_raw.json` carries the CT measurement. `--fetch` re-downloads the prior file and refuses a hash mismatch, `--check-bucket` re-reads the frame, `--villa DIR` re-runs the interpolation through villa's own loader (it agrees to 0.0000 vox), `--measure-centroid` re-streams the 48 MB. All four are optional |
 | **the five frame keys of §8**, and the checks behind them — the voxel size against `samplePixelSize`, the level-0 shape, the in-bounds test and the agreement with each `PHercNNNN/meta.json` `shape_L0` | `scripts/stamp_frame.py` | **no, by design** — it reads the bucket every time. `--check` verifies the ten as they stand and writes nothing; `--write` restamps. Values are never taken from the file being checked |
-| 20.7 mm / 19.9 mm deviation, 37.9 mm sweep, 19.0 mm optimal stick, largest gap 2400 vox **and its endpoints z 15480→17880** | `scripts/axis_stats.py` | **yes** |
-| **our ten rows** of the §3 kink table — all three columns, the z-spacing of each, and the matched-triple counts | `scripts/axis_stats.py` | **yes** |
-| **sean's three rows** of the §3 kink table, his 61–98 band and his 51–87 matched range | `scripts/axis_stats.py`, `scripts/fetch_sean.py` | **the values yes, the recomputation no.** His files are not ours to redistribute and are not on any public URL we could find (see the correction in §3), so the six numbers of each row ship in `qc/sean_reference.json` with the sha256 of the file they came from, and print marked as such. Supply his files and the script recomputes them and reports whether they agree |
-| 184/297, p = 2.3e-05, the clustered p = 0.011, per-scroll table **including the median ratios** (PHerc0800's 0.970), Bonferroni, the 159/297 null at 150 vox | `scripts/count_wins.py` | **yes** — `qc/validation_raw.json` ships |
+| 19.3 mm / 18.4 mm deviation, 36.7 mm sweep, 18.4 mm optimal stick, largest gap 1440 vox **and its endpoints z 15480→16920** | `scripts/axis_stats.py` | **yes** |
+| **our ten rows** of the §3 kink table — all three columns, the z-spacing of each, and the matched-triple counts | `scripts/axis_stats.py` | **yes** — recomputed on the 19 August curves, which is why every one of our ten rows changed |
+| **sean's three rows** of the §3 kink table, his 61–98 band and his 51–87 matched range (unchanged; his files did not move) | `scripts/axis_stats.py`, `scripts/fetch_sean.py` | **the values yes, the recomputation no.** His files are not ours to redistribute and are not on any public URL we could find (see the correction in §3), so the six numbers of each row ship in `qc/sean_reference.json` with the sha256 of the file they came from, and print marked as such. Supply his files and the script recomputes them and reports whether they agree |
+| 184/297, p = 2.3e-05, the clustered p = 0.011, per-scroll table **including the median ratios** (PHerc0800's 0.970), Bonferroni, the 159/297 null at 150 vox | `scripts/count_wins.py` | **yes** — `qc/validation_raw.json` ships, and it too is the 15 August measurement (§2) |
 | **the same control re-measured on the final files** (182/297, 158/297, both sign tests unchanged) and the three-slice drift itself | `scripts/snapshot_recheck.py` | **yes** — `qc/validation_final_raw.json` ships. `--measure` needs the slice PNGs |
-| **the straight-stick control of §5** — 188/296 and 184/295, all ten scrolls above 50%, sign test p = 0.00098, the per-scroll medians and the displacement bins | `scripts/stick_control.py` | **yes** — `qc/stick_control_raw.json` ships. `--measure` needs the slice PNGs |
+| **the straight-stick control of §5** — 188/296 and 184/295, all ten scrolls above 50%, sign test p = 0.00098, the per-scroll medians and the displacement bins | `scripts/stick_control.py` | **yes** — `qc/stick_control_raw.json` ships, and it is the 15 August measurement: `--measure` needs the slice PNGs, so §5 was not repeated on the densified curves |
 | the banded-energy measure itself | `scripts/validate_axes.py`, `scripts/validate_bands.py` | no — needs the per-scroll slice PNGs |
-| bare edges, tissue-band coverage per scroll **and the 90.6% aggregate** (z-weighted; the script also prints the 89.9% unweighted mean and the 94.0% median so the definition is visible) | `scripts/axis_stats.py` | **yes** — the ten `PHercNNNN/meta.json` now ship (25 KB in total; they carry the tissue band, the slice list and the volume id) |
-| 268.3 vs 273.6 median displacement, the kink figure | `scripts/calib_sean.py`, `scripts/calib_figure.py` | needs the slice PNGs and `ref_sean/` |
+| bare edges, tissue-band coverage per scroll **and the 92.9% aggregate** (z-weighted; the script also prints the 93.1% unweighted mean and the 94.0% median so the definition is visible) | `scripts/axis_stats.py` | **yes** — the ten `PHercNNNN/meta.json` now ship (25 KB in total; they carry the tissue band, the slice list and the volume id) |
+| 268.3 vs 273.6 median displacement, the kink figure | `scripts/calib_sean.py`, `scripts/calib_figure.py` | needs the slice PNGs and `ref_sean/` — so the 268.3 is still the 15 August, 279-point value and could not be re-measured on 19 August (§3) |
 | the shipped axes themselves, from annotator output | `scripts/finalize.py` | needs `results/` |
 | **winding pitch 247–371 µm, the 380–468 µm cross-check, the per-spot 6%–90% ratios and the PHerc0800 voxel correction** | `scripts/pitch_table.py` | **yes** — the producer's own five-spot output ships verbatim as `qc/winding_map_metrics.json` and the script applies the voxel correction, taking each spot's voxel size from that scroll's shipped `metadata.source_volume`. The measurement that produced those five pairs (`qc/витковая_карта_код/` in the annotation tree) does not ship |
 | **85–92% vs 74–83%, 43:7 / 42:5 / 21:3** | `scripts/order_stat.py` | **yes** — recomputed from `qc/order_fixture_PHercNNNN.npz`, which ships. The *tracer* that produced those fixtures still does not: see the row below |
-| **the two axis separations on the `centre_in_core_*.png` panels** — the median over each §1 stack (13.30 / 13.44 / 6.75 mm, the same figures §1 quotes) and the value at the stack's middle height, which is the height each panel is drawn at (16.71 / 16.09 / 9.16 mm) | `scripts/order_stat.py` | **yes** — the same shipped fixtures; it prints them under the order table, with the height's z |
+| **the two axis separations on the `centre_in_core_*.png` panels** — the median over each §1 stack (13.30 / 13.44 / 6.75 mm, the same figures §1 quotes) and the value at the stack's middle height, which is the height each panel is drawn at (16.71 / 16.09 / 9.16 mm) | `scripts/order_stat.py` | **yes** — the same shipped fixtures, whose manual-axis centres are the 15 August ones; it prints them under the order table, with the height's z |
 | **the `centre_in_core_*.png` panels themselves** | `qc/эвиденс_кандидаты/код/evidence_panels_en.py` in the annotation tree | no — the numbers regenerate here, the picture does not: it needs the level-3 slice PNGs and the repaired tracer. The panels print **no count**, so nothing on them depends on that tracer being trusted for a quantity |
 | **the tracing that produces the fixtures** | **not shipped here.** `qc/шаг2_код/stack.py` (31 KB) plus `winding_map.py` (12 KB) and `numbering.py` (6 KB) from the same tree | no. Stated exactly, because "too big to ship" would not be true: the missing *data* is **14.6 MB** — 25 L3 slices for each of PHerc0191/0358/1203, each one plane `round(z/8)` of level 3 of that scroll's `…-masked.zarr` in `vesuvius-challenge-open-data`, normalised to the 1st/99th percentile of its non-zero pixels, exactly as `build.py` writes the catalogue slices. What blocks it is the ~49 KB of tracer code: it is Russian-commented, hard-wired to the annotation tree, and shipping it means proving it still regenerates the published numbers rather than merely running. We re-ran it on 2026-08-13 and it does (all nine figures exact), but translating and de-hardcoding it is a separate pass |
 | **the tolerance sweep and the resampling test** | **not shipped here.** Produced by `qc/эвиденс_кандидаты/код/развилка/развилка3.py` in the annotation tree; every number and its provenance is tabulated in `STEP2_CONSISTENCY.md` §13 | no |
 | **19/22 on PHerc0358** | **no script, journal-documented** | no |
+| **the midpoint audit of the second pass** — the leave-one-out and estimated-midpoint tables, the 188-of-383 count and the worst-interval list | `scripts/midpoint_audit.py` | **yes** — it reads only the ten shipped json. The "before" column of that section's table is the same script on the 15 August files, which are in git history at `HEAD~1` |
+| **the paired old-versus-new comparison in the dated 19 August section** — 198 paired slices, 112 unmoved, the Wilcoxon p = 0.93 / 0.17 / 1.00, the 28-against-22 above the floor, and the 0.0003-against-0.0045 pooled fall | **no script; it is a comparison of two shipped result sets, not a measurement** | **yes, by hand from what ships.** Both sets are in the repository — `axis_benefit/prereg_PHercNNNN.json` and `axis_benefit/superseded_2026-08-15/prereg_PHercNNNN.json`. Join them on `z_L0` within each scroll, keep the slices flagged `scorable` in both, and read `centres.annotated` (times `um_per_px`, ÷ 1000, for millimetres) and `conditions.annotated.q` / `conditions.stick_mean.q`. Every number in that section is a numpy line over those two files |
 
 `scripts/README.md` lists the known rough edges in the scripts themselves.
+
+**One row of this table is worth reading twice.** Three of the checks in this
+package — §2, §3 and §5 — could not be re-measured on the 19 August curves,
+because all three need the per-slice PNGs or sean's files and neither ships.
+Their numbers are unchanged in this README and they describe the 279-point
+axes. §6, §7, the geometry table and the midpoint audit all recompute from what
+ships and all were repeated. Where a section could not be repeated it now says
+so in its own words rather than leaving the date to be inferred.
 
 ## Honest caveats
 - Collapse zones (chevron-folded interiors) are best-effort judgement;
   PHerc0268 is crushed almost throughout. Note that PHerc0268 is also the scroll
-  carrying the headline 20.7 mm number, is one of the two roughest of the ten
-  (kink 261 at its 328-voxel spacing, against PHerc0191's 264 at 480 — an
-  earlier version of this README quoted 469 here, which was an artifact of
-  resampling and is withdrawn in §3), and has the lowest coverage of its tissue
-  band (69%). The most dramatic
-  geometry claim in this package rests on its weakest annotation; the
-  second-largest deviation, PHerc0800 at 19.9 mm, makes the same point without
-  leaning on it.
-- Bare edges: PHerc0268 bottom 2952 vox, PHerc1545 top 1624 vox,
-  PHerc0800 1152/1160 and PHerc1218 1192 vox carry no axis; interior
-  gaps after finalization do not exceed 2400 vox (PHerc0191, z 15480→17880).
-  Coverage of the tissue band runs 69–94%, 90.6% overall.
+  carrying the headline 19.3 mm number, and that on the one column of §3's
+  smoothness table that compares like with like it is now **the roughest of all
+  thirteen axes there, ours and sean's — 544 against sean's 51–87** (an earlier
+  version of this README quoted 469 here, which was an artifact of resampling
+  and is withdrawn in §3; the second pass gave the scroll matched-spacing
+  triples for the first time and the honest value they yield is worse than the
+  artifact was). The most dramatic geometry claim in this package rests on its
+  weakest annotation; the second-largest deviation, PHerc0800 at 18.4 mm, makes
+  the same point without leaning on it. Its tissue-band coverage is no longer
+  the worst of the ten — the second pass extended its annotated range from
+  z 5320 to z 2680 and took it from 69% to 94% — and the lowest is now
+  PHerc1545 at 88%.
+- Bare edges: PHerc1545 top 1624 vox, PHerc1218 bottom 1192 vox,
+  PHerc1447 608/608, PHerc0800 568/568 and PHerc1218 top 584 vox carry no axis;
+  interior gaps after finalization do not exceed 1440 vox (PHerc0191,
+  z 15480→16920). Coverage of the tissue band runs 88–94%, 92.9% overall.
+  (On the 15 August curves this read: PHerc0268 bottom 2952, PHerc0800
+  1152/1160, gaps to 2400 vox, coverage 69–94% and 90.6% overall. The second
+  pass improved every one of those figures, which is the one thing in this
+  README that it unambiguously did improve — and it is a statement about
+  coverage, not about accuracy.)
 - Three slices excluded as undeterminable (PHerc1545 z=19056; PHerc0191
   z=15960, z=16440).
 - Winding pitch at five readable spots is **247–371 µm** by FFT (locally
@@ -1461,15 +1745,18 @@ and reports the byte-identity check each was verified with.
   a contribution from the second harmonic (stuck-together sheet pairs) is also
   possible. Read 247–371 µm as "the pitch at these five spots", not as the
   winding pitch of these scrolls. The consequence for the Motivation section is
-  conservative in the direction that matters: at a finer true pitch, 20.7 mm of
-  lateral error would cross *more* windings than the 56–84 quoted there, not
+  conservative in the direction that matters: at a finer true pitch, 19.3 mm of
+  lateral error would cross *more* windings than the 52–78 quoted there, not
   fewer.
 - The shifted-axis control ran on a snapshot slightly older than the final
   files: 18/297 slices carry points that were later dropped at finalization,
   and three PHerc1545 points were moved (≤260 vox) after the control run.
   Winding-map numbers were computed on the final files. The calibration in §3
   now runs on the final files too — it did not in the earlier version of this
-  README, which is why that number changed. **The cost of that staleness is now
+  README, which is why that number changed. **All of §2 is nonetheless a
+  15 August measurement**: `qc/validation_raw.json` is that run's raw and
+  re-measuring needs the slice PNGs, which do not ship, so this control has not
+  been repeated on the densified curves. **The cost of that staleness is now
   measured rather than left open**: re-running the control on the final files
   changes the measured value on 3 of 297 slices, moves 184/297 to 182/297 and
   159/297 to 158/297, and leaves both scroll-level sign tests identical. See §2
@@ -1479,7 +1766,7 @@ and reports the byte-identity check each was verified with.
   independent annotation on PHerc1218 and nowhere else, because nowhere else is
   there one. The nine other axes in this package have never been checked against
   anybody but ourselves. That is a limit of the field's data, not a claim we can
-  argue around, and the 2.10 mm of §7 says nothing about PHerc0268 or any other
+  argue around, and the 2.00 mm of §7 says nothing about PHerc0268 or any other
   scroll.
 - **The frame keys follow an unmerged PR.** §8's five `metadata` keys track
   ScrollPrize/villa#1454 at commit `85c5be1`. That PR is open, and its schema has
@@ -1491,7 +1778,21 @@ and reports the byte-identity check each was verified with.
   invariant was retired deliberately at the commit that added the frame keys, the
   diff is those five lines and nothing else, and both md5s of every file are
   tabulated in §8. Every measured number in this README predates the stamp and is
-  unaffected by it.
+  unaffected by it. The md5 table in §8 is a further round out of date: the
+  second annotation pass rewrote all ten files with 393 points in place of 279,
+  so neither column of that table is the current hash of anything. It is kept
+  because its purpose was to make the *pre-stamp* files identifiable, and it
+  still does that.
+- **The second annotation pass bought no measurable accuracy on any instrument
+  in this package.** §6 was repeated on the densified curves and returns a null
+  on the change (dated section above: 112 of 198 paired slices with the axis in
+  exactly the same place, scroll-level p = 1.00, 28 better against 22 worse
+  among the slices that moved past the floor). The pooled ratio rose from 2.03×
+  to 2.09× and that rise is the straight-stick baseline getting worse, not our
+  axis getting better. §6.4's sensitivity floor went the wrong way, from 1.81 mm
+  to 3.63 mm. The pass demonstrably improved coverage and the interpolation
+  audit; it has not been shown to have improved the axis, and this package has
+  no measurement that could show it.
 
 ## Format compatibility
 Field-for-field against sean's three files: top-level keys identical and in the
@@ -1530,7 +1831,9 @@ accepts. Both parse through `json_umbilicus_z_to_yx` without special-casing.
   published umbilici, all ten scrolls.
 - `panels/prereg_axis_benefit.png` — §6 as statistics: the ten pairings, the
   pooled result, and the 1.81 mm sensitivity floor drawn to scale against the
-  6.0 mm median stick distance that bounds what the run may claim.
+  6.0 mm median stick distance that bounds what the run may claim. Drawn from
+  the superseded 15 August run; §6 now reports a 3.63 mm floor and a 6.24 mm
+  stick distance.
 - `panels/stick_control.png` — §5 in both halves: the win on all ten scrolls, and
   beside it the flat dose–response across the offset bins.
 - `panels/shifted_axis_controls.png` — §2's two controls together: the +300 that
@@ -1572,11 +1875,20 @@ accepts. Both parse through `json_umbilicus_z_to_yx` without special-casing.
 - `axis_benefit/prereg_PHercNNNN.json` × 10 — the per-slice results of §6: for
   every one of the 300 slices, the q of each axis and of every control
   displacement, with the pixel counts, ring coverage, the stick's displacement in
-  µm and villa's R̄. `scripts/axis_benefit.py` recomputes §6 from these.
+  µm and villa's R̄. `scripts/axis_benefit.py` recomputes §6 from these. These
+  are the **19 August** measurement, on the densified curves.
+- `axis_benefit/superseded_2026-08-15/prereg_PHercNNNN.json` × 10 — the same ten
+  files from the **15 August** run on the 279-point curves, kept in-tree rather
+  than deleted so that the two runs can be compared. They are what the earlier
+  numbers in the git history of this README were computed from, and what
+  `panels/prereg_axis_benefit.png` draws.
 - `axis_benefit/prereg_PHerc0813_posthoc_{eye,drop,argmax}.json` and the three
   corrected `PHerc0813_posthoc_*.json` they were run from — the post-hoc variants
   of §6.6. These are **not** the published annotation; the shipped
-  `PHerc0813_umbilicus.json` is untouched.
+  `PHerc0813_umbilicus.json` is untouched. They are corrections of the
+  **29-point 15 August** PHerc0813 file and were not re-made for the 49-point
+  file that ships, which is why §6.6 compares them against that run's +0.0906
+  and not against the current +0.1150.
 - `axis_benefit/measure/` — the measurement code of §6 as it ran. It does not run
   from a bare clone (§6.9); it is here so the method is inspectable.
 - `qc/winding_map_metrics.json` — the winding-map measurement's own output for
