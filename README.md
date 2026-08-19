@@ -55,11 +55,11 @@ against someone else's, and that is §7.
 What we kept running into is that substituting a straight vertical line for the
 axis is not a small approximation. On the ten shipped files the annotated centre
 departs from a vertical line through the scroll's own mean centre by up to
-**19.3 mm** (PHerc0268; second largest PHerc0800 at 18.4 mm), and the axis
-sweeps **36.7 mm** laterally over the height of that scroll. At the 247–371 µm
+**19.8 mm** (PHerc0813; then PHerc0268 at 19.3 and PHerc0800 at 18.4), and on
+PHerc0268 the axis sweeps **36.7 mm** laterally over the height of the scroll. At the 247–371 µm
 pitch we measure at five readable spots (see caveats — those spots are locally
 separated, and tightly-wound material is finer, which would make this count
-larger not smaller), 19.3 mm of lateral error crosses
+larger not smaller), 19.8 mm of lateral error crosses
 roughly 52 to 78 windings — far more than enough to assign a sheet to the wrong
 turn at the top or bottom of a scroll. Placing the vertical optimally
 instead of through the mean centre does not rescue it: the best a straight stick
@@ -1349,6 +1349,45 @@ annotation agreeing with ours at a scale far below the effect §6 measures — b
 it does mean this section can no longer be read as evidence about millimetre
 accuracy, and the 7.20 mm maximum is the part of the distribution that the
 instrument could actually see.
+
+### 7b. A second external check, arriving after the fact — TAUIL Abd Elilah
+
+On 16 August, after this package was published, TAUIL Abd Elilah released
+[`umbilicus-cross-validation`](https://github.com/TAUIL-Abd-Elilah/umbilicus-cross-validation)
+— six independently hand-drawn curves (PHerc0191, 0257, 0358, 0800, 0813, 1203)
+plus an exact-CT audit, pinned to this repository at commit `57e09a3`, which is
+the state *before* the 19 August densification. Everything below is his work
+measured against ours; none of it is ours to claim, and the comparison numbers
+here move as either set changes.
+
+Three things belong in this README rather than only in his:
+
+- **He withdrew his own PHerc1203 in favour of ours**, after his review found
+  four separated regions where the public curve follows the scroll core more
+  consistently. His words about his own findings: *"AI-assisted triage, not
+  anatomical ground truth or proof that this curve set is more accurate than
+  Aleksei Drobkov's."* That is a check on our most important scroll, and it went
+  our way, but it is an assisted review and it says so.
+- **His comparison tool runs here and reproduces his published table.** We ran
+  `compare_independent_curves.py` against this repository unchanged: PHerc0191
+  median 4.38 mm, max 18.31 mm at z=15480 — his figures exactly, and the same
+  peaks our own independent measurement found.
+- **The densification moved us further from him on PHerc0813, not closer.** Our
+  own curve there got smoother — worst estimated midpoint miss 930 → 417 µm — and
+  the median distance to his went 4.81 → 9.21 mm at the same time. Getting
+  smoother and further apart is not noise behaviour; it says the two annotations
+  are following different folds on that scroll. Four of the six disputed
+  locations there and on PHerc0191 read, to our eye on the CT, as ours on the
+  core; on PHerc0358 z=9944 the two curves converged from 10.9 mm to 1.6 mm after
+  our pass, which is the one place his provisional reading was right and ours
+  moved onto it. All of that is a reading of CT by one experienced pair of eyes,
+  the same standing he gives his own, and none of it is settled.
+
+Two rankings of where a curve most needs more control points — his, from spacing
+and turn angle, and ours in micrometres from `scripts/midpoint_audit.py` — agree
+at Spearman ρ 0.48 to 0.89 per scroll. The lowest agreement is on PHerc1203,
+where they share one interval in five worst. Where two independent instruments
+disagree about where to look is probably where to look.
 
 ### 8. Frame metadata: the villa#1454 keys, and the byte identity we retired
 
