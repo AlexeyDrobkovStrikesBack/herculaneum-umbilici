@@ -1,5 +1,9 @@
 # Umbilicus annotations for ten of the thirteen First Letters prize scrolls
 
+![All ten axes: hand-placed nodes on the side projection](panels/axis_polylines_all_ten.png)
+
+*The ten shipped axes, 393 hand-placed nodes, on the XZ side projection. Re-rendered 2026-08-20 on the curves this repository ships.*
+
 Manual umbilicus (winding-axis) polylines for ten of the thirteen First
 Letters prize scrolls: PHerc 0191, 0257, 0268, 0358, 0800, 0813, 1203, 1218,
 1447, 1545. The other three the prize page lists — PHerc 0125, 0211, 0826 —
