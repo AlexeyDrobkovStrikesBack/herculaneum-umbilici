@@ -533,12 +533,29 @@ is, not how well it was annotated.
 > "measured on the ten 279-point axes of 15 August", and the same for
 > `panels/calibration_summary.png`, which draws it.
 
+> **Dated, 2026-08-20 — re-measured on the densified curves.** `calib_sean.py`
+> was re-run on our side (it still cannot run from a clone) against the shipped
+> 393-point axes. Median ring-gate displacement: **ours 279.9 voxels over 393
+> points; sean's 273.6 over his 75, unchanged and reproducing exactly.** Two
+> things to say plainly about that. First, the ordering of the two medians
+> flips: on the 15 August curves ours was nominally lower (268.3 against
+> 273.6), on the densified curves it is nominally higher (279.9 against
+> 273.6). Nothing in this section ever rested on that ordering — the claim
+> here has always been that the gate measures how crushed a cross-section is,
+> not how well it was annotated, and that it does not separate us; both runs
+> support exactly that reading, and a reader who wants to lean on the 5–6
+> voxel difference in either direction should not. Second,
+> `panels/calibration_summary.png` was re-rendered from this run on the same
+> day, so the panel and this note describe the same measurement; the 268.3
+> above stays as the 15 August value it is.
+
 > **Correction.** An earlier version of this README said "ours 265 vs sean's 274".
 > That 265 was three of our ten scrolls (PHerc0191/0257/0268, 93 points), read
 > from the pre-finalization annotator output — 31-point polylines that still
 > contained the untouched auto-suggestions this package says it drops. It also
 > does not reproduce today (268.3). `calib_sean.py` now runs all ten scrolls
-> against the shipped files, and 268.3 is what it prints. Sean's 273.6 → 274 is
+> against the shipped files, and 268.3 is what it printed on the 15 August
+> files (279.9 on the densified ones — the dated note above). Sean's 273.6 → 274 is
 > unchanged and reproduces exactly.
 
 **Smoothness, and this one is not in our favour.** Kink = median distance of a
@@ -1552,57 +1569,87 @@ than quietly fixed. One figure was rejected for printing a count that only it
 could produce, rebuilt without the count, and is described under "the two
 centres" below.
 
-> **All thirty-six panels predate the 19 August densification, and none of them
-> has been re-rendered for it.** Every one was drawn on the 15 August,
-> 279-point curves. That is a labelling problem rather than a wrong-number
-> problem for most of them, but it is not nothing, so each entry below that is
-> affected says so and the four worst cases are named here:
+> **Re-rendered, 2026-08-20.** An earlier version of this box said that all
+> thirty-six panels predated the 19 August densification, that none had been
+> re-rendered for it, and named the four worst cases; that was true when it
+> was written and is not the state of this directory any more.
+> **Twenty-four of the thirty-six were re-rendered on 2026-08-20** on the
+> shipped densified curves and the current result files: the four statistics
+> panels (`scripts/stat_figures.py`), `prior_1218_agreement.png`
+> (`scripts/prior_1218.py --figure`), `calibration_summary.png`
+> (`scripts/calib_sean.py` re-run on the densified curves, then
+> `scripts/calib_figure.py`), the ten `axis_PHercNNNN.png`, the ten-scroll
+> atlas, the four annotation-site panels and the three `centre_in_core_*.png`.
+> Every re-render was compared against the file it replaced before shipping.
+> Five of the twenty-four came back **byte-identical** — `stick_control.png`,
+> `shifted_axis_controls.png` and `frozen_axis.png` from their frozen raw
+> inputs, and `annotation_site_PHerc1203.png` with its close-up, whose nodes
+> the densification did not move — so for those five the re-render is the
+> check that the pipeline still reproduces them.
 >
-> - `prereg_axis_benefit.png` prints the **superseded** §6 run — +0.1611 against
->   +0.0795, 2.03×, 209/252, and the 1.81 mm floor against a 6.0 mm stick
->   distance. §6 now reports +0.1590/+0.0760, 2.09×, 202/256, a 3.63 mm floor
->   (2.72 mm on the 20 August finer ladder, §6.4) and a 6.24 mm stick
->   distance. The panel's arithmetic was right for its
->   inputs; its inputs are the archived ones.
-> - `prior_1218_agreement.png` prints the **superseded** §7 distribution —
->   2.10 mm median, 4.92 mm maximum — against the 1.81 mm and 6.0 mm yardsticks,
->   all three of which have moved.
-> - `axis_polylines_all_ten.png` draws the ten axes **as they were at 22–31
->   nodes**, and prints the Motivation's 20.7 mm and §3's 268.3-over-279. The
->   shipped files now carry 32–49 nodes each and the Motivation number is
->   19.8 mm (PHerc0813; the 20.7 mm the panel prints was PHerc0268's, whose
->   deviation now stands at 19.3 mm).
-> - `centre_in_core_PHerc0191.png` is drawn at z = 15480, and the hand-placed
->   node at that height **moved 12.3 mm in the second pass**. The green cross on
->   that panel is no longer where the shipped file puts the centre. The other two
->   panels of that set, PHerc0358 at z = 11432 and PHerc1203 at z = 11632, are
->   drawn at nodes that did not move.
+> The four cases the earlier box named are closed the corresponding way:
 >
-> Nothing is retracted by this. The panels are not the source of any number and
-> the sections they illustrate now carry the current ones. We would rather ship
-> a stale figure with a date on it than a re-rendered figure whose regeneration
-> nobody checked.
+> - `prereg_axis_benefit.png` now draws the current §6 run — +0.1590/+0.0760,
+>   2.09×, 202/256, the 3.63 mm floor with the 20 August finer-ladder floor of
+>   2.72 mm beside it (§6.4; both computed at draw time), and the 6.24 mm
+>   stick distance. Re-drawing it also exposed a hardcoded panel title in
+>   `stat_figures.py` still reading "blind below 1.81 mm … median 6.0 mm";
+>   the title is computed now. The redrawn bound is honestly *tighter* than
+>   the old picture: the stick clears the headline floor by 1.7× (2.3×
+>   against the finer floor) where the old figure showed 3.3×.
+> - `prior_1218_agreement.png` now draws the current §7 distribution — median
+>   2.00 mm, max 7.20 mm — against the current yardsticks (2.72 / 3.63 / 6.24 /
+>   19.8 mm), all recomputed at draw time; the verdict bands sealed in
+>   `qc/PRIOR1218_PREREGISTRATION.md` stay 1.81 / 6.0 / 20.7 mm and the panel
+>   footer says so. One thing the new picture shows that the old one could
+>   not: the distribution's tail now crosses the stick yardstick (7.20 mm
+>   against 6.24), where the old panel's whole distribution sat below its
+>   6.0 mm line. §7 states both numbers.
+> - `axis_polylines_all_ten.png` now draws the 32–49-node polylines, the
+>   19.8 mm Motivation deviation (PHerc0813), and §3's re-measured ring-gate
+>   median — 279.9 vox over 393 points against sean's 273.6 over 75 — see
+>   the dated note in §3, which that re-measurement also updates.
+> - `centre_in_core_PHerc0191.png` now draws the green cross where the shipped
+>   file puts it. The two crosses at z = 15480 are 8.48 mm apart where the
+>   first pass had 16.71 mm; the visual verdict is unchanged — the fold is still beside
+>   the auto-centroid, the manual node still stands on flat layering, and the
+>   caption still says so. The at-this-height separation on all three panels
+>   of that set is now computed from the drawn centres, so it cannot drift
+>   from the picture again; the stack medians still come from the §1
+>   fixtures, which hold the 15 August axes, and the captions say that too.
+>
+> **Twelve panels were deliberately not re-rendered**: `step2_points_*` and
+> `step2_stack_*` (three each), `order_map_*` and `order_bump_*` (three
+> each). They draw §1's winding-order measurement — the traced stacks and the
+> `qc/order_fixture_*.npz` fixtures, which hold the 15 August axes and were
+> not rebuilt, because rebuilding them means re-running the tracer, which
+> does not ship (§1's dated box). Re-drawing those twelve on the densified
+> curves would be a re-measurement of §1 presented as a re-render, and §1 has
+> not been re-measured. They remain the 15 August renders and are exact for
+> their frozen inputs.
 
 **The axes themselves.**
 
-- `axis_PHercNNNN.png` × 10 — each axis drawn on its scroll. **Drawn on the
-  15 August curves**: nine of the ten gained points on 19 August and nine had at
-  least one existing point re-placed, so read these as the first pass's axes.
-- `axis_polylines_all_ten.png` — **new.** All ten axes on the XZ side
+- `axis_PHercNNNN.png` × 10 — each axis drawn on its scroll. **Re-rendered
+  2026-08-20 on the shipped densified curves** (an earlier note here said they
+  were drawn on the 15 August curves and should be read as the first pass's
+  axes; that render is replaced). The caption's max deviation from vertical is
+  recomputed from the shipped json at draw time, and the ten values printed
+  match `scripts/axis_stats.py` run today, 19.8 mm (PHerc0813) at the top.
+- `axis_polylines_all_ten.png` — all ten axes on the XZ side
   projection: the hand-placed nodes and the linear interpolation between them,
-  which is exactly what a consumer of these files reads. The per-scroll node
-  counts are the `control_points` counts of the json as it stood when the panel
-  was drawn, 22 to 31. Its two
-  quantities are the 20.7 mm of the Motivation section (`scripts/axis_stats.py`,
-  PHerc0268) and the ring-gate calibration of §3 — ours 268.3 voxels over 279
-  points against sean's 273.6 over 75. **The earlier draft of this panel printed
-  "265 against 274".** That is the withdrawn three-scroll, pre-finalization
-  figure §3 corrects; the shipped panel carries the current one and cites §3.
-  **Superseded on 2026-08-19**: the node counts, the polylines themselves and
-  the 20.7 mm are the 15 August curves; the shipped files now carry 32 to 49
-  nodes and the Motivation number is 19.8 mm (PHerc0813; the 20.7 mm was
-  PHerc0268's, now 19.3 mm). The 268.3-over-279 is unchanged
-  because §3 has not been recomputed either — see the dated note there.
+  which is exactly what a consumer of these files reads. **Re-rendered
+  2026-08-20 on the shipped densified curves**: the node counts under each
+  cell are the current `control_points` counts, 32 to 49, and its two
+  quantities are the current ones — the 19.8 mm of the Motivation section
+  (`scripts/axis_stats.py`, PHerc0813; the earlier render printed 20.7 mm,
+  which was PHerc0268's, now 19.3) and the ring-gate calibration of §3
+  re-measured today — ours 279.9 voxels over 393 points against sean's 273.6
+  over 75, marked on the panel as the 2026-08-20 re-run (see §3's dated
+  note). **An earlier draft of this panel printed "265 against 274"** — the
+  withdrawn three-scroll, pre-finalization figure §3 corrects — and the
+  15 August render printed the 268.3-over-279 that §3 carried until today;
+  both are replaced, not erased: §3 keeps the full history.
 - `annotation_site_PHercNNNN.png` × 3 (PHerc 0191, 0358, 1203) and
   `annotation_site_closeup_PHerc1203.png` — **new.** What the annotator was
   looking at: a crop around an annotated node — ~26 mm, ~38 mm for the close-up
@@ -1612,36 +1659,48 @@ centres" below.
   lamella direction, and nothing is interpolated across a gap, so the empty
   regions are where the tracer does not hold a sheet, not where there is no
   papyrus. Every column is a height that was actually annotated: all ten of the
-  crosses on these four panels were hand-placed control points of the json as it
-  stood on 15 August, not interpolated values. That was checked rather than
-  assumed, and one column had to move — see `scripts/README.md`. **The check has
-  not been redone against the 19 August files**, on which nine of ten scrolls
-  have re-placed points (PHerc0191 nine of them, PHerc0358 four, PHerc1203
-  none), so a cross on the PHerc0191 or PHerc0358 panel may no longer sit where
-  the shipped file puts that node.
+  crosses on these four panels are hand-placed control points of the **shipped**
+  json, not interpolated values — re-checked and **re-rendered 2026-08-20** on
+  the densified curves (an earlier note said the check had not been redone
+  against the 19 August files; it now has). What the re-render changed: the two
+  PHerc1203 panels came back byte-identical (none of its points moved); on
+  PHerc0191 the top column's cross (z = 15480) moved with the 12.3 mm
+  re-placement of that node, and the tracer holds noticeably less around the
+  re-placed point than the first render showed around the old one — that ships
+  as it is; on PHerc0358 the middle column now shows z = 8080, because the
+  column rule takes the middle of the slice catalogue and the catalogue grew
+  during densification — the height shown is still a hand-placed node. The
+  original one-column correction from the first render is still described in
+  `scripts/README.md`.
 - `calibration_summary.png` — our gates against sean's three, all ten scrolls
-  (§3). **Superseded on 2026-08-19** in the same way §3's number is: it draws
-  the ten 279-point axes, and `calib_sean.py` cannot be re-run from a clone.
-- `prior_1218_agreement.png` — **superseded on 2026-08-19; see the box above.**
-  §7: our PHerc1218 axis against Iyán
+  (§3). **Re-measured and re-rendered 2026-08-20**: `calib_sean.py` was re-run
+  on the shipped densified curves (it still cannot be re-run from a clone —
+  it needs the slice PNGs and `ref_sean/`), and the panel now draws the
+  393-point run that §3's dated note reports. Both halves are computed, not
+  copied: the kink bars now match §3's already-recomputed table, and the
+  re-measurement moved two of our ten inside sean's kink band where the old
+  render had one.
+- `prior_1218_agreement.png` — **re-rendered 2026-08-20 on the shipped
+  densified curves; see the box above.** §7: our PHerc1218 axis against Iyán
   Dopico's prior annotation. Both axes component by component and looking down
-  the scroll; the disagreement along z with §6.4's 1.81 mm floor, §6's 6.0 mm
-  stick distance and the Motivation's 20.7 mm all drawn **to scale on the same
-  millimetre axis** — all three of those yardsticks have since moved to 3.63
-  (2.72 on the 20 August finer ladder, §6.4), 6.24 and 19.8 mm — so how small
-  2.10 mm is against the effect this package
+  the scroll; the disagreement along z with §6.4's floors (3.63 mm, and
+  2.72 mm on the 20 August finer ladder), §6's 6.24 mm stick distance and the
+  Motivation's 19.8 mm all drawn **to scale on the same millimetre axis**,
+  each recomputed at draw time rather than typed in — so how small the
+  2.00 mm median is against the effect this package
   claims is something to look at rather than a sentence; and the whole
   distribution as an ECDF, because §7 reports a distribution and a panel that
   showed only the median would be reporting less than the section does. It also
   carries the post-hoc CT mass centroid (§7.4) in a third colour, which is the
   panel's real work: the reader can see it lying on *their* line, which is why
-  the 2.10 mm is a difference of definition. The header says in the image, not
+  the 2.00 mm is a difference of definition. The header says in the image, not
   in a caption elsewhere, that the two files are not defined to be the same
   point. `scripts/prior_1218.py --figure`, and every number on it is printed to
   stdout by the same run.
 
 **The two centres, side by side on one image** — `centre_in_core_PHercNNNN.png`
-× 3 (PHerc 0191, 0358, 1203), **new on 2026-08-15**. One slice at full
+× 3 (PHerc 0191, 0358, 1203), **new on 2026-08-15, re-rendered 2026-08-20 on
+the shipped densified curves**. One slice at full
 brightness with *both* claimed centres drawn on it — the hand-placed node in
 green, the auto-centroid §1 tests against in blue — and the arcs traced from
 each of them, in each one's colour, by the same tracer with the same settings.
@@ -1651,10 +1710,11 @@ answers it by looking, because both crosses are in the same crop.
 Everything that could have been tuned to flatter the picture is fixed and
 printed on the panel: the slice is the **middle** height of §1's own stack
 (index 12 of the 25 in `qc/order_fixture_PHercNNNN.npz`, and on all three
-scrolls a hand-placed control point of the json as it stood when the panel was
-drawn — **on PHerc0191, z = 15480, that node moved 12.3 mm in the second pass,
-so the green cross on that one panel is not where the shipped file now puts the
-centre**; PHerc0358 z = 11432 and PHerc1203 z = 11632 did not move); the crop is the same
+scrolls a hand-placed control point of the **shipped** json — on PHerc0191,
+z = 15480, that node moved 12.3 mm in the second pass, and since the
+2026-08-20 re-render **the green cross is where the shipped file puts the
+centre**, 8.48 mm from the auto-centroid where the first pass had 16.71;
+PHerc0358 z = 11432 and PHerc1203 z = 11632 did not move); the crop is the same
 43 mm on all three and is centred on the **midpoint between the crosses**, not
 on either of them; the tracer runs to the same 22 mm radius around both,
 independently of the crop; and the gate — 45 of 360 rays, tangent within 22° of
@@ -1663,11 +1723,16 @@ rays — is in the subtitle. A line is drawn only where the tracer holds a
 lamella and is cut where it does not; no circle is ever completed.
 
 **These panels print no count.** Their two numbers are the separation of the
-two axes at that height and its median over the stack — 16.71 / 13.30,
-16.09 / 13.44 and 9.16 / 6.75 mm — which are properties of the 15 August axes,
-not of the crop, and which `scripts/order_stat.py` still prints from the shipped
-fixtures alongside §1's statistic; the fixtures were not rebuilt on 19 August
-and rebuilding them needs the tracer, which does not ship. The comparison the panels themselves make is visual,
+two axes at the drawn height and its median over the stack. Since the
+2026-08-20 re-render the at-height separation is **computed from the two
+centres actually drawn** — 8.48 / 16.09 / 9.16 mm on PHerc 0191 / 0358 / 1203
+— so it cannot drift from the picture; the stack medians — 13.30 / 13.44 /
+6.75 mm — still come from the shipped fixtures, which hold the 15 August axes
+(`scripts/order_stat.py` prints them alongside §1's statistic; the fixtures
+were not rebuilt and rebuilding them needs the tracer, which does not ship),
+and each caption labels the two provenances. The 16.71 mm the earlier render
+printed for PHerc0191 was the fixture value at that height and described the
+15 August node. The comparison the panels themselves make is visual,
 and their captions say so.
 
 **All three ship, including the one that goes against us.** On PHerc0358 and
@@ -1718,14 +1783,21 @@ from `scripts/stat_figures.py`, which recomputes every number it draws from the
 shipped inputs and prints them, so each panel can be checked as text without
 opening the image. Sections 5 and 6 previously had no figure at all.
 
-- `prereg_axis_benefit.png` — §6, **and it draws the superseded 15 August run**;
-  the figures below are the ones on the image, not the ones §6 now reports. The
+- `prereg_axis_benefit.png` — §6, **re-rendered 2026-08-20 on the current
+  run** (the 15 August render drew +0.1611/+0.0795, 209/252 and the 1.81 mm
+  floor against a 6.0 mm stick; those were right for its archived inputs). The
   ten paired per-scroll means with the ten
   pairings drawn one to a row, so "10 of 10" is something to count rather than a
-  claim; the pooled +0.1611 against +0.0795 with W = 0.0, p = 0.0020 and 209/252;
-  and the bound, which is the panel that matters — the **1.81 mm sensitivity
-  floor drawn to scale on the same linear millimetre axis as the 6.0 mm median
-  stick distance**, with everything below the floor shaded as not credited. §6.4's
+  claim; the pooled +0.1590 against +0.0760 with W = 0.0, p = 0.0020 and 202/256;
+  and the bound, which is the panel that matters — the **3.63 mm sensitivity
+  floor drawn to scale on the same linear millimetre axis as the 6.24 mm median
+  stick distance**, with the 20 August finer-ladder floor of 2.72 mm marked
+  beside it (both floors computed at draw time — the finer one from the
+  shipped `axis_benefit/finegrid_2026-08-20/` files, by the same rule) and
+  everything below the headline floor shaded as not credited. The re-render
+  fixed a hardcoded title that still said "blind below 1.81 mm … median
+  6.0 mm" over a drawing whose lines were current — the title is computed
+  now. §6.4's
   ceiling is therefore *in* the image: this run credits gross axis placement and
   cannot credit annotation precision. The header says it is not `fit_spiral`'s
   output (§6.2). This is a statistics figure and it is **not** the demonstration
@@ -1759,27 +1831,35 @@ opening the image. Sections 5 and 6 previously had no figure at all.
 panels above from `scripts/stat_figures.py`, and `prior_1218_agreement.png` from
 `scripts/prior_1218.py` — the last of these because both files it draws ship,
 and so does the raw of its post-hoc CT measurement. All five were re-checked on
-a fresh clone on 2026-08-15 and came back byte-identical. **That byte-identity
-no longer holds for two of the five, and we have not re-rendered them.**
-`prereg_axis_benefit.png` and `prior_1218_agreement.png` read the ten
-`axis_benefit/prereg_*.json` and the shipped PHerc1218 axis, both of which
-changed on 19 August, so regenerating them today produces different pictures
-with the current numbers on them. The other three read frozen raw files
+a fresh clone on 2026-08-15 and came back byte-identical, and **all five were
+re-rendered on 2026-08-20**: the three that read frozen raw files
 (`qc/validation_raw.json`, `qc/stick_control_raw.json`,
-`qc/order_fixture_*.npz`) and still come back byte-identical. We left all five
-as they were rather than ship two re-renders nobody had checked; §6 and §7 carry
-the current numbers in text.
+`qc/order_fixture_*.npz`) came back byte-identical again, and
+`prereg_axis_benefit.png` and `prior_1218_agreement.png` — whose inputs, the
+ten `axis_benefit/prereg_*.json` and the shipped PHerc1218 axis, changed on
+19 August — were replaced by the current renders after being compared with
+the old ones (the box at the top of this section says what changed on each).
+An earlier version of this paragraph said the two stale renders had been left
+in place because nobody had checked a re-render; they have now been checked,
+and shipped. Running the two scripts on a clone today reproduces the shipped
+files (same matplotlib pin; re-verified 2026-08-20).
 `calibration_summary.png` is **not** among them, although `scripts/calib_figure.py`
 ships and draws it: its input `qc/calibration_sean.json` holds sean's verbatim
 coordinates and is deliberately withheld (`.gitignore` — the package ships only
 the twelve-scalar digest `qc/sean_reference.json`), so the script stops at its
-first read on a clone. The other thirty do not regenerate either: they come from three producers that need the annotation tree — the
-per-scroll L3 slice PNGs, the side projections and the tracer — and would be dead
-code in a bare clone. The three `centre_in_core_*.png` are in that second group
-and cannot move into the first: their numbers come from shipped fixtures, but
-their image is a level-3 slice and their lines come from the repaired tracer,
-neither of which is in this repository. `scripts/README.md` names all three, says what each draws,
-and reports the byte-identity check each was verified with.
+first read on a clone. The other thirty do not regenerate from a clone either: they come from three
+producers that need the annotation tree — the per-scroll L3 slice PNGs, the
+side projections and the tracer — and would be dead code here. On this side
+they were re-run on 2026-08-20 against the shipped densified curves for
+eighteen of the thirty (the ten axis panels, the atlas, the four
+annotation-site panels and the three `centre_in_core_*.png`); the twelve §1
+order panels were deliberately left as the 15 August renders, for the reason
+the box gives. The three `centre_in_core_*.png` cannot move into the
+clone-regenerable group: their at-height separations are computed from shipped
+files, but their image is a level-3 slice and their lines come from the
+repaired tracer, neither of which is in this repository. `scripts/README.md`
+names the producers, says what each draws, and reports the check each
+re-render was verified with.
 
 ## What is scripted
 
@@ -1789,7 +1869,7 @@ and reports the byte-identity check each was verified with.
 | **the 20 August finer-ladder floor** — 150 px = 2.72 mm, the crossing bracketed 2.27–2.72 mm, and the eleven-rung control table in §6.4's dated note | no script here; `axis_benefit/finegrid_2026-08-20/` ships the pre-registration, the result document, the summary and the ten per-scroll control outputs | **the rule yes, by hand**: median over per-slice direction-mean drops in q, first rung whose median reaches the pre-registered 0.01 — a numpy loop over the ten shipped `prereg_*_finegrid.json`, re-checked from the shipped copies on 2026-08-20. The measurement itself does not travel, for the same reason as the row below; the original rungs in these files are bit-identical to the ten `prereg_PHercNNNN.json` above (1300 of 1300 shared control values), which a clone can check |
 | **the per-slice q values themselves** | `axis_benefit/measure/prereg_run.py`, shipped verbatim as it ran | **no.** It streams 12–38 MB per slice, about 5.7 GB over the 300, out of the ten masked OME-Zarr volumes named in `axis_benefit/PREREGISTRATION.md` §3, and it imports villa's `umbilicus.py` and `sample_spiral.py` from a `volume-cartographer` checkout, which are referenced by path rather than redistributed. Needs torch; CPU is enough |
 | **the unwrap demonstration of §6.7** | **there is none, and that is the finding.** §6.7 gives the selection rule it was built under, the four best candidates and their scores, the Scroll 1 control at 0.094, and why the one legible crop was not shipped. Unchanged on 2026-08-14: the statistics panel below is a different genre and does not revisit that verdict | — |
-| **the four statistics panels** — `prereg_axis_benefit.png` (§6, **as shipped it draws the superseded 15 August run**, including its 1.81 mm floor against a 6.0 mm stick distance; re-running the script now redraws it with §6's current numbers and it will not match the shipped bytes), `stick_control.png` (§5, the win and the flat dose–response), `shifted_axis_controls.png` (§2, the +300 that passed beside the +150 that failed), `frozen_axis.png` (§1, the frozen axis and the identical counts) | `scripts/stat_figures.py` | **yes** — it reads only `axis_benefit/`, `qc/validation_raw.json`, `qc/stick_control_raw.json`, `qc/order_fixture_*.npz`, the ten umbilicus files and the ten `PHercNNNN/meta.json`, all of which ship. numpy + scipy + matplotlib. It imports the counting from `axis_benefit.py`, `count_wins.py`, `stick_control.py` and `order_stat.py` rather than reimplementing it, and prints every number it draws. A little over 20 seconds, nearly all of it §1 |
+| **the four statistics panels** — `prereg_axis_benefit.png` (§6, re-rendered 2026-08-20 with §6's current numbers, both floors included; re-running the script on a clone reproduces the shipped bytes), `stick_control.png` (§5, the win and the flat dose–response), `shifted_axis_controls.png` (§2, the +300 that passed beside the +150 that failed), `frozen_axis.png` (§1, the frozen axis and the identical counts) | `scripts/stat_figures.py` | **yes** — it reads only `axis_benefit/`, `qc/validation_raw.json`, `qc/stick_control_raw.json`, `qc/order_fixture_*.npz`, the ten umbilicus files and the ten `PHercNNNN/meta.json`, all of which ship. numpy + scipy + matplotlib. It imports the counting from `axis_benefit.py`, `count_wins.py`, `stick_control.py` and `order_stat.py` rather than reimplementing it, and prints every number it draws. A little over 20 seconds, nearly all of it §1 |
 | **every number in §7** — the overlap, the distance distribution (median 2.00 mm, max 7.20 mm at z = 8608), the 2.20 mm at our own nodes, the 1.42 mm mean offset and the 11% it explains, the verdict against the pre-registered bands, and the post-hoc CT-centroid table (0.25 / 0.24 / 1.20 mm, 550 / 552 / 403 of 553) | `scripts/prior_1218.py` | **yes** — the prior annotation ships verbatim as `qc/prior_umbilicus_PHerc1218_IyanDopico.json` (MIT, sha256 recorded), and `qc/prior_1218_centroid_raw.json` carries the CT measurement. `--fetch` re-downloads the prior file and refuses a hash mismatch, `--check-bucket` re-reads the frame, `--villa DIR` re-runs the interpolation through villa's own loader (it agrees to 0.0000 vox), `--measure-centroid` re-streams the 48 MB. All four are optional |
 | **the five frame keys of §8**, and the checks behind them — the voxel size against `samplePixelSize`, the level-0 shape, the in-bounds test and the agreement with each `PHercNNNN/meta.json` `shape_L0` | `scripts/stamp_frame.py` | **no, by design** — it reads the bucket every time. `--check` verifies the ten as they stand and writes nothing; `--write` restamps. Values are never taken from the file being checked |
 | 19.8 / 19.3 / 18.4 mm deviations (PHerc0813 / 0268 / 0800, in that order), 36.7 mm sweep, 18.4 mm optimal stick, largest gap 1440 vox **and its endpoints z 15480→16920** | `scripts/axis_stats.py` | **yes** |
@@ -1800,11 +1880,11 @@ and reports the byte-identity check each was verified with.
 | **the straight-stick control of §5** — 188/296 and 184/295, all ten scrolls above 50%, sign test p = 0.00098, the per-scroll medians and the displacement bins | `scripts/stick_control.py` | **yes** — `qc/stick_control_raw.json` ships, and it is the 15 August measurement: `--measure` needs the slice PNGs, so §5 was not repeated on the densified curves |
 | the banded-energy measure itself | `scripts/validate_axes.py`, `scripts/validate_bands.py` | no — needs the per-scroll slice PNGs |
 | bare edges, tissue-band coverage per scroll **and the 92.9% aggregate** (z-weighted; the script also prints the 93.1% unweighted mean and the 94.0% median so the definition is visible) | `scripts/axis_stats.py` | **yes** — the ten `PHercNNNN/meta.json` now ship (25 KB in total; they carry the tissue band, the slice list and the volume id) |
-| 268.3 vs 273.6 median displacement, the kink figure | `scripts/calib_sean.py`, `scripts/calib_figure.py` | needs the slice PNGs and `ref_sean/` — so the 268.3 is still the 15 August, 279-point value and could not be re-measured on 19 August (§3) |
+| the ring-gate median displacement (279.9 vs 273.6 on the densified curves, 2026-08-20; 268.3 vs 273.6 on the 15 August curves), the kink figure | `scripts/calib_sean.py`, `scripts/calib_figure.py` | needs the slice PNGs and `ref_sean/`, so not from a clone — re-measured here on 2026-08-20 (§3's dated notes) |
 | the shipped axes themselves, from annotator output | `scripts/finalize.py` | needs `results/` |
 | **winding pitch 247–371 µm, the 380–468 µm cross-check, the per-spot 6%–90% ratios and the PHerc0800 voxel correction** | `scripts/pitch_table.py` | **yes** — the producer's own five-spot output ships verbatim as `qc/winding_map_metrics.json` and the script applies the voxel correction, taking each spot's voxel size from that scroll's shipped `metadata.source_volume`. The measurement that produced those five pairs (`qc/витковая_карта_код/` in the annotation tree) does not ship |
 | **85–92% vs 74–83%, 43:7 / 42:5 / 21:3** | `scripts/order_stat.py` | **yes** — recomputed from `qc/order_fixture_PHercNNNN.npz`, which ships. The *tracer* that produced those fixtures still does not: see the row below |
-| **the two axis separations on the `centre_in_core_*.png` panels** — the median over each §1 stack (13.30 / 13.44 / 6.75 mm, the same figures §1 quotes) and the value at the stack's middle height, which is the height each panel is drawn at (16.71 / 16.09 / 9.16 mm) | `scripts/order_stat.py` | **yes** — the same shipped fixtures, whose manual-axis centres are the 15 August ones; it prints them under the order table, with the height's z |
+| **the two axis separations on the `centre_in_core_*.png` panels** — the median over each §1 stack (13.30 / 13.44 / 6.75 mm, the same figures §1 quotes) and the fixture value at the stack's middle height (16.71 / 16.09 / 9.16 mm). Since the 2026-08-20 re-render the panels' own at-height numbers are computed from the drawn centres instead (8.48 / 16.09 / 9.16 mm — PHerc0191 differs because its z = 15480 node was re-placed after the fixtures were built) | `scripts/order_stat.py` | **yes** for the fixture values — the same shipped fixtures, whose manual-axis centres are the 15 August ones; it prints them under the order table, with the height's z. The drawn-centre values need the annotation tree's `auto_centers.json`, which does not ship |
 | **the `centre_in_core_*.png` panels themselves** | `qc/эвиденс_кандидаты/код/evidence_panels_en.py` in the annotation tree | no — the numbers regenerate here, the picture does not: it needs the level-3 slice PNGs and the repaired tracer. The panels print **no count**, so nothing on them depends on that tracer being trusted for a quantity |
 | **the tracing that produces the fixtures** | **not shipped here.** `qc/шаг2_код/stack.py` (31 KB) plus `winding_map.py` (12 KB) and `numbering.py` (6 KB) from the same tree | no. Stated exactly, because "too big to ship" would not be true: the missing *data* is **14.6 MB** — 25 L3 slices for each of PHerc0191/0358/1203, each one plane `round(z/8)` of level 3 of that scroll's `…-masked.zarr` in `vesuvius-challenge-open-data`, normalised to the 1st/99th percentile of its non-zero pixels, exactly as `build.py` writes the catalogue slices. What blocks it is the ~49 KB of tracer code: it is Russian-commented, hard-wired to the annotation tree, and shipping it means proving it still regenerates the published numbers rather than merely running. We re-ran it on 2026-08-13 and it does (all nine figures exact), but translating and de-hardcoding it is a separate pass |
 | **the tolerance sweep and the resampling test** | **not shipped here.** Produced by `qc/эвиденс_кандидаты/код/развилка/развилка3.py` in the annotation tree; every number and its provenance is tabulated in `STEP2_CONSISTENCY.md` §13 | no |
@@ -1815,12 +1895,15 @@ and reports the byte-identity check each was verified with.
 `scripts/README.md` lists the known rough edges in the scripts themselves.
 
 **One row of this table is worth reading twice.** Three of the checks in this
-package — §2, §3 and §5 — could not be re-measured on the 19 August curves,
-because all three need the per-slice PNGs or sean's files and neither ships.
-Their numbers are unchanged in this README and they describe the 279-point
-axes. §6, §7, the geometry table and the midpoint audit all recompute from what
-ships and all were repeated. Where a section could not be repeated it now says
-so in its own words rather than leaving the date to be inferred.
+package — §2, §3 and §5 — could not be re-measured on the 19 August curves
+from a clone, because all three need the per-slice PNGs or sean's files and
+neither ships. §3's ring-gate calibration has since been re-measured on our
+side (2026-08-20, on the densified curves — its dated note carries both
+values); **§2 and §5 still have not been**, and their numbers describe the
+279-point axes. §6, §7, the geometry table and the midpoint audit all
+recompute from what ships and all were repeated. Where a section could not be
+repeated it now says so in its own words rather than leaving the date to be
+inferred.
 
 ## Honest caveats
 - Collapse zones (chevron-folded interiors) are best-effort judgement;
@@ -1965,10 +2048,10 @@ accepts. Both parse through `json_umbilicus_z_to_yx` without special-casing.
 - `panels/calibration_summary.png` — our gates calibrated against sean's three
   published umbilici, all ten scrolls.
 - `panels/prereg_axis_benefit.png` — §6 as statistics: the ten pairings, the
-  pooled result, and the 1.81 mm sensitivity floor drawn to scale against the
-  6.0 mm median stick distance that bounds what the run may claim. Drawn from
-  the superseded 15 August run; §6 now reports a 3.63 mm floor (2.72 mm on the
-  20 August finer ladder, §6.4) and a 6.24 mm stick distance.
+  pooled result, and the 3.63 mm sensitivity floor (with the 2.72 mm
+  finer-ladder floor of §6.4's dated note beside it) drawn to scale against
+  the 6.24 mm median stick distance that bounds what the run may claim.
+  Re-rendered 2026-08-20 on the current run.
 - `panels/stick_control.png` — §5 in both halves: the win on all ten scrolls, and
   beside it the flat dose–response across the offset bins.
 - `panels/shifted_axis_controls.png` — §2's two controls together: the +300 that
@@ -2016,7 +2099,7 @@ accepts. Both parse through `json_umbilicus_z_to_yx` without special-casing.
   files from the **15 August** run on the 279-point curves, kept in-tree rather
   than deleted so that the two runs can be compared. They are what the earlier
   numbers in the git history of this README were computed from, and what
-  `panels/prereg_axis_benefit.png` draws.
+  `panels/prereg_axis_benefit.png` drew until its 2026-08-20 re-render.
 - `axis_benefit/finegrid_2026-08-20/` — the finer sensitivity-ladder run of
   §6.4's dated note: `FLOOR_FINEGRID_PREREGISTRATION.md` (verbatim, written
   before the run), `FLOOR_FINEGRID_RESULT.md` (verbatim except one shortened

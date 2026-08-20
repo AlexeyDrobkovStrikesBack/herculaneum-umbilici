@@ -446,6 +446,40 @@ def cross_check_villa(villa_dir, r):
 
 
 # --------------------------------------------------------------- the figure --
+def current_yardsticks():
+    """The three yardstick distances as the shipped files give them TODAY,
+    recomputed rather than copied from prose: the §6.4 sensitivity floor
+    (with the 2026-08-20 finer-ladder floor beside it where those files are
+    present), the §6 median stick distance, and the Motivation's largest
+    deviation with the scroll that carries it.  The pre-registered verdict
+    bands stay at their sealed 15 August values (FLOOR_MM, STICK_MM,
+    HEADLINE_MM above) — these are for drawing only, so the panel shows the
+    numbers the README currently states while the sealed verdict is printed
+    unchanged."""
+    import axis_benefit as AB
+    from axis_stats import voxel_um, SCROLLS as ALL_SCROLLS
+    floor = AB.control_table()["floor"][1]
+    stick = AB.stick_distances()[1][0]
+    dev, dev_scroll = 0.0, ""
+    for s in ALL_SCROLLS:
+        with open(os.path.join(ROOT, f"{s}_umbilicus.json")) as fh:
+            d = json.load(fh)
+        pts = sorted(d["control_points"], key=lambda p: p["z"])
+        um = voxel_um(d["metadata"])
+        xy = np.array([[p["x"], p["y"]] for p in pts], float)
+        v = float(np.hypot(*(xy - xy.mean(0)).T).max()) * um / 1000.0
+        if v > dev:
+            dev, dev_scroll = v, s
+    fine = None
+    try:
+        import stat_figures
+        f = stat_figures.finegrid_floor()
+        fine = f[1] if f else None
+    except Exception:
+        pass
+    return floor, fine, stick, dev, dev_scroll
+
+
 def figure(r):
     import matplotlib
     matplotlib.use("Agg")
@@ -556,11 +590,19 @@ def figure(r):
     ax = fig.add_subplot(gs[2, 0])
     style(ax)
     xr = zg.max() * mm * 1.45
-    for v, c, t in ((HEADLINE_MM, C_NULL, f"{HEADLINE_MM} mm   the Motivation deviation"),
-                    (STICK_MM, C_NULL, f"{STICK_MM} mm   median distance to the stick (section 6)"),
-                    (FLOOR_MM, C_NULL, f"{FLOOR_MM} mm   sensitivity floor (section 6.4)")):
-        ax.axhline(v, color=c, lw=1.0, ls="--")
-        ax.text(xr, v, t + "  ", fontsize=7.8, color=INK2, va="center", ha="right")
+    floor_now, fine_now, stick_now, dev_now, dev_scroll = current_yardsticks()
+    marks = [(dev_now, f"{dev_now:.1f} mm   the Motivation deviation ({dev_scroll})"),
+             (stick_now, f"{stick_now:.2f} mm   median distance to the stick (section 6)"),
+             (floor_now, f"{floor_now:.2f} mm   sensitivity floor (section 6.4)")]
+    if fine_now is not None:
+        marks.append((fine_now,
+                      f"{fine_now:.2f} mm   finer-ladder floor, 20 Aug (section 6.4)"))
+    for v, t in marks:
+        ax.axhline(v, color=C_NULL, lw=1.0, ls="--")
+        # the two floors sit ~0.9 mm apart: label one above, one below its line
+        va = ("bottom" if v == floor_now else
+              "top" if fine_now is not None and v == fine_now else "center")
+        ax.text(xr, v, t + "  ", fontsize=7.8, color=INK2, va=va, ha="right")
     ax.plot(zg * mm, d, color=C_ANN, lw=1.4, label="distance between the two axes")
     ax.plot(zg * mm, res, color=C_BASE, lw=1.1, ls=":",
             label="after removing the mean offset")
@@ -574,7 +616,7 @@ def figure(r):
     ax.axhline(float(np.median(d)), color=C_ANN, lw=0.9, ls="-", alpha=0.45)
     ax.set_xlabel("z  (mm)", fontsize=9, color=INK2)
     ax.set_ylabel("distance  (mm)", fontsize=9, color=INK2)
-    ax.set_ylim(0, max(HEADLINE_MM * 1.08, d.max() * 1.15))
+    ax.set_ylim(0, max(dev_now * 1.08, d.max() * 1.15))
     ax.set_xlim(zg.min() * mm, xr)
     ax.legend(fontsize=8.0, frameon=False, loc="upper left",
               bbox_to_anchor=(0.005, 0.86))
@@ -590,8 +632,11 @@ def figure(r):
     sr = np.sort(res)
     ax.step(sr, np.arange(1, sr.size + 1) / sr.size * 100, color=C_BASE, lw=1.2,
             ls=":", where="post", label="after removing the mean offset")
-    xmax = max(STICK_MM * 1.12, s.max() * 1.15)
-    for v, t in ((FLOOR_MM, f"{FLOOR_MM}"), (STICK_MM, f"{STICK_MM}")):
+    xmax = max(stick_now * 1.12, s.max() * 1.15)
+    vlines = [(floor_now, f"{floor_now:.2f}"), (stick_now, f"{stick_now:.2f}")]
+    if fine_now is not None:
+        vlines.insert(0, (fine_now, f"{fine_now:.2f}"))
+    for v, t in vlines:
         ax.axvline(v, color=C_NULL, lw=1.0, ls="--")
         ax.text(v, 4, " " + t + " mm", fontsize=7.8, color=INK2, rotation=90,
                 va="bottom", ha="left")
@@ -601,12 +646,16 @@ def figure(r):
     ax.set_ylim(0, 101)
     ax.legend(fontsize=8.3, frameon=False, loc="lower right")
     ax.set_title(f"the whole distribution, not one number  "
-                 f"({HEADLINE_MM} mm is off this scale)",
+                 f"({dev_now:.1f} mm is off this scale)",
                  fontsize=10, color=INK, loc="left")
 
     lines = ["Every number drawn is recomputed by scripts/prior_1218.py from the "
              "shipped json files and printed to stdout, so this panel can be checked "
-             "as text."]
+             "as text.",
+             f"The dashed yardsticks are the CURRENT values of those quantities; the "
+             f"verdict bands sealed in qc/PRIOR1218_PREREGISTRATION.md stay at "
+             f"{FLOOR_MM} / {STICK_MM} / {HEADLINE_MM} mm and the verdict is printed "
+             f"against those."]
     if ct is not None:
         lines += [
             f"The green line is the CT's own mass centroid at level 5 of the same "

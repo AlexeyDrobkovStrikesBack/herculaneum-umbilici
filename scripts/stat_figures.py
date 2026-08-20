@@ -110,6 +110,49 @@ def save(fig, name):
     print("wrote", p)
 
 
+FINEGRID = os.path.join(ROOT, "axis_benefit", "finegrid_2026-08-20")
+
+
+def finegrid_floor():
+    """The 2026-08-20 finer-ladder floor, recomputed from the shipped
+    `axis_benefit/finegrid_2026-08-20/prereg_*_finegrid.json` with the same
+    rule `axis_benefit.control_table` applies to the original ladder: per
+    slice, the mean over the surviving displacement directions of the drop in
+    q from the annotated centre; per rung, the median of those per-slice
+    means; the floor is the first rung whose median reaches the
+    pre-registered 0.01. Returns (px, mm) or None if the directory is absent,
+    so the figure still draws on a tree that predates those files."""
+    if not os.path.isdir(FINEGRID):
+        return None
+    per_d, per_mm, ladder = {}, {}, None
+    for s in AB.SCROLLS:
+        p = os.path.join(FINEGRID, f"prereg_{s}_finegrid.json")
+        with open(p) as fh:
+            d = json.load(fh)
+        um = d["um_per_px"]
+        if ladder is None:
+            ladder = list(d["params"]["control_d"])
+            per_d = {x: [] for x in ladder}
+            per_mm = {x: [] for x in ladder}
+        for r in AB.scorable(d):
+            cs = r["conditions"]
+            if not any(k.startswith("control_") for k in cs):
+                continue
+            q0 = cs["annotated"]["q"]
+            for x in ladder:
+                vals = [cs[f"control_d{x}_dir{i}"]["q"] for i in range(4)
+                        if f"control_d{x}_dir{i}" in cs
+                        and cs[f"control_d{x}_dir{i}"]["q"] is not None
+                        and cs[f"control_d{x}_dir{i}"]["ring95"] >= 0.95]
+                if vals:
+                    per_d[x].append(q0 - float(np.mean(vals)))
+                    per_mm[x].append(x * um / 1000.0)
+    for x in ladder:
+        if per_d[x] and float(np.median(per_d[x])) >= 0.01:
+            return x, float(np.mean(per_mm[x]))
+    return None
+
+
 # ============================================================ section 6 =====
 def fig_prereg():
     """panels/prereg_axis_benefit.png — the pre-registered ten-scroll run.
@@ -134,6 +177,7 @@ def fig_prereg():
     ct = AB.control_table()
     per_d, pooled_d = AB.stick_distances()
     floor_px, floor_mm = ct["floor"]
+    fine = finegrid_floor()
     gap = float(qa.mean() - qb.mean())
 
     print("\n--- section 6 figure, numbers as drawn ---")
@@ -147,6 +191,8 @@ def fig_prereg():
     print(f"  floor {floor_px} px = {floor_mm:.2f} mm; stick median {pooled_d[0]:.2f} mm "
           f"(per-scroll {min(v[1] for v in per_d.values()):.2f}-"
           f"{max(v[1] for v in per_d.values()):.2f} mm)")
+    if fine is not None:
+        print(f"  finer-ladder floor (2026-08-20) {fine[0]} px = {fine[1]:.2f} mm")
 
     fig = plt.figure(figsize=(15.4, 11.6), facecolor=SURF)
     gs = GridSpec(2, 2, figure=fig, width_ratios=[1.34, 1.0],
@@ -241,6 +287,13 @@ def fig_prereg():
     ax.axvline(floor_mm, color=INK, linewidth=1.3, zorder=4)
     ax.text(floor_mm + 0.14, 0.1010, f"sensitivity floor\n{floor_mm:.2f} mm ({floor_px} px)",
             fontsize=9.2, color=INK, va="top", fontweight="bold", linespacing=1.5)
+    if fine is not None:
+        ax.axvline(fine[1], color=INK, linewidth=1.0,
+                   linestyle=(0, (4, 3)), zorder=4)
+        ax.text(fine[1] - 0.14, 0.0700,
+                f"finer ladder, 20 Aug:\nfloor {fine[1]:.2f} mm ({fine[0]} px)\n"
+                f"(§6.4; {floor_mm:.2f} mm stays\nthe headline)",
+                fontsize=8.0, color=INK2, va="top", ha="right", linespacing=1.4)
 
     ax.axvline(pooled_d[0], color=C_ANN, linewidth=1.6, zorder=4)
     ax.text(pooled_d[0] + 0.14, 0.1010,
@@ -265,8 +318,9 @@ def fig_prereg():
                   fontsize=9.5, color=INK2)
     ax.set_ylabel("median drop in q", fontsize=9.5, color=INK2)
     ax.set_title(
-        "The bound, drawn to scale: the measure is blind below 1.81 mm, and the stick sits at "
-        "a median 6.0 mm\n"
+        f"The bound, drawn to scale: the measure is blind below {floor_mm:.2f} mm"
+        + (f" ({fine[1]:.2f} mm on the 20 Aug finer ladder)" if fine is not None else "")
+        + f", and the stick sits at a median {pooled_d[0]:.2f} mm\n"
         "This is why the run stands up — and it is also the ceiling on what it may claim. "
         "It credits gross axis placement;\nit cannot credit annotation precision, and no "
         "experiment of this shape can (§6.4, §6.8).",

@@ -257,8 +257,24 @@ recomputed by anyone who rebuilds that tree. Ask and we will help you reproduce 
 `stat_figures.py` draws the four statistics panels and `prior_1218.py --figure` draws
 `panels/prior_1218_agreement.png`; those five are the ones that regenerate from a bare
 clone, and all five were re-checked byte-identical on a fresh clone on 2026-08-15.
+**On 2026-08-20 all shipped panels except the twelve §1 order panels were
+re-rendered on the densified curves** (the top-level README's Panels box lists what
+changed on each): the five above regenerate from a clone and now reproduce the
+shipped bytes again; `calibration_summary.png` was re-drawn from a fresh
+`calib_sean.py` run on the densified curves; and the eighteen tree-drawn panels
+below were re-run against the shipped axes. Three scripts changed for that
+re-render, each named in the Language section at the bottom: `stat_figures.py`
+(the §6 panel's bottom title is now computed instead of hardcoded — the old
+string still said 1.81 mm/6.0 mm — and a `finegrid_floor()` helper recomputes
+the 20 August finer-ladder floor from `axis_benefit/finegrid_2026-08-20/` so
+both floors are drawn), `prior_1218.py` (the drawn yardsticks are now
+recomputed at draw time via `current_yardsticks()`; the sealed verdict bands
+are untouched and the panel footer names them), and, in the annotation tree,
+`evidence_panels_en.py` (the atlas strings carry the current 19.8 mm and the
+§3 re-run, and the stage-3 at-height separation is computed from the drawn
+centres rather than read from the fixture).
 `calib_figure.py` also ships and draws `panels/calibration_summary.png`, but that panel
-does **not** regenerate here: it reads `qc/calibration_sean.json`, which holds sean's
+does **not** regenerate on a clone: it reads `qc/calibration_sean.json`, which holds sean's
 verbatim coordinates and is deliberately withheld by `.gitignore`, so on a clone the
 script stops at its first read. The
 other thirty panels are drawn by three scripts that are **not** shipped, because all
@@ -280,7 +296,11 @@ they do **not** need the tree for is their two numbers, which they read out of t
 `qc/order_fixture_*.npz` and which `order_stat.py` prints.
 
 Every one of these panels was re-rendered from Russian into English rather than edited as
-pixels, and that re-render was checked rather than assumed. `viz_en.py` and
+pixels, and that re-render was checked rather than assumed. (The byte-equivalence
+checks below were made on 2026-08-14/15 against the then-current data and
+describe those renders; the 2026-08-20 re-render changed the English strings
+and the stage-3 separation computation, so the `--ru` byte checks are a
+property of the 15 August files, not of today's.) `viz_en.py` and
 `evidence_panels_en.py` both have a `--ru` mode that renders the original Russian strings
 through the same code path. In that mode `viz_en.py` reproduces all six previously
 published step2 panels **byte-identically**, and `evidence_panels_en.py` reproduces all
@@ -349,7 +369,14 @@ scope and output path, the two new scripts, and — added after the second revie
 the extra columns in `axis_stats.py`, the median-ratio column and NaN guard in
 `count_wins.py`, and the relabelled right-hand panel in `calib_figure.py`. Those
 three were each run before and after the change against the same data: no
-previously printed value moved. A third pass added four scripts and changed one:
+previously printed value moved. A fourth pass (2026-08-20, the panel
+re-render) changed two shipped scripts: `stat_figures.py` gained
+`finegrid_floor()` and a computed §6-panel title (the hardcoded one had gone
+stale — it still said 1.81 mm and 6.0 mm over current lines), and
+`prior_1218.py` gained `current_yardsticks()` so the figure's dashed yardstick
+lines are recomputed instead of typed; its sealed verdict bands (`FLOOR_MM`,
+`STICK_MM`, `HEADLINE_MM`) and every printed verdict are untouched, re-run
+before and after with identical output. A third pass added four scripts and changed one:
 `axis_stats.py` gained the `qc/sean_reference.json` fallback and verification for
 sean's three rows, which was run before and after against the same data with
 every measured value identical and only a provenance note added to those three
