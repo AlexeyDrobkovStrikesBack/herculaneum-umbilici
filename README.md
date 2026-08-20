@@ -2022,6 +2022,40 @@ inferred.
   audit; it has not been shown to have improved the axis, and this package has
   no measurement that could show it.
 
+### 10. Third pass on PHerc0191, and the §1 fixture dispute resolved by measurement (2026-08-20)
+
+PHerc0191 was re-annotated on 20 August: **44 → 64 hand-confirmed points**, none
+removed, with the additions concentrated where the axis bends hardest — six of
+the largest moves fall between z = 14040 and z = 15480.
+
+**The pre-registered concentricity measure was run on the new curve before it was
+shipped**, on the same 30 slices, same code, same conditions as the run behind
+§6 (`axis_benefit/measure/prereg_run.py`, `--no-control`). It improves:
+
+| | mean q | median q | better on |
+|---|---|---|---|
+| shipped (44 points) | 0.1386 | 0.1353 | — |
+| this pass (64 points) | **0.1448** | 0.1339 | **19 of 30 slices** |
+
+Paired difference +0.0062 mean, Wilcoxon p = 0.084 — leaning positive, not
+significant at 0.05, and quoted as such. Interpolation roughness improves
+separately: the estimated midpoint miss falls from a median of 438 µm to 354 µm.
+
+**§1's dispute closes.** That section carries a dated box recording a **12.3 mm**
+disagreement at z = 15480 between its frozen fixture and the shipped file. This
+pass moved z = 15480 by 9.5 mm and z = 15240 by 13.5 mm, and the nearest measured
+slice, z = 15400, improves from q = 0.0241 to **0.1027** — the largest gain in the
+run. The disagreement was the shipped file being wrong there, and it is now
+measured rather than argued.
+
+**One regression, stated because it is real.** At z = 13912 the measure falls from
+0.1909 to 0.0759, the largest single change in either direction. That slice is
+not a control point in either version; it is interpolated between z = 13560 and
+z = 14040, and that 480-voxel gap is the widest in this scroll and one the
+midpoint audit had flagged. Moving the endpoint at z = 14040 helped elsewhere and
+hurt here. The fix is a control point inside that gap, and it has not been placed
+yet.
+
 ### 9. PHerc0268 carries two winding centres between z = 5400 and 6224 (2026-08-20)
 
 Found by eye during a third annotation pass on 20 August, then measured. In that
