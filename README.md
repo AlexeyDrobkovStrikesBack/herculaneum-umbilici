@@ -17,6 +17,10 @@ below.)
 in [vesuvius-sheet-tools](https://github.com/IyanDopico/vesuvius-sheet-tools)
 on 2026-07-21, three weeks before ours. What that file is, and how our axis
 compares against it, is §7 — and it is the only external check in this package.
+As of 2026-08-20 that check no longer reads as a pass: third-party winding
+observations, made by neither annotator for this purpose, arbitrate the
+z 7500–9500 band against our axis, which is off by up to about 7 mm there
+(§7.6). Over that band, prefer his file to ours.
 
 File format matches sean's published umbilicus files (integer voxel
 coordinates, per-point `score`, `metadata` block), plus the five frame keys of
@@ -60,7 +64,9 @@ since commit `6a831e0` on 2026-07-21. We did not find it before publishing; we
 found it before publishing was final, and the claim is withdrawn rather than
 softened. The credit is his. What replaces the claim is worth more than it was:
 PHerc1218 is now the one place in this package where our annotation is measured
-against someone else's, and that is §7.
+against someone else's, and that is §7. Being measured is not the same as
+passing: since 2026-08-20 the measurement goes against us over one band of that
+scroll — §7.6 — and this README no longer presents §7 as a check we passed.
 
 What we kept running into is that substituting a straight vertical line for the
 axis is not a small approximation. On the ten shipped files the annotated centre
@@ -250,7 +256,12 @@ Seven checks, and they are not equally reproducible. To be exact:
   and hashed before `scripts/prior_1218.py` first ran, and its sha256 is quoted
   in §7.2. Both polylines ship, so the distances recompute with numpy alone; the
   post-hoc CT measurement inside it needs the network to *re-*measure but ships
-  its raw. It covers one scroll of ten, and §7.5 says so.
+  its raw. It covers one scroll of ten, and §7.5 says so. **Dated 2026-08-20:
+  it is also no longer a check we pass.** Third-party arc and chain
+  observations, independent of both axes, arbitrate the z 7500–9500 band
+  against our file — §7.6. The distance comparison still reproduces from a
+  clone; the arbitration itself runs in a working tree that does not ship here
+  yet, and §7.6 and the "What is scripted" table say so.
 - **Check 6 (does the axis help a tool?) reproduces from a fresh clone**, from
   the ten `axis_benefit/prereg_PHercNNNN.json` via `scripts/axis_benefit.py`.
   It was re-measured on the 19 August densified curves and the previous run
@@ -1339,6 +1350,18 @@ displaced centre, a straight stick, an auto-centroid — or against sean's three
 files, which are three *other* scrolls. **On exactly one of our ten there is an
 independent annotation by someone who is not us**, and this section is it.
 
+> **Dated, 2026-08-20 — read this before the history below.** As first
+> written, this section presented an agreement — median 2.00 mm over the
+> overlap — with a disagreement noted: one band, z ≈ 7500–9500, where the
+> two files diverge by up to 7.20 mm. That disagreement has since been
+> **arbitrated by observations neither side made for the purpose** — the
+> relative-winding chains and same-winding arcs of the same public pack,
+> machine-generated from stitched instance labels and derived from no
+> umbilicus — **and our axis loses the band.** §§7.1–7.5 stand as the
+> measurements they are; §7.6 is the arbitration, with the numbers, the
+> caveat, and the practical consequence: over z 7500–9500, prefer the prior
+> file to ours. This section can no longer be read as a check we passed.
+
 #### 7.1 What the prior annotation is
 
 `data/spiral_input_pherc1218/umbilicus.json` in
@@ -1448,7 +1471,9 @@ prints it.** The two independent annotations of PHerc1218 differ by 2.00 mm in
 the median and by up to 7.20 mm — below the 6.26 mm distance §6 measures between
 our axis and the straight stick it beats in the median, though the tail now
 exceeds it, and above the 1.81 mm the pre-registered band names. The whole
-distribution and the figure are `panels/prior_1218_agreement.png`.
+distribution and the figure are `panels/prior_1218_agreement.png`. (The tail
+of that distribution — the z 7500–9500 excursion — is the part §7.6 has since
+arbitrated against us.)
 
 **It is not a constant offset.** The mean (Δy, Δx) is (−33.5, +161.5) voxels =
 1.42 mm, and removing it leaves a median residual of 1.78 mm: a single constant
@@ -1495,6 +1520,9 @@ on essentially every slice. Their generator says the file is a papyrus-mask
 centroid and the CT agrees that it is one. **So the 2.00 mm is the distance
 between a mass centroid and a hand-placed winding centre on this scroll — a
 property of PHerc1218's cross-sections, not annotation error on either side.**
+*(Dated 2026-08-20: that sentence survives for the median and fails for the
+tail. Over z 7500–9500, §7.6's arbitration says the residual is annotation
+error, and it is ours.)*
 The third row is the interesting one, and it does not rescue the winding
 centre — less than ever. Restricting the weight to the densest 40% of the
 material moves the centroid 0.95 mm **off** their line and, on the densified
@@ -1531,6 +1559,106 @@ annotation agreeing with ours at a scale far below the effect §6 measures — b
 it does mean this section can no longer be read as evidence about millimetre
 accuracy, and the 7.20 mm maximum is the part of the distribution that the
 instrument could actually see.
+
+**Dated 2026-08-20 — one clause above is withdrawn rather than qualified.**
+"The residual is explained by the two being different quantities" was measured
+over the whole overlap and is now known to be false for one band of it: §7.6
+measures, on observations neither annotator made, that over z 7500–9500 the
+residual is our annotation error. What this subsection establishes after that
+is smaller and should be stated at its new size: outside that band, an
+independent line and ours agree to about 2 mm and the difference is the
+centroid-versus-centre convention; inside it, the external data sides against
+us.
+
+#### 7.6 Dated, 2026-08-20 — the disagreement is arbitrated by observations neither side made, and we lose it
+
+Everything above measured *that* the two files disagree and *where*. Nothing
+above could say which one is wrong: two annotations, no third witness. The
+third witness turned out to already exist. The same public pack the prior axis
+ships in also carries the spiral fitter's constraint inputs for PHerc1218 —
+12,924<!--ledger:wind.d1218.n_chains--> relative-winding chains and
+1,863<!--ledger:wind.d1218.n_arcs--> same-winding arcs, machine-generated from
+stitched instance labels. They were made as inputs to a spiral fit's loss, not
+for this comparison, and they are derived from no umbilicus — so as between
+the two axes under test they are third-party evidence, independent of both.
+Checked against both axes, three signals agree:
+
+- **The chains contradict our axis twenty times more often than his.** A
+  +1-winding step should move radially in one consistent direction about the
+  true centre (the direction is taken from each axis's own median, so the test
+  is self-calibrated per axis). About our shipped axis,
+  600<!--ledger:wind.d1218.sign_viol_ours_common--> of
+  12,058<!--ledger:wind.d1218.chain_steps_common--> evaluable steps carry the
+  minority sign, against 31<!--ledger:wind.d1218.sign_viol_his_common--> about
+  his prior axis on the identical step sample; as rates over each axis's full
+  evaluable support, 0.0498<!--ledger:wind.d1218.sign_viol_rate_ours--> versus
+  0.0024<!--ledger:wind.d1218.sign_viol_rate_his-->.
+- **A centre fitted from the arcs alone lands on his line, not on ours.**
+  Minimizing the mean within-arc radius spread per 1024-voxel z-band gives a
+  fitted centre whose own residual is a median
+  3.305<!--ledger:wind.d1218.resid_fit_med_vox--> voxels (29 µm) — far below
+  the local pitch the chains themselves measure,
+  18.8<!--ledger:wind.d1218.chain_pitch_med_vox--> L0 voxels (162 µm) per
+  +1 winding — so the arcs in every band agree on a single centre. That centre
+  sits a median 1.0 mm<!--ledger:wind.d1218.dist_fit_his_med_mm--> from his
+  axis against 2.125 mm<!--ledger:wind.d1218.dist_fit_ours_med_mm--> from
+  ours, and his axis beats ours on the arc-consistency objective in
+  16<!--ledger:wind.d1218.arcfit_his_beats_ours_bands--> of
+  16<!--ledger:wind.d1218.arcfit_bands_both--> bands
+  (Wilcoxon p = 3.05e-05<!--ledger:wind.d1218.arcfit_wilcoxon_p-->).
+- **All of it peaks where the two axes diverge.** The chain-violation rate
+  about our axis is 12.5%<!--ledger:wind.d1218.sign_viol_rate_ours_band_pct-->
+  inside z 7500–9500 against
+  3.9%<!--ledger:wind.d1218.sign_viol_rate_ours_outside_pct--> outside,
+  peaking at 14.5%<!--ledger:wind.d1218.sign_viol_rate_ours_peakband_pct--> in
+  the worst 1024-voxel band; the arc-fitted centre is
+  8.07 mm<!--ledger:wind.d1218.dist_fit_ours_worstband_mm--> from our axis at
+  that band; and the two hand axes are furthest apart in exactly that band —
+  7.14 mm<!--ledger:wind.d1218.axis_sep_z8700_mm--> at z = 8700 (§7.3's
+  7.20 mm maximum at z = 8608 is the same excursion).
+
+**The practical consequence, said plainly.** Anyone consuming
+`PHerc1218_umbilicus.json` should prefer the prior file — shipped in this
+repository as `qc/prior_umbilicus_PHerc1218_IyanDopico.json` — over
+z 7500–9500. Over the rest of the height the two files agree to about 2 mm
+and either serves this package's own instruments. The fix on our side is
+re-annotation of that band; it has not been done, and this note stands until
+it is.
+
+**How it was found, because that is the method's point.** No new annotation
+was involved. The arcs and chains were already held, imported losslessly from
+the pack's `same_windings.json` and `relative_windings.json`, and the finding
+fell out of cross-checking assertion kinds against each other — which is the
+argument for recording arcs and chains alongside centres at all. The checker
+and the derivation (`checks.py`, `derive1218.py`) live in the
+winding-observations working tree and do not ship in this repository yet; the
+arbitrating inputs are public, and every number above is under provenance in
+our measurement ledger.
+
+**The caveat, stated rather than absorbed.** The chains were generated by
+rays from slice centroids, so an axis lying near the centroid field is
+structurally favoured by the sign check — and §7.4 measured that the prior
+axis essentially *is* the mass centroid, so this arbitration is weakly
+circular in the prior's favour. It is not fully circular: the arc-fit
+objective does not use the ray construction, and three instruments agreeing —
+chains, arcs, and the radial fan the chains draw around his centre in the
+working tree's z = 8700 view (not shipped here) — makes centroid bias an
+unlikely full explanation. The clean
+closure, a CT-only concentricity measurement of §6's kind at both axes over
+the band, has not been run; until it has, "we lose the band" rests on the
+constraint data, not on the CT itself.
+
+**What this does not say.** It says our shipped PHerc1218 axis is wrong over
+roughly z 7500–9500, by up to about 7 mm, on this one scroll. It does not
+impeach the annotation method: outside the band the same chains fall to the
+3.9% background about our axis, and no comparable constraint data exists on
+the other nine scrolls in either direction. It does not touch §6, whose
+axis-benefit claim was measured against a straight stick, not against this
+prior, and stands as measured. And it does not make the prior axis right
+everywhere: his file remains what §7.1 says it is — a mass centroid, an input
+to a fit's loss, not a claim about the winding centre — and the arbitration
+localizes *our* error; it does not certify his line beyond what the arcs and
+chains, which come from his own segmentation, can witness.
 
 ### 7b. A second external check, arriving after the fact — TAUIL Abd Elilah
 
@@ -1827,7 +1955,10 @@ centres" below.
   showed only the median would be reporting less than the section does. It also
   carries the post-hoc CT mass centroid (§7.4) in a third colour, which is the
   panel's real work: the reader can see it lying on *their* line, which is why
-  the 2.00 mm is a difference of definition. The header says in the image, not
+  the 2.00 mm is a difference of definition — over most of the height;
+  §7.6's z 7500–9500 band is the measured exception, where the difference is
+  our error, and the panel predates that arbitration and does not show it. The
+  header says in the image, not
   in a caption elsewhere, that the two files are not defined to be the same
   point. `scripts/prior_1218.py --figure`, and every number on it is printed to
   stdout by the same run.
@@ -2012,7 +2143,8 @@ re-render was verified with.
 | **the per-slice q values themselves** | `axis_benefit/measure/prereg_run.py`, shipped verbatim as it ran | **no.** It streams 12–38 MB per slice, about 5.7 GB over the 300, out of the ten masked OME-Zarr volumes named in `axis_benefit/PREREGISTRATION.md` §3, and it imports villa's `umbilicus.py` and `sample_spiral.py` from a `volume-cartographer` checkout, which are referenced by path rather than redistributed. Needs torch; CPU is enough |
 | **the unwrap demonstration of §6.7** | **there is none, and that is the finding.** §6.7 gives the selection rule it was built under, the four best candidates and their scores, the Scroll 1 control at 0.094, and why the one legible crop was not shipped. Unchanged on 2026-08-14: the statistics panel below is a different genre and does not revisit that verdict | — |
 | **the four statistics panels** — `prereg_axis_benefit.png` (§6, re-rendered 2026-08-20 with §6's current numbers, both floors included; re-running the script on a clone reproduces the shipped bytes), `stick_control.png` (§5, the win and the flat dose–response), `shifted_axis_controls.png` (§2, the +300 that passed beside the +150 that failed), `frozen_axis.png` (§1, the frozen axis and the identical counts) | `scripts/stat_figures.py` | **yes** — it reads only `axis_benefit/`, `qc/validation_raw.json`, `qc/stick_control_raw.json`, `qc/order_fixture_*.npz`, the ten umbilicus files and the ten `PHercNNNN/meta.json`, all of which ship. numpy + scipy + matplotlib. It imports the counting from `axis_benefit.py`, `count_wins.py`, `stick_control.py` and `order_stat.py` rather than reimplementing it, and prints every number it draws. A little over 20 seconds, nearly all of it §1 |
-| **every number in §7** — the overlap, the distance distribution (median 2.00 mm, max 7.20 mm at z = 8608), the 2.20 mm at our own nodes, the 1.42 mm mean offset and the 11% it explains, the verdict against the pre-registered bands, and the post-hoc CT-centroid table (0.25 / 0.24 / 1.20 mm, 550 / 552 / 403 of 553) | `scripts/prior_1218.py` | **yes** — the prior annotation ships verbatim as `qc/prior_umbilicus_PHerc1218_IyanDopico.json` (MIT, sha256 recorded), and `qc/prior_1218_centroid_raw.json` carries the CT measurement. `--fetch` re-downloads the prior file and refuses a hash mismatch, `--check-bucket` re-reads the frame, `--villa DIR` re-runs the interpolation through villa's own loader (it agrees to 0.0000 vox), `--measure-centroid` re-streams the 48 MB. All four are optional |
+| **every number in §§7.1–7.5** — the overlap, the distance distribution (median 2.00 mm, max 7.20 mm at z = 8608), the 2.20 mm at our own nodes, the 1.42 mm mean offset and the 11% it explains, the verdict against the pre-registered bands, and the post-hoc CT-centroid table (0.25 / 0.24 / 1.20 mm, 550 / 552 / 403 of 553) | `scripts/prior_1218.py` | **yes** — the prior annotation ships verbatim as `qc/prior_umbilicus_PHerc1218_IyanDopico.json` (MIT, sha256 recorded), and `qc/prior_1218_centroid_raw.json` carries the CT measurement. `--fetch` re-downloads the prior file and refuses a hash mismatch, `--check-bucket` re-reads the frame, `--villa DIR` re-runs the interpolation through villa's own loader (it agrees to 0.0000 vox), `--measure-centroid` re-streams the 48 MB. All four are optional |
+| **every number in §7.6** — the chain sign-violation counts and rates, the arc-fit distances and residuals, the band counts and the Wilcoxon p, the band-localization rates, the 7.14 mm axis separation at z = 8700 | not in this repository: `checks.py` and `derive1218.py` in the winding-observations working tree | **no, not yet.** The arbitrating inputs are public (the pack's `same_windings.json` / `relative_windings.json`); the checker and derivation are not shipped here, so §7.6 is our measurement on public data, stated with provenance (every number is a tracked entry in our measurement ledger) but not recomputable from this clone. Shipping the checker is the open item |
 | **the five frame keys of §8**, and the checks behind them — the voxel size against `samplePixelSize`, the level-0 shape, the in-bounds test and the agreement with each `PHercNNNN/meta.json` `shape_L0` | `scripts/stamp_frame.py` | **no, by design** — it reads the bucket every time. `--check` verifies the ten as they stand and writes nothing; `--write` restamps. Values are never taken from the file being checked |
 | 19.8 / 19.3 / 18.4 mm deviations (PHerc0813 / 0268 / 0800, in that order), 36.7 mm sweep, 18.4 mm optimal stick, largest gap 640 vox **and its endpoints z 2944→3584** (PHerc1447; before the PHerc0191 third pass it was that scroll's 1440 vox, z 15480→16920) | `scripts/axis_stats.py` | **yes** |
 | **our ten rows** of the §3 kink table — all three columns, the z-spacing of each, and the matched-triple counts | `scripts/axis_stats.py` | **yes** — recomputed on the shipped curves (19 August for nine scrolls, the 20 August third pass for PHerc0191) |
@@ -2043,9 +2175,10 @@ neither ships. §3's ring-gate calibration has since been re-measured on our
 side (2026-08-20, twice — on the densified curves and again after the third
 pass; its dated notes carry the values); **§2 and §5 still have not been**,
 and their numbers describe the
-279-point axes. §6, §7, the geometry table and the midpoint audit all
-recompute from what ships and all were repeated. Where a section could not be
-repeated it now says so in its own words rather than leaving the date to be
+279-point axes. §6, §§7.1–7.5, the geometry table and the midpoint audit all
+recompute from what ships and all were repeated; §7.6's arbitration does not
+recompute from a clone, and its table row says so. Where a section could not
+be repeated it now says so in its own words rather than leaving the date to be
 inferred.
 
 ## Honest caveats
@@ -2120,12 +2253,18 @@ inferred.
   159/297 to 158/297, and leaves both scroll-level sign tests identical. See §2
   and `scripts/snapshot_recheck.py`. The straight-stick control of §5 was
   measured on the final files from the start.
-- **The one external check covers one scroll.** §7 compares us against an
+- **The one external check covers one scroll, and we do not pass it.** §7
+  compares us against an
   independent annotation on PHerc1218 and nowhere else, because nowhere else is
   there one. The nine other axes in this package have never been checked against
   anybody but ourselves. That is a limit of the field's data, not a claim we can
   argue around, and the 2.00 mm of §7 says nothing about PHerc0268 or any other
-  scroll.
+  scroll. Since 2026-08-20 there is a second half to this caveat: on the one
+  scroll where the check exists, third-party observations arbitrate the
+  z 7500–9500 band against our axis, by up to about 7 mm (§7.6). The shipped
+  PHerc1218 axis is thereby the one file in this package known to be wrong
+  somewhere — which is more than can be said, in either direction, about the
+  other nine.
 - **The frame keys follow an unmerged PR.** §8's five `metadata` keys track
   ScrollPrize/villa#1454 at commit `85c5be1`. That PR is open, and its schema has
   already changed once under review. The keys are optional and additive, so
