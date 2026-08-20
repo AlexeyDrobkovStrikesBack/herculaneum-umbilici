@@ -1617,7 +1617,7 @@ centres" below.
 >   6.0 mm line. §7 states both numbers.
 > - `axis_polylines_all_ten.png` now draws the 32–49-node polylines, the
 >   19.8 mm Motivation deviation (PHerc0813), and §3's re-measured ring-gate
->   median — 279.9 vox over 393 points against sean's 273.6 over 75 — see
+>   median — 279.9 vox over 413 points against sean's 273.6 over 75 — see
 >   the dated note in §3, which that re-measurement also updates.
 > - `centre_in_core_PHerc0191.png` now draws the green cross where the shipped
 >   file puts it. The two crosses at z = 15480 are 8.48 mm apart where the
@@ -1654,7 +1654,7 @@ centres" below.
   quantities are the current ones — the 19.8 mm of the Motivation section
   (`scripts/axis_stats.py`, PHerc0813; the earlier render printed 20.7 mm,
   which was PHerc0268's, now 19.3) and the ring-gate calibration of §3
-  re-measured today — ours 279.9 voxels over 393 points against sean's 273.6
+  re-measured today — ours 279.9 voxels over 413 points against sean's 273.6
   over 75, marked on the panel as the 2026-08-20 re-run (see §3's dated
   note). **An earlier draft of this panel printed "265 against 274"** — the
   withdrawn three-scroll, pre-finalization figure §3 corrects — and the
@@ -2003,7 +2003,7 @@ inferred.
   diff is those five lines and nothing else, and both md5s of every file are
   tabulated in §8. Every measured number in this README predates the stamp and is
   unaffected by it. The md5 table in §8 is a further round out of date: the
-  second annotation pass rewrote all ten files with 393 points in place of 279,
+  second annotation pass rewrote all ten files with 413 points in place of 279,
   so neither column of that table is the current hash of anything. It is kept
   because its purpose was to make the *pre-stamp* files identifiable, and it
   still does that.
