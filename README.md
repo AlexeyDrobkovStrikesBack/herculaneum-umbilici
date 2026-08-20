@@ -2056,6 +2056,56 @@ midpoint audit had flagged. Moving the endpoint at z = 14040 helped elsewhere an
 hurt here. The fix is a control point inside that gap, and it has not been placed
 yet.
 
+### 11. Allowing more than one axis beats forcing one, measured (2026-08-20)
+
+Section 9 records that PHerc0268 is split by a fissure and that the halves have
+separate winding centres. This section is the measurement that followed, and it
+is about the modelling choice rather than about the number two: **where a scroll
+is delaminated, letting the annotation carry more than one axis scores better
+than making it carry exactly one.** The band tested here happens to present two
+centres; N is a property of the band, not of the method, and the third-pass
+annotation already suggests further centres elsewhere on this scroll that have
+not been measured.
+
+**The data.** A third annotation pass produced two axes that *overlap* in z
+rather than abut: one covering z 2680–6312, the other 5560–12584. On the
+overlap, 13 annotated slices carry two independently placed centres for the same
+slice.
+
+**The measure** is the one used everywhere else in this package —
+`axisdemo.radial_anisotropy_sectored`, frozen at pre-registration time, imported
+rather than reimplemented, same annulus rule, same 95 % ring-coverage condition.
+Each slice was scored at three centres: each of the two axes, and the single
+axis this repository ships.
+
+| centre | mean q | median q |
+|---|---|---|
+| axis A | **0.0659** | 0.0744 |
+| axis B | 0.0510 | 0.0522 |
+| the single shipped axis | 0.0396 | 0.0349 |
+
+**Better of the two axes against the single one: +0.0391 mean, winning on 12 of
+13 slices, Wilcoxon p = 0.0105.** The single axis is worse than *either* axis
+taken alone, which is the shape a compromise between two true answers has.
+
+Which axis wins moves up the scroll: B from z 5648 to 5816 (0.0687 against
+0.0349 at z = 5816), A from z 6144 to 6312 (0.1236 against 0.0146 at z = 6312).
+
+**The one exception, stated because it is unexplained.** At z = 5984 the shipped
+single axis wins outright, 0.1070 against 0.0508 and 0.0260. Either a third
+centre sits there — the annotator reports seeing more than two in this band — or
+the old point happens to fall well. We do not know which.
+
+**What this does not establish.** The measure integrates a full annulus around
+each centre, so material from the other domain is inside it either way and
+dilutes both axes; a sector-restricted per-domain measure would be stricter and
+has not been run. Thirteen slices, one band, one scroll. And the result says
+nothing about which surface patch belongs to which axis, which is the question a
+tracer actually has to answer.
+
+Working script: `axis_benefit/measure/branch_q.py` in the working tree, output
+`branch_q_PHerc0268.json`; neither ships here yet.
+
 ### 9. PHerc0268 carries two winding centres between z = 5400 and 6224 (2026-08-20)
 
 Found by eye during a third annotation pass on 20 August, then measured. In that
