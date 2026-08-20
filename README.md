@@ -2022,6 +2022,36 @@ inferred.
   audit; it has not been shown to have improved the axis, and this package has
   no measurement that could show it.
 
+### 9. PHerc0268 carries two winding centres between z = 5400 and 6224 (2026-08-20)
+
+Found by eye during a third annotation pass on 20 August, then measured. In that
+band the axial section is cut by a fissure into an upper and a lower region, and
+each region has its own winding centre. Both are plausible centres; neither is
+the centre of the other's coil.
+
+The consequence is not cosmetic. The axis enters the band from the lower region
+— around (5100–5230, 5470–6570) below z = 5320 — and leaves in the upper one,
+around (6300–6410, 4045–4230) above z = 6312. Any annotation that walks one
+branch and then continues on the other records a step of **16.3 mm sideways
+across 0.07 mm of height** (measured between the z = 6144 and z = 6152 points of
+that pass, a rate of 236 mm per mm). `json_umbilicus_z_to_yx` interpolates
+linearly between consecutive control points, so a consumer reading such a file
+draws the axis straight across papyrus where no axis is, and nothing warns it.
+
+**What this repository ships.** One axis per scroll, single-valued in z, as the
+format requires — so the shipped PHerc0268 file follows a single branch and does
+not cross. The second branch is a real feature of this scroll and is not
+representable in sean's format, which is a single `control_points` polyline read
+through a single-valued loader; recording it needs either a second file or an
+extension to the format. Neither is shipped yet, and until one is, **the shipped
+PHerc0268 axis is the dominant branch and not a statement that the other does not
+exist.**
+
+**Why it matters beyond this scroll.** A delaminated band is exactly the place an
+automatic tracer changes branch without noticing, and the resulting axis looks
+well-formed. This is one measured instance, on one scroll, found by a human
+looking at slices; we have not surveyed the other nine for the same thing.
+
 ## Format compatibility
 Field-for-field against sean's three files: top-level keys identical and in the
 same order; per-point keys `x, y, z, score` identical and in the same order; all
