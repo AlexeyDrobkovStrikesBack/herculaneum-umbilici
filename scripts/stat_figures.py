@@ -252,7 +252,7 @@ def fig_prereg():
     ax.set_yticklabels(["annotated axis", "straight stick"], fontsize=9.5, color=INK)
     ax.set_xlim(0, 0.235)
     ax.set_ylim(-1.62, 1.55)
-    ax.set_xlabel("pooled mean q over the 252 scorable slices", fontsize=9.5, color=INK2)
+    ax.set_xlabel(f"pooled mean q over the {len(qa)} scorable slices", fontsize=9.5, color=INK2)
     ax.set_title(f"Pooled: {qa.mean()/qb.mean():.2f}× the concentricity",
                  fontsize=10.5, color=INK, loc="left")
     ax.text(0.0, -0.72,
@@ -280,7 +280,7 @@ def fig_prereg():
             fontsize=8.6, color=INK2)
 
     ax.plot(dmm, dmed, color=C_BASE, linewidth=1.8, marker="o", markersize=6.5, zorder=3,
-            label="what displacing our OWN axis by that much costs q (median, 53 control slices)")
+            label=f"what displacing our OWN axis by that much costs q (median, {ct['n_slices']} control slices)")
     for x, v in zip(dmm, dmed):
         ax.text(x, v + 0.0042, f"{v:+.4f}", ha="center", fontsize=8.2, color=INK)
 
