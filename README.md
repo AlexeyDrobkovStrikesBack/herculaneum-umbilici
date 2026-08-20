@@ -1,7 +1,13 @@
-# Umbilicus annotations for the ten First Letters prize scrolls
+# Umbilicus annotations for ten of the thirteen First Letters prize scrolls
 
-Manual umbilicus (winding-axis) polylines for the ten First Letters prize
-scrolls: PHerc 0191, 0257, 0268, 0358, 0800, 0813, 1203, 1218, 1447, 1545.
+Manual umbilicus (winding-axis) polylines for ten of the thirteen First
+Letters prize scrolls: PHerc 0191, 0257, 0268, 0358, 0800, 0813, 1203, 1218,
+1447, 1545. The other three the prize page lists — PHerc 0125, 0211, 0826 —
+already had published umbilici from sean, which §3 uses as the calibration
+reference. (The count is the prize page's own, re-read 2026-08-20: "Eligible
+scroll volumes (13)". An earlier version of this line said "the ten First
+Letters prize scrolls", contradicting the thirteen this README itself counts
+below.)
 **Nine of them had no umbilicus. One did:** Iyán Dopico
 ([@IyanDopico](https://github.com/IyanDopico)) published one for **PHerc1218**
 in [vesuvius-sheet-tools](https://github.com/IyanDopico/vesuvius-sheet-tools)
