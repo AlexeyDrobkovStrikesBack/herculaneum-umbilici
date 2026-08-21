@@ -2378,8 +2378,34 @@ the old point happens to fall well. We do not know which.
 
 **What this does not establish.** The measure integrates a full annulus around
 each centre, so material from the other domain is inside it either way and
-dilutes both axes; a sector-restricted per-domain measure would be stricter and
-has not been run. Thirteen slices, one band, one scroll. And the result says
+dilutes both axes.
+
+> **Dated, 2026-08-20, later the same day — the stricter measure was run, and it
+> halves the gap rather than widening it.** With each centre scored only over its
+> own domain — pixels assigned by nearest centre, the rule checked against the
+> traced fissure at z = 6144, where the two partitions agree on 85.4 % of pixels
+> and give the same verdict — the two-centre model still beats the single axis on
+> **12 of 13 slices, Wilcoxon p = 0.0134**, but the mean gap falls from **+0.0391
+> to +0.0208**. The reason is a property of the statistic above rather than of the
+> scroll: the annulus comparison allowed itself *the better of the two axes* on
+> every slice, a per-slice maximum that inflates by selection, and the strict
+> comparison has nowhere to hide it — which axis serves which domain is fixed by
+> geometry before any score is seen. Removing that freedom cost about half the
+> apparent advantage, and what remains is the part that survives with nothing left
+> to pick.
+>
+> The stricter measure also **localizes** the failure. The single shipped axis
+> serves the upper domain about as well as the upper branch does (+0.0115, 7 of
+> 13, p = 1.0); it is the lower domain it abandons (+0.0567 for the lower branch,
+> 10 of 13, p = 0.0266, with the shipped axis scoring negative above z = 6144).
+> The z = 5984 exception above persists and is still unexplained.
+>
+> A matched null was run and is clean: above the band, where the section has a
+> single centre, a fake second centre placed at the same 22.8 mm separation is
+> **punished, not flattered** — mean −0.0463, one win in nine, and three of
+> sixteen configurations refused outright by the pre-registered ring rule. So the
+> per-domain construction does not manufacture two-centre advantages. Working:
+> `SECTOR_Q_2026-08-20.md`, ledger keys `umb.sectorq.*`. Thirteen slices, one band, one scroll. And the result says
 nothing about which surface patch belongs to which axis, which is the question a
 tracer actually has to answer.
 
