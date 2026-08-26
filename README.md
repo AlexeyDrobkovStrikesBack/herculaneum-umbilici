@@ -137,9 +137,12 @@ on PHerc0191 — §10 — the same script returns **194 of 403 above 280 µm, st
 2 above 1 mm**.)
 
 Midpoint slices were then fetched for the worst intervals and annotated by the
-same hand as the first pass. **279 → 393 human-confirmed points.** (The
-third pass of 20 August then took PHerc0191 from 44 to 64 and the shipped
-total to 413 — §10.) The largest
+same hand as the first pass.
+**279<!--ledger:umb.rp.points_15aug--> →
+393<!--ledger:umb.rp.points_19aug--> human-confirmed points.** (The
+third pass of 20 August then took PHerc0191 from 44 to
+64<!--ledger:umb.rp.points_max--> and the shipped
+total to 413<!--ledger:umb.rp.total_points--> — §10.) The largest
 estimated midpoint miss per scroll, before and after, in micrometres:
 
 | scroll | before | after | | scroll | before | after |
@@ -225,6 +228,77 @@ about the annotation. It does mean that this package has **no measurement that
 shows the densification helped**, and it should not be sold as if it had one.
 The measure that would show it must resolve sub-millimetre axis error, and there
 is no such measure here.
+
+> **Dated, 2026-08-20 — an external source found the errors, and q preferred
+> the wrong centre.** The paragraph above says this package has no measurement
+> that shows densification helped, and that at and above the floor q's
+> per-slice verdicts are close to a coin flip. A test run this evening
+> sharpens that into something worse, and it is recorded here rather than left
+> for a reviewer to find.
+>
+> Iyán Dopico's public pack (1,863 same-winding arcs and 12,924 relative-winding
+> chains for PHerc1218, machine-derived from stitched instance labels and from
+> no umbilicus at all) identifies axis errors independently of us. Correcting
+> PHerc1218 from the arcs alone, and judging with the held-out chains, drops the
+> sign-violation rate from 4.98 % to 2.18 % overall and from 7.8 % to 2.4 %
+> across the corrected bands. On the 18 nodes the correction moved,
+> 72 %<!--ledger:floorx.d1218.below_floor_pct.shipped_200px--> lie below the
+> 3.456 mm<!--ledger:floorx.d1218.floor_mm.shipped_200px--> floor on that
+> scroll — invisible to q by construction, exactly as §6.4 says.
+>
+> **5<!--ledger:floorx.d1218.dq_above_n--> lie above the floor**, and there q
+> was supposed to speak. Scoring the paired quantity the floor is defined on —
+> q(corrected centre) − q(shipped centre), same slice, same annulus, same frozen
+> measure — it reaches the 0.01 criterion on only
+> 2<!--ledger:floorx.d1218.dq_above_n_reach--> of the five. On the other
+> 3<!--ledger:floorx.d1218.dq_above_n_neg--> **q prefers the centre the external
+> data refutes**: delta_q reads
+> -0.0810<!--ledger:floorx.d1218.dq_z7184-->,
+> -0.0996<!--ledger:floorx.d1218.dq_z8208--> and
+> -0.0916<!--ledger:floorx.d1218.dq_z9232--> — wrong sign, and roughly eight
+> times the criterion in magnitude. Across all 18 nodes,
+> 14<!--ledger:floorx.d1218.dq_n_neg_total--> of the deltas are negative.
+>
+> **What this changes.** §6.4's floor stands: it is a population median from a
+> displacement experiment, and this does not touch it. What does not stand is
+> any reading of q as a per-slice arbiter between two nearby axes — above the
+> floor as well as below it. **A slice that passes q is not thereby certified.**
+> The validated use of q in this package is the population-level, pre-registered
+> comparison it was built for, and nothing in it licenses "q agrees, so the
+> centre is right".
+>
+> **The obvious objection, tested.** Both centres are scored on a *common*
+> annulus, which must shrink as they separate — so a sceptic's first move is
+> "you measured a construction that punishes movement, not a preference". If
+> that were the mechanism, delta_q would fall as the correction grows. It does
+> not: Spearman(correction, delta_q) =
+> -0.189<!--ledger:floorx.d1218.dq_rho_move--> over the 18 nodes, and **the
+> single largest correction of all, 8.07 mm, yields a positive delta_q**
+> (+0.0443<!--ledger:floorx.d1218.dq_z8720-->) on the smallest annulus in the
+> set. Shrinkage is real but is not what sets the sign. At n = 18 a small
+> contribution cannot be excluded, only a dominant one. `_floorcheck/dq_artefact_check.py`
+>
+> **Does this undermine this package's headline?** The headline compares the
+> annotated axis against a straight stick, and that comparison is literally what
+> it says: an image-informed centre scores more concentric than an image-blind
+> line, pooled over ten scrolls, pre-registered. Nothing above touches it. What
+> the result does forbid is a *second* reading that is easy to slide into — "q
+> prefers our axis, therefore our axis is right". If a hand annotator and q read
+> the same visible structure, q agreeing with the hand is not independent
+> evidence about the hand, and on the PHerc1218 bands above it is demonstrably
+> not: there q prefers a centre that external data refutes. Beating an
+> image-blind baseline and being correct are different claims, and only the
+> first is measured here.
+>
+> One caveat kept deliberately: this is one scroll, 18 nodes, one external pack,
+> and the alternative "q is right and the correction is wrong" was weighed
+> rather than waved away — the chains, the arcs' independent convergence to
+> Dopico's line, and the eye on slices z 8700 / 8928 / 9540 would all have to be
+> wrong together. A mechanism is offered as a hypothesis only: a hand annotator
+> and q read the same visible laminar structure, so q is not an independent
+> check of the hand, and the two can be wrong in company. Working notes and
+> per-slice numbers: `FIX_1218_2026-08-20.md`, `_floorcheck/delta_q.py`.
+
 
 > **Dated, 2026-08-20 — the third pass moved one side of this comparison.**
 > The numbers above pair the 15 August run against the 19 August run, and they
@@ -2574,3 +2648,30 @@ accepts. Both parse through `json_umbilicus_z_to_yx` without special-casing.
   `axis_benefit.py`, `stat_figures.py`).
 
 The annotator itself is a small web page; happy to share it on request.
+
+---
+
+## Note added 23 August 2026 — two uncited figures in this README
+
+*Appended by a sweep of every number in this repository's prose that carries no
+provenance citation. Nothing above this line is edited except by the citations
+added to the point totals in the second-pass section.*
+
+The densification totals now cite the ledger records that hold them: 279 before
+the 19 August pass, 393 after it, 64 on PHerc0191 after the 20 August third
+pass, and 413 shipped. Two numbers on this page still do not, and are named
+here rather than left to look maintained:
+
+* **"took PHerc0191 from 44 to 64"** — the 44 has no record. It is recoverable
+  from this repository's own git history, which is where the 279 figure came
+  from; that has not been done here, so the 44 is a transcription until it is.
+* **"the mean of its own 25 centres over the stack"**, in the frozen-axis
+  control of section 1 — this cannot be reconciled with the point counts
+  elsewhere on the page, and there is no record or script output behind it. The
+  control's *result* is unaffected: freezing the axis at its stack mean is
+  defined without reference to how many centres the mean was taken over, and
+  the table beside the sentence carries the scores. But the specific count "25"
+  is not supported by anything findable today, and until the control is re-run
+  it should be read as "its own centres" with no number attached. Stated here
+  rather than corrected, because guessing a replacement would be worse than
+  saying it is unknown.
