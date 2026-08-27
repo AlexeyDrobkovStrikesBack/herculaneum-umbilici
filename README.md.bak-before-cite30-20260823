@@ -2,11 +2,6 @@
 
 ![All ten axes: hand-placed nodes on the side projection](panels/axis_polylines_all_ten.png)
 
-> **Two of these ten scrolls do not fit the format.** On PHerc0268 two winding
-> centres run side by side for thirteen annotated heights; on PHerc0800 three
-> centres share six heights and the traced axis returns in height. Figures and
-> measurements: [multicentre/](multicentre/).
-
 *The ten shipped axes, 413 hand-placed nodes, on the XZ side projection. Re-rendered 2026-08-20 on the curves this repository ships.*
 
 Manual umbilicus (winding-axis) polylines for ten of the thirteen First
@@ -142,12 +137,9 @@ on PHerc0191 — §10 — the same script returns **194 of 403 above 280 µm, st
 2 above 1 mm**.)
 
 Midpoint slices were then fetched for the worst intervals and annotated by the
-same hand as the first pass.
-**279<!--ledger:umb.rp.points_15aug--> →
-393<!--ledger:umb.rp.points_19aug--> human-confirmed points.** (The
-third pass of 20 August then took PHerc0191 from 44 to
-64<!--ledger:umb.rp.points_max--> and the shipped
-total to 413<!--ledger:umb.rp.total_points--> — §10.) The largest
+same hand as the first pass. **279 → 393 human-confirmed points.** (The
+third pass of 20 August then took PHerc0191 from 44 to 64 and the shipped
+total to 413 — §10.) The largest
 estimated midpoint miss per scroll, before and after, in micrometres:
 
 | scroll | before | after | | scroll | before | after |
@@ -2653,30 +2645,3 @@ accepts. Both parse through `json_umbilicus_z_to_yx` without special-casing.
   `axis_benefit.py`, `stat_figures.py`).
 
 The annotator itself is a small web page; happy to share it on request.
-
----
-
-## Note added 23 August 2026 — two uncited figures in this README
-
-*Appended by a sweep of every number in this repository's prose that carries no
-provenance citation. Nothing above this line is edited except by the citations
-added to the point totals in the second-pass section.*
-
-The densification totals now cite the ledger records that hold them: 279 before
-the 19 August pass, 393 after it, 64 on PHerc0191 after the 20 August third
-pass, and 413 shipped. Two numbers on this page still do not, and are named
-here rather than left to look maintained:
-
-* **"took PHerc0191 from 44 to 64"** — the 44 has no record. It is recoverable
-  from this repository's own git history, which is where the 279 figure came
-  from; that has not been done here, so the 44 is a transcription until it is.
-* **"the mean of its own 25 centres over the stack"**, in the frozen-axis
-  control of section 1 — this cannot be reconciled with the point counts
-  elsewhere on the page, and there is no record or script output behind it. The
-  control's *result* is unaffected: freezing the axis at its stack mean is
-  defined without reference to how many centres the mean was taken over, and
-  the table beside the sentence carries the scores. But the specific count "25"
-  is not supported by anything findable today, and until the control is re-run
-  it should be read as "its own centres" with no number attached. Stated here
-  rather than corrected, because guessing a replacement would be worse than
-  saying it is unknown.
