@@ -2769,3 +2769,11 @@ curve ends from the material beyond them is the remaining cross-section,
 normalised to the scroll's own typical section: 59-100% of typical at the ends,
 6-33% four millimetres further out. The points above the body remain in the
 working annotation; they are not in this file.
+
+## Note added 22 September 2026 — PHerc1447
+
+Fourth scroll to the gate: **36 → 131 points**, body coverage 99.6%, median
+spacing 1.382 mm, 1.6% of points kinked, no overhang past the body. The review
+had called it "with a bit more care would pass, needs higher node density and to
+go end-to-end"; the spacing went from 5.530 mm to 1.382 mm and the curve now
+runs the length of the body.
