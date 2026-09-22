@@ -2680,3 +2680,37 @@ here rather than left to look maintained:
   it should be read as "its own centres" with no number attached. Stated here
   rather than corrected, because guessing a replacement would be worse than
   saying it is unknown.
+
+## Note added 22 September 2026 — PHerc1203 re-annotated, and what the September review changed in our gate
+
+The Progress Prize review of the August submission called PHerc1203 "passably
+accurate although could be better, needs higher node density, and needs to go
+all the way to the ends". This pass answers both, by hand: **37 points → 136**,
+every one of them placed or corrected by eye on a real slice. No point is an
+interpolation and none is an unedited detector suggestion — `finalize.py` drops
+those, and it dropped none here because there were none to drop.
+
+Measured on the shipped file by `gate_sean.py`, whose thresholds are recomputed
+from sean's three published umbilici at every run:
+
+| | this file | threshold (worst of sean's three) |
+|---|---|---|
+| coverage of the scroll body | 100.0% | ≥ 97.70% |
+| median node spacing | 1.198 mm | ≤ 2.649 mm |
+| share of points with a kink above 1.724 mm | 2.2% | ≤ 10% |
+
+All 37 previously published points survive at their own z; 99 are new. One old
+point moved, by 2.72 mm.
+
+**The coverage criterion itself changed, and the reason is worth recording.**
+Until 21 September we measured coverage against the *full height of the volume*.
+That is what made the August curves look short — and it is also what sent the
+annotator into slices where there is no umbilicus to mark: at the very ends of
+these volumes there is loose material but no winding. Checked against sean's
+curves, all three of his begin and end where a centre-of-winding is still
+visible (fraction of non-zero voxels 0.107–0.214, detector reporting a core),
+and none of them enters the region beyond it (0.029–0.094, no core). Coverage is
+therefore measured against the scroll *body* now, and the threshold that follows
+from his curves is 97.70% — stricter than the 84.65% it replaces, not looser.
+The earlier framing is left in place above rather than edited out; this note is
+the correction.
