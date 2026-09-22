@@ -2777,3 +2777,13 @@ spacing 1.382 mm, 1.6% of points kinked, no overhang past the body. The review
 had called it "with a bit more care would pass, needs higher node density and to
 go end-to-end"; the spacing went from 5.530 mm to 1.382 mm and the curve now
 runs the length of the body.
+
+## Note added 22 September 2026 — PHerc0358
+
+Fifth scroll to the gate: **35 → 67 points**, body coverage 98.7%, median
+spacing 1.723 mm, **no point kinked at all**. The point count is lower than the
+other four because the scroll is shorter: its body measures 112.2 mm against
+152-180 mm for PHerc1203/0813/1218/1447, so the same 1.9 mm grid needs fewer
+nodes. The review's complaint here was "7 consecutive inaccurate points in the
+middle, 1 or 2 other slight misses, and node density should be a bit higher" —
+the middle was re-placed by hand and the kink share went from 18.2% to zero.
