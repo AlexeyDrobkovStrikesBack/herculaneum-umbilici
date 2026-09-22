@@ -2753,3 +2753,19 @@ control: a gate that only ever rejects proves nothing about the instrument.
 
 Points removed from the submission files are not lost — they remain in the
 working annotation; what leaves is only what lies past the body.
+
+## Note added 22 September 2026 — PHerc0813
+
+Third scroll re-annotated to the gate: **49 → 132 points**, body coverage 99.6%,
+median spacing 1.049 mm, 5.4% of points kinked, no overhang past the body.
+
+The annotation initially ran from 16.9 mm, above the body boundary at 21.3 mm.
+Those points were placed on our instruction, from a boundary we had located by
+asking whether a winding core was visible. That test is wrong, and sean's own
+curves are what show it: on PHerc0826 his last point sits where the core
+detector reports nothing, and on PHerc0211 the core is still visible 4 mm past
+his last point. The core does not mark the end. What separates all six of his
+curve ends from the material beyond them is the remaining cross-section,
+normalised to the scroll's own typical section: 59-100% of typical at the ends,
+6-33% four millimetres further out. The points above the body remain in the
+working annotation; they are not in this file.
