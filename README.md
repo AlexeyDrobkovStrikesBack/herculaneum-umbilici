@@ -2787,3 +2787,10 @@ other four because the scroll is shorter: its body measures 112.2 mm against
 nodes. The review's complaint here was "7 consecutive inaccurate points in the
 middle, 1 or 2 other slight misses, and node density should be a bit higher" —
 the middle was re-placed by hand and the kink share went from 18.2% to zero.
+
+## Note added 22 September 2026 — PHerc0257
+
+Sixth scroll to the gate: **40 → 127 points**, body coverage 99.5%, median
+spacing 1.123 mm (was 4.419), 8.0% of points kinked (was 34.2%). The review had
+said "a few labels at center, but labeled gaps and didn't know what to look
+for"; the curve now runs the length of the body at sean's node density.
