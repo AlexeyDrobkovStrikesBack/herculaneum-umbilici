@@ -2794,3 +2794,43 @@ Sixth scroll to the gate: **40 → 127 points**, body coverage 99.5%, median
 spacing 1.123 mm (was 4.419), 8.0% of points kinked (was 34.2%). The review had
 said "a few labels at center, but labeled gaps and didn't know what to look
 for"; the curve now runs the length of the body at sean's node density.
+
+## Note added 22 September 2026 (third revision) — the body boundary was still cutting the scroll short
+
+Two earlier notes on this page describe boundary rules that were both wrong, and
+this one replaces them. The curves shipped above were clipped too early and are
+re-uploaded here, each with more points than before.
+
+**What was wrong this time.** The boundary was set where the remaining
+cross-section fell below 45% of the scroll's own typical section. But a scroll
+tapers toward its end, so that fraction drops on its own while real material is
+still there. On PHerc0268 the rule stopped at 109.8 mm; slices show continuous
+papyrus up to 117.2 mm — eight millimetres of scroll cut off for no reason.
+
+**Why the obvious fix does not work either.** Counting non-zero pixels puts the
+boundary far too late: these masked volumes carry a white fill in one corner of
+the frame, and on empty slices it alone reads as 5% "material". PHerc0268 above
+118 mm is a black frame with a white corner, and the fraction never goes to zero.
+
+**The rule now:** the last slice of *continuous* material, measured on the centre
+of the frame (corners excluded) as the share of mid-brightness pixels — papyrus
+has texture, the artefact is flat white and the background is flat black. Walking
+outwards from mid-body, the first gap stops the walk, so a detached fragment past
+a void is not counted: PHerc0268 has one at 124.6-126.9 mm, five millimetres
+clear of the scroll, and an axis is not carried across that.
+
+**Re-measured against sean's three curves with slices fetched beyond their ends**
+(without that, the body is measured from the curve itself and coverage is 100% by
+construction): he covers 95.7 / 96.6 / 97.5% of the body and overhangs none of
+it. The coverage threshold is therefore 95.71%.
+
+| re-uploaded | points now | points before | body coverage | spacing | kinked |
+|---|---|---|---|---|---|
+| PHerc1203 | 132 | 125 | 100.0% | 1.198 mm | 2.3% |
+| PHerc1218 | 146 | 141 | 100.0% | 1.313 mm | 2.8% |
+| PHerc0813 | 141 | 132 | 100.0% | 1.049 mm | 5.0% |
+| PHerc1447 | 136 | 131 | 100.0% | 1.382 mm | 1.5% |
+| PHerc0358 | 76 | 67 | 100.0% | 1.723 mm | 0.0% |
+| PHerc0257 | 136 | 127 | 100.0% | 1.123 mm | 7.5% |
+
+All three of sean's curves pass this gate unchanged.

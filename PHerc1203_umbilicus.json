@@ -1,6 +1,18 @@
 {
  "control_points": [
   {
+   "x": 3497,
+   "y": 2993,
+   "z": 1600,
+   "score": 100
+  },
+  {
+   "x": 3501,
+   "y": 3059,
+   "z": 1744,
+   "score": 100
+  },
+  {
    "x": 3422,
    "y": 3059,
    "z": 1888,
@@ -749,16 +761,46 @@
    "y": 3532,
    "z": 17984,
    "score": 100
+  },
+  {
+   "x": 3547,
+   "y": 3503,
+   "z": 18128,
+   "score": 100
+  },
+  {
+   "x": 3530,
+   "y": 3524,
+   "z": 18272,
+   "score": 100
+  },
+  {
+   "x": 3534,
+   "y": 3486,
+   "z": 18408,
+   "score": 100
+  },
+  {
+   "x": 3564,
+   "y": 3490,
+   "z": 18544,
+   "score": 100
+  },
+  {
+   "x": 3547,
+   "y": 3482,
+   "z": 18688,
+   "score": 100
   }
  ],
  "metadata": {
   "z_grid_spacing": 0,
   "min_score_threshold": 0.75,
   "high_score_threshold": 0.75,
-  "total_points": 125,
-  "timestamp": "2026-09-22T14:35:28Z",
-  "created": "2026-09-22T14:35:28Z",
-  "modified": "2026-09-22T14:35:28Z",
+  "total_points": 132,
+  "timestamp": "2026-09-22T23:56:31Z",
+  "created": "2026-09-22T23:56:31Z",
+  "modified": "2026-09-22T23:56:31Z",
   "source_volume": "PHerc1203/volumes/20250820131727-9.362um-1.2m-113keV-masked.zarr",
   "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization"
  }

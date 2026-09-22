@@ -1,6 +1,36 @@
 {
  "control_points": [
   {
+   "x": 2756,
+   "y": 3682,
+   "z": 1808,
+   "score": 100
+  },
+  {
+   "x": 2766,
+   "y": 3670,
+   "z": 1904,
+   "score": 100
+  },
+  {
+   "x": 2756,
+   "y": 3682,
+   "z": 2000,
+   "score": 100
+  },
+  {
+   "x": 2739,
+   "y": 3696,
+   "z": 2100,
+   "score": 100
+  },
+  {
+   "x": 2758,
+   "y": 3682,
+   "z": 2200,
+   "score": 100
+  },
+  {
    "x": 2713,
    "y": 3600,
    "z": 2300,
@@ -791,16 +821,40 @@
    "y": 3289,
    "z": 16368,
    "score": 100
+  },
+  {
+   "x": 2446,
+   "y": 3289,
+   "z": 16496,
+   "score": 100
+  },
+  {
+   "x": 2454,
+   "y": 3304,
+   "z": 16624,
+   "score": 100
+  },
+  {
+   "x": 2454,
+   "y": 3312,
+   "z": 16744,
+   "score": 100
+  },
+  {
+   "x": 2629,
+   "y": 3340,
+   "z": 16864,
+   "score": 100
   }
  ],
  "metadata": {
   "z_grid_spacing": 0,
   "min_score_threshold": 0.75,
   "high_score_threshold": 0.75,
-  "total_points": 132,
-  "timestamp": "2026-09-22T16:30:20Z",
-  "created": "2026-09-22T16:30:20Z",
-  "modified": "2026-09-22T16:30:20Z",
+  "total_points": 141,
+  "timestamp": "2026-09-22T23:56:31Z",
+  "created": "2026-09-22T23:56:31Z",
+  "modified": "2026-09-22T23:56:31Z",
   "source_volume": "PHerc0813/volumes/20250821151723-9.362um-1.2m-113keV-masked.zarr",
   "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization"
  }
