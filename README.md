@@ -2714,3 +2714,42 @@ therefore measured against the scroll *body* now, and the threshold that follows
 from his curves is 97.70% — stricter than the 84.65% it replaces, not looser.
 The earlier framing is left in place above rather than edited out; this note is
 the correction.
+
+## Note added 22 September 2026 (later the same day) — the coverage criterion was measuring the wrong thing, and PHerc1203 is corrected here
+
+The note above ships PHerc1203 at "100.0% coverage of the scroll body". That
+number was produced by a broken instrument, and this note replaces it.
+
+**What was wrong.** `body_range.py` found the body boundary by starting at the
+first and last point *of the curve being judged* and walking outwards while the
+cross-section held up. Walking outwards only, it could extend a boundary but
+never pull one in — so a curve whose ends already sat past the body simply had
+the body redefined to include them, and then scored 100% against itself. On
+PHerc1218 this produced a coverage of 112.8%: the curve was rewarded for
+reaching further into the debris beyond the scroll's end. The scan now starts
+at the middle of the body and walks outwards to both edges; the curve takes no
+part in it.
+
+**Measured consequences.** Against independently located bodies, sean's three
+published umbilici cover 97.0 / 97.8 / 98.9% of the body and overhang it by at
+most 0.34 mm. Ours, as published this morning, overhang by 13.2 mm (PHerc1203),
+22.5 mm (PHerc1218) and 8.7 mm (PHerc0813) — the points at those ends sit in
+loose material with no winding, which is exactly what the annotator objected to
+while placing them.
+
+The gate therefore gained a fourth criterion, **overhang past the body**, and
+coverage is now the fraction of the body actually covered rather than the length
+of the curve divided by the body. The old formula could exceed 100% and scored
+a curve higher the further past the scroll it went.
+
+| shipped here | points | body coverage | median spacing | kinked points | overhang |
+|---|---|---|---|---|---|
+| PHerc1203 | 125 (was 136) | 99.0% | 1.198 mm | 2.4% | 0.00 mm |
+| PHerc1218 | 141 | 99.2% | 1.313 mm | 2.2% | 0.00 mm |
+| thresholds (worst of sean's three) | — | ≥ 96.99% | ≤ 2.649 mm | ≤ 10% | ≤ 1.00 mm |
+
+All three of sean's curves pass this gate unchanged, which is the positive
+control: a gate that only ever rejects proves nothing about the instrument.
+
+Points removed from the submission files are not lost — they remain in the
+working annotation; what leaves is only what lies past the body.
