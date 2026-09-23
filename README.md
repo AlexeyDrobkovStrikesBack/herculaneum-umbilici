@@ -2834,3 +2834,15 @@ it. The coverage threshold is therefore 95.71%.
 | PHerc0257 | 136 | 127 | 100.0% | 1.123 mm | 7.5% |
 
 All three of sean's curves pass this gate unchanged.
+
+## Note added 22 September 2026 — PHerc0800
+
+Seventh scroll to the gate: **49 → 151 points**, body coverage 99.4%, median
+spacing 1.244 mm (was 2.56), 4.7% of points kinked (was 27.7%).
+
+This was the hardest of the ten by the review's own account — "needs to use
+other planes where the core bends, and higher node density" — and the one where
+37 of 39 segments lean more than 10° from the axial direction, so a z-slice cuts
+the winding at a slant and an axial centre drifts. The annotator has an
+azimuthal section for exactly this, and the kink share coming down from 27.7% to
+4.7% is what it bought.
