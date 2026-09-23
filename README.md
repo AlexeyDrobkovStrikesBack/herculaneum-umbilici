@@ -2846,3 +2846,11 @@ other planes where the core bends, and higher node density" — and the one wher
 the winding at a slant and an axial centre drifts. The annotator has an
 azimuthal section for exactly this, and the kink share coming down from 27.7% to
 4.7% is what it bought.
+
+## Note added 22 September 2026 — PHerc1545
+
+Eighth scroll to the gate: **34 → 139 points**, body coverage 100.0%, median
+spacing 1.273 mm (was 5.168), 1.5% of points kinked (was 31.2%). The review had
+said "decent attempt, ends well short of end, needs more care and node density".
+One point (z=19056) is dropped by finalize.py as an untouched detector
+suggestion, as the format requires.
