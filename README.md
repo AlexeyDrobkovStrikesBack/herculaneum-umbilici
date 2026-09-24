@@ -2961,3 +2961,14 @@ three times that. Current total: **1312 nodes across the ten axes**.
 Kink share as shipped, against the 10% threshold: 0.0% (PHerc0358, PHerc0257),
 1.3-1.5% (PHerc0800, PHerc0813, PHerc1447, PHerc1545), 2.3-2.8% (PHerc1203,
 PHerc1218), 5.6-5.8% (PHerc0268, PHerc0191).
+
+## Note added 23 September 2026 — PHerc1203 and PHerc1218 re-placed
+
+PHerc1203: **131 points**, coverage 99.2%, spacing 1.198 mm, **no point kinked**
+(was 2.3%). PHerc1218: **145 points**, coverage 99.4%, spacing 1.313 mm, **1.4%**
+(was 2.8%). Opening figure redrawn again on these curves.
+
+Kink share across the ten as shipped now: **0.0%** on PHerc1203, PHerc0257 and
+PHerc0358; **1.3-1.5%** on PHerc0800, PHerc0813, PHerc1218, PHerc1447 and
+PHerc1545; **5.6-5.8%** on PHerc0268 and PHerc0191 — eight of ten sit at or
+below a seventh of the 10% allowance.
