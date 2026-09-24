@@ -2945,3 +2945,19 @@ PHerc0358, with a perfectly smooth axis by this measure.
 
 PHerc0813 re-uploaded: **141 points**, body coverage 100.0%, median spacing
 1.049 mm, **1.4% of points kinked** (was 5.0%).
+
+## Note added 23 September 2026 — PHerc0800 re-placed, and the opening figure redrawn
+
+PHerc0800 re-uploaded: **151 points**, body coverage 99.4%, median spacing
+1.244 mm, **1.3% of points kinked** (was 4.7%). This is the scroll where 37 of
+39 segments lean past 10° from axial, so it is the one the review singled out as
+needing other planes.
+
+The figure at the top of this page is redrawn on the curves as shipped today,
+and its caption now counts nodes from the submission files rather than carrying
+a number written by hand — it read "413 points" from August while the files held
+three times that. Current total: **1312 nodes across the ten axes**.
+
+Kink share as shipped, against the 10% threshold: 0.0% (PHerc0358, PHerc0257),
+1.3-1.5% (PHerc0800, PHerc0813, PHerc1447, PHerc1545), 2.3-2.8% (PHerc1203,
+PHerc1218), 5.6-5.8% (PHerc0268, PHerc0191).
