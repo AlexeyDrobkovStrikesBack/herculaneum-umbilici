@@ -2854,3 +2854,28 @@ spacing 1.273 mm (was 5.168), 1.5% of points kinked (was 31.2%). The review had
 said "decent attempt, ends well short of end, needs more care and node density".
 One point (z=19056) is dropped by finalize.py as an untouched detector
 suggestion, as the format requires.
+
+## Note added 23 September 2026 — PHerc0268 ships with both winding centres
+
+PHerc0268 has two centres of winding, and until now this repository carried only
+a single 44-point axis for it. The file now uses the extended format: the top
+level holds the dominant (upper) axis, and `branches` carries both lines —
+**lower, 42 points, z 1176–6352** and **upper, 72 points, z 4992–13568**.
+
+They overlap between z 4992 and 6352 (about 43–55 mm), where a slice shows two
+centres roughly 23 mm apart. The previous single axis ran along the lower centre
+up to z≈6160 and then jumped to the upper one; measured as one curve that jump
+reads as two kinks of 8.7 and 15.4 mm, which is why a single-axis file cannot
+describe this scroll honestly.
+
+**The gate changed with it.** Coverage of the body is now computed over the
+*union* of the branches. Measuring the dominant branch alone gave 69.2% — the
+upper centre lives in the upper two-thirds by construction, and the old measure
+was penalising the scroll for having two centres rather than one. Single-axis
+scrolls and the three reference curves are unaffected; all still pass unchanged.
+
+Still open on this scroll: at **z=5400** the lower branch is annotated and the
+upper begins only at 5560. Whether a second centre is visible at 5400 (branch to
+be extended) or a third one is present (a different finding) is not yet decided,
+and is deliberately left open rather than guessed. Three centres on one height
+have already been observed on another scroll, PHerc0800 at z=18480 and 18520.
