@@ -2879,3 +2879,34 @@ upper begins only at 5560. Whether a second centre is visible at 5400 (branch to
 be extended) or a third one is present (a different finding) is not yet decided,
 and is deliberately left open rather than guessed. Three centres on one height
 have already been observed on another scroll, PHerc0800 at z=18480 and 18520.
+
+## Note added 23 September 2026 — PHerc0191, shipped as it stands, and what we do not yet know how to represent
+
+PHerc0191 goes from **64 to 139 points**: body coverage 99.3%, median spacing
+1.123 mm (was 2.25). It answers the density and end-to-end parts of the review.
+
+**It does not pass our own kink criterion: 13.1% of points deviate more than
+1.724 mm from the line through their neighbours, against a threshold of 10%.**
+We are shipping it anyway, and saying why rather than quietly trimming until the
+number falls.
+
+The remaining deviations are not scattered; they sit in clusters, the worst at
+z=14936, 8288 and 8408 (5.9, 5.5 and 4.8 mm). That is the same signature we
+found on PHerc0268, where it turned out not to be sloppy placement at all: the
+scroll has two centres of winding about 23 mm apart, the single axis ran along
+one and jumped to the other, and measured as one curve the jump reads as a pair
+of large kinks. On PHerc0268 we could split the annotation into two branches,
+and both then passed. On PHerc0191 the annotator's judgement is that the axis is
+sigmoid — it crosses a given slice more than once, sometimes three times — and a
+single point per slice cannot express that.
+
+**What is missing is not annotation effort but a representation.** The extended
+format carries branches, which is enough for two separated centres; it is not
+obviously enough for an axis that folds back on itself within one scroll, and we
+do not want to invent a private format that other tools cannot read. Until we
+know how to express this so that existing consumers of `PHercNNNN_umbilicus.json`
+keep working, the honest state of PHerc0191 is: dense, running the full body,
+with a known and localised defect whose cause we can name but not yet encode.
+
+Three centres on one height have already been observed on PHerc0800 (z=18480 and
+18520), so this is a general question about the format, not a quirk of one scroll.
