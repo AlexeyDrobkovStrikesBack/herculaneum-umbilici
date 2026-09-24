@@ -2934,3 +2934,9 @@ What does hold is the case already shipped on PHerc0268: split where a slice
 image rather than an adjustment to a number. That distinction — observable
 structure versus fitting the metric — is the part we would offer as an addition
 to the methodology.
+
+## Note added 23 September 2026 — PHerc0257 re-placed to zero kinks
+
+PHerc0257 re-uploaded: **135 points**, body coverage 98.9%, median spacing
+1.123 mm, **no point kinked at all** (was 7.5%). Second curve in the set, after
+PHerc0358, with a perfectly smooth axis by this measure.
