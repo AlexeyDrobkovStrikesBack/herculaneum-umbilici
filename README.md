@@ -2940,3 +2940,8 @@ to the methodology.
 PHerc0257 re-uploaded: **135 points**, body coverage 98.9%, median spacing
 1.123 mm, **no point kinked at all** (was 7.5%). Second curve in the set, after
 PHerc0358, with a perfectly smooth axis by this measure.
+
+## Note added 23 September 2026 — PHerc0813 re-placed
+
+PHerc0813 re-uploaded: **141 points**, body coverage 100.0%, median spacing
+1.049 mm, **1.4% of points kinked** (was 5.0%).
