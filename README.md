@@ -2910,3 +2910,27 @@ with a known and localised defect whose cause we can name but not yet encode.
 
 Three centres on one height have already been observed on PHerc0800 (z=18480 and
 18520), so this is a general question about the format, not a quirk of one scroll.
+
+## Note added 23 September 2026 — PHerc0191 passes after all, and the split-into-chains idea did not survive its own test
+
+PHerc0191 now passes: **140 points**, body coverage 99.3%, median spacing
+1.123 mm, **5.8% of points kinked** against the 10% threshold. The note above,
+which shipped it as a known failure at 13.1%, is superseded — the clustered
+deviations were re-placed by hand and most of them were placement after all,
+not a limit of the format.
+
+**A proposal we tested and withdrew.** Before that re-placement we considered
+asking for the criterion to be applied per chain: split a scroll into two or
+three pieces and judge each separately, on the argument that a sigmoid axis
+cannot be one line. Measured, it does not work — and it fails in the direction
+that matters. Cutting PHerc0191 at its largest kinks raised the worst piece from
+13.1% to 21.4%, because the share is computed over fewer intervals and the
+remaining deviations weigh more. The same is true of the reference curves:
+splitting PHerc0211 takes it from 7.1% to 25.0%. A rule that makes sean's own
+curves look worse is not a rule, so we are not proposing it.
+
+What does hold is the case already shipped on PHerc0268: split where a slice
+*shows* two centres, 23 mm apart, and each branch is then a description of the
+image rather than an adjustment to a number. That distinction — observable
+structure versus fitting the metric — is the part we would offer as an addition
+to the methodology.
