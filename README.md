@@ -2972,3 +2972,27 @@ Kink share across the ten as shipped now: **0.0%** on PHerc1203, PHerc0257 and
 PHerc0358; **1.3-1.5%** on PHerc0800, PHerc0813, PHerc1218, PHerc1447 and
 PHerc1545; **5.6-5.8%** on PHerc0268 and PHerc0191 — eight of ten sit at or
 below a seventh of the 10% allowance.
+
+## Note added 29 September 2026 — PHerc1447 re-placed through its bends, and a possible second centre near z=20600
+
+PHerc1447 re-uploaded: **193 points** (was 136), body coverage 100.0%, median
+spacing 1.382 mm, **1.0% of points kinked** (was 1.5%). The four sharpest bends
+were re-annotated on slices fetched at 0.35 mm spacing, roughly four times denser
+than the rest of the curve.
+
+The reason for that work was outside review of the September submission, which
+failed this scroll with "majority was good, but didn't navigate the severe
+umbilicus bends well enough (very difficult)". Measured as degrees of turn per
+node over the worst five-segment window, the scroll went from **59.4 to 52.7**;
+for calibration, curves that the same reviewer accepted sit at 35-49 and the ones
+he failed at 59-81.
+
+**Unresolved, and stated rather than smoothed over:** near **z=20632-20672**
+(178.3-178.6 mm, the lower part of the scroll) the annotator reports what may be
+a second winding centre. The two remaining kinked points of the whole curve are
+exactly there, and the worst-turning window sits just above at z=20272. On the
+slice the laminae arc in from above and from below toward the annotated point,
+which is consistent both with two centres and with a single winding flattened
+into an oval — one slice does not settle it. The axis here is shipped as a single
+line. If it is two centres, this scroll belongs in the extended format with
+branches, as PHerc0268 already is.
