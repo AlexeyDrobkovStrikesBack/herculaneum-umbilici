@@ -2996,3 +2996,17 @@ which is consistent both with two centres and with a single winding flattened
 into an oval — one slice does not settle it. The axis here is shipped as a single
 line. If it is two centres, this scroll belongs in the extended format with
 branches, as PHerc0268 already is.
+
+## Note added 29 September 2026 — PHerc0257 re-placed through its bends
+
+PHerc0257 re-uploaded: **218 points** (was 135), body coverage 98.9%, median
+spacing 0.974 mm, **no point kinked**. The four sharpest bends were re-annotated
+on slices fetched at 0.30 mm, and one stretch (z=7704-7792) at 0.075 mm — eight
+voxels, which is the practical floor: finer than that and neighbouring slices are
+barely distinguishable.
+
+The review had failed this scroll with "good attempt at a difficult, compressed
+scroll, needs even higher density nodes and didn't navigate the severe umbilicus
+bends well enough". Degrees of turn per node over the worst five-segment window
+went from **71.8 to 56.2**, leaving the band of the curves that reviewer failed
+(59-81) and approaching the band he accepted (35-49).
