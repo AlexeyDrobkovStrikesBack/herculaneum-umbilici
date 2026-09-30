@@ -3056,3 +3056,29 @@ improvement of the four scrolls re-worked after that review.
 | PHerc0257 | 135 → 218 | 71.8 → 56.2 |
 | PHerc1218 | 146 → 210 | 73.8 → 61.1 |
 | PHerc1447 | 136 → 193 | 59.4 → 52.7 |
+
+## Note added 29 September 2026 — PHerc0191 re-placed through its bends; all five reachable scrolls now re-worked
+
+PHerc0191 re-uploaded: **207 points** (was 140), body coverage 99.3%, median
+spacing 1.049 mm, 2.0% of points kinked. Five bends re-annotated at 0.30 mm
+spacing; worst-window turn per node **69.1 → 59.4**.
+
+This closes the set of scrolls the outside review returned. All five that were
+worth re-working have been, on slices fetched three to four times denser than
+before, in the specific windows where the axis turns hardest:
+
+| scroll | points before → after | worst-window turn per node |
+|---|---|---|
+| PHerc1545 | 139 → 214 | 76.0 → 54.3 |
+| PHerc0257 | 135 → 218 | 71.8 → 56.2 |
+| PHerc1218 | 146 → 210 | 73.8 → 61.1 |
+| PHerc0191 | 140 → 207 | 69.1 → 59.4 |
+| PHerc1447 | 136 → 193 | 59.4 → 52.7 |
+
+The sixth, PHerc0268, was left alone deliberately: the reviewer described it as
+"extremely challenge scroll, not sure if I could even do this one myself", and
+advised spending effort on the medium-difficult ones instead. It ships with both
+of its winding centres as branches, with the open question at z=5400 stated.
+
+Across the ten axes the package now carries **2049 hand-placed nodes**, against
+413 at the August submission.
