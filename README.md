@@ -3143,10 +3143,14 @@ The difference is not extra nodes but re-placed ones: fourteen nodes of the
 upper branch were moved during the September passes, several by 3 to 5 mm, and
 two new nodes were added at z=5236 and z=5360 — inside the z≈5400 window where
 the number of centres is still an open question. Removing just those two leaves
-11.1%, so they are not the cause on their own. We ship the September curve
-rather than the August one because it follows the material more closely where
-it was re-placed; the gate figure is stated here rather than quietly passed,
-and the open question at z=5400 stands as it did in August.
+11.1%, so they are not the cause on their own. We ship the September curve rather than the August one. That is not
+a gate decision — the gate prefers the August line — but an eyes-on one: the
+six places where the two lines differ by more than 2 mm were rendered side by
+side on their own slices and reviewed, and at each of them the September node
+sits closer to the centre the material turns around. The kink criterion is a
+proxy for smoothness, and here it is penalising an axis that genuinely wanders,
+which is what this scroll does. The figure is stated rather than quietly
+passed, and the open question at z=5400 stands as it did in August.
 
 **Reviewer pass, and what it did not achieve.** The five axes the reviewer
 failed in September were re-annotated through their bends (table above). By the
