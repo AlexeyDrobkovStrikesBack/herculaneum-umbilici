@@ -45,3 +45,4 @@ qc/*
 !qc/prior_1218_raw.json
 !qc/prior_1218_centroid_raw.json
 ref_sean/
+README.md.bak-*

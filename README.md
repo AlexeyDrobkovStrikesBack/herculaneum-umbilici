@@ -7,7 +7,7 @@
 > centres share six heights and the traced axis returns in height. Figures and
 > measurements: [multicentre/](multicentre/).
 
-*The ten shipped axes, 413 hand-placed nodes, on the XZ side projection. Re-rendered 2026-08-20 on the curves this repository ships.*
+*The ten shipped axes, 1659 hand-placed nodes, on the XZ side projection. Re-rendered 2026-09-30 on the curves this repository ships; PHerc0268's two winding centres are drawn as the two separate lines they are.*
 
 Manual umbilicus (winding-axis) polylines for ten of the thirteen First
 Letters prize scrolls: PHerc 0191, 0257, 0268, 0358, 0800, 0813, 1203, 1218,
@@ -3080,5 +3080,82 @@ The sixth, PHerc0268, was left alone deliberately: the reviewer described it as
 advised spending effort on the medium-difficult ones instead. It ships with both
 of its winding centres as branches, with the open question at z=5400 stated.
 
-Across the ten axes the package now carries **2049 hand-placed nodes**, against
+Across the ten axes the package now carries **1659 hand-placed nodes**, against
 413 at the August submission.
+
+---
+
+### Note added 30 September 2026 — what the submitted files are, measured today
+
+Every number in this section was produced today by the script named beside it,
+on the files this commit ships. Where it contradicts an earlier number on this
+page, the earlier number was true on its own date and is left standing: the
+history of this package is meant to be readable backwards.
+
+**Node counts** (`python3 -c` over the shipped json; the second column counts
+both branches where a scroll has them):
+
+| scroll | top-level nodes | all branches |
+|---|---|---|
+| PHerc0191 | 207 | 207 |
+| PHerc0257 | 218 | 218 |
+| PHerc0268 | 76 | 118 |
+| PHerc0358 | 76 | 76 |
+| PHerc0800 | 151 | 151 |
+| PHerc0813 | 141 | 141 |
+| PHerc1203 | 131 | 131 |
+| PHerc1218 | 210 | 210 |
+| PHerc1447 | 193 | 193 |
+| PHerc1545 | 214 | 214 |
+| **total** | **1617** | **1659** |
+
+Two earlier totals on this page — "1312 nodes across the ten axes" and "2049
+hand-placed nodes" — were written by hand at different moments and neither
+matches the files. The figure caption and the closing line now both read 1659,
+and the caption's own count is generated from the shipped files rather than
+typed, so the next re-render cannot drift from them again.
+
+**Reference benchmark, re-run today** (`scripts/calib_sean.py`, writing
+`qc/calibration_sean.json`): median ring-gate displacement **ours 289 voxels
+over 453 points, sean's 274 over his 75**. The figure caption now reads these
+two numbers out of that json together with the date the file was written, so
+the caption ages with the benchmark instead of outliving it. The August
+caption said 279.9 against 273.6 and was six weeks stale by the time the
+curves it described had been re-annotated five times. Our 289 sits inside the
+spread of sean's own three scrolls (268, 274, 334), which is the only claim
+this benchmark has ever supported; it does not say our axes are better than
+his, and never did.
+
+**Frame metadata.** §8 has described the five villa#1454 keys as present and
+bucket-checked since 19 August. They were in fact lost in the re-annotation of
+that day and every file shipped without them until today. `scripts/stamp_frame.py
+--write` has now stamped all ten from the bucket, and `--check` reports "all ten
+agree with the bucket". The section was right about the intent and wrong about
+the state; this is the correction.
+
+**PHerc0268 and the gate.** This is the one scroll that does not pass our own
+gate. Its two centres are shipped as branches, with the dominant (upper) line
+also at top level, so a reader that ignores branches still gets a usable axis.
+The failure is in the kink criterion: 13.5% of nodes deviate from the straight
+line between their neighbours by more than 1.724 mm, where the calibrated
+allowance is 10%. On the version shipped in August the same figure was 5.6%.
+The difference is not extra nodes but re-placed ones: fourteen nodes of the
+upper branch were moved during the September passes, several by 3 to 5 mm, and
+two new nodes were added at z=5236 and z=5360 — inside the z≈5400 window where
+the number of centres is still an open question. Removing just those two leaves
+11.1%, so they are not the cause on their own. We ship the September curve
+rather than the August one because it follows the material more closely where
+it was re-placed; the gate figure is stated here rather than quietly passed,
+and the open question at z=5400 stands as it did in August.
+
+**Reviewer pass, and what it did not achieve.** The five axes the reviewer
+failed in September were re-annotated through their bends (table above). By the
+reviewer's own implied boundary — the failed curves ran 59 to 81 degrees of turn
+per node over the worst five-segment window, the passed ones 35 to 49 — none of
+the five reached the passing band: PHerc1447 52.7, PHerc1545 54.3, PHerc0257
+56.2, PHerc0191 59.4, PHerc1218 61.1. All five improved, two of them by more
+than fifteen points, and all five remain above 49. That measure is a description
+of where his line fell, not a verdict he stated, and sean's own PHerc0211 reads
+95.6 on it — so it cannot be read as a pass mark. It is reported here because it
+is the only quantity that separated his passes from his failures, and it would be
+dishonest to show the improvement without showing that it did not cross.

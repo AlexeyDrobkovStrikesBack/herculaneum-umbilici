@@ -1248,10 +1248,15 @@
   "min_score_threshold": 0.75,
   "high_score_threshold": 0.75,
   "total_points": 207,
-  "timestamp": "2026-09-30T03:06:30Z",
-  "created": "2026-09-30T03:06:30Z",
-  "modified": "2026-09-30T03:06:30Z",
+  "timestamp": "2026-09-30T15:01:24Z",
+  "created": "2026-09-30T15:01:24Z",
+  "modified": "2026-09-30T15:01:24Z",
   "source_volume": "PHerc0191/volumes/20250821151635-9.362um-1.2m-113keV-masked.zarr",
-  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization"
+  "annotator_note": "manual points only; untouched auto-suggestions dropped at finalization",
+  "volume": "20250821151635-9.362um-1.2m-113keV-masked.zarr",
+  "voxelsize_um": 9.362,
+  "volume_width": 8387,
+  "volume_height": 8387,
+  "volume_slices": 18977
  }
 }
