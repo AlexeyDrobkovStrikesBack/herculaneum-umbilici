@@ -3036,3 +3036,23 @@ All three now have zero or near-zero kinked points by the earlier criterion, and
 all three moved out of, or to the edge of, the failed band. The measure itself is
 a pointer, not a verdict: on the reference curves it reads 37.3, 55.6 and 95.6,
 and all three of those are published as good.
+
+## Note added 29 September 2026 — PHerc1545 re-placed through its bends
+
+PHerc1545 re-uploaded: **214 points** (was 139), body coverage 100.0%, median
+spacing 1.123 mm, 0.9% of points kinked. Its five sharpest bends were
+re-annotated on slices fetched at 0.30-0.37 mm, about four times denser than the
+rest of the curve; the sharpest of them, z=4608-5296, turns 76° per node and was
+the second worst in the whole set.
+
+The review failed it with "decent attempt at a difficult, compressed scroll,
+needs even higher density nodes and more careful following". Degrees of turn per
+node over the worst five-segment window went from **76.0 to 54.3** — the largest
+improvement of the four scrolls re-worked after that review.
+
+| scroll | points before → after | worst-window turn per node |
+|---|---|---|
+| PHerc1545 | 139 → 214 | 76.0 → 54.3 |
+| PHerc0257 | 135 → 218 | 71.8 → 56.2 |
+| PHerc1218 | 146 → 210 | 73.8 → 61.1 |
+| PHerc1447 | 136 → 193 | 59.4 → 52.7 |
